@@ -5,9 +5,9 @@ import { logDebug } from "../assets/util";
 /**
  * Manages the status of various anti-cheat modules using world dynamic properties.
  * Handles retrieval and modification of module states.
- * @class ACModuleInternal
+ * @class ModuleStatusManagerInternal
  */
-class ACModuleInternal {
+class ModuleStatusManagerInternal { // Renamed from ACModuleInternal
     /**
      * An object defining available anti-cheat modules. Keys are internal identifiers
      * (often camelCase), and values are human-readable names.
@@ -40,7 +40,7 @@ class ACModuleInternal {
     /**
      * Converts a human-readable module name into its internal ID representation
      * (e.g., "Diamond Ore Alerts" becomes "OreAlerts:diamondOre").
-     * @param {string} module - The human-readable module name (e.g., from `ACModule.Modules.OreAlerts.diamondOre`).
+     * @param {string} module - The human-readable module name (e.g., from `ModuleStatusManager.Modules.OreAlerts.diamondOre`).
      * @returns {string} - The internal module ID.
      * @throws {ReferenceError} - If the provided `module` name is not a valid or recognized module.
      */
@@ -112,8 +112,8 @@ class ACModuleInternal {
 };  
 
 /**
- * The singleton instance of `ACModuleInternal`. This is the primary interface
+ * The singleton instance of `ModuleStatusManagerInternal`. This is the primary interface
  * for interacting with module statuses throughout the anti-cheat system.
- * @type {ACModuleInternal}
+ * @type {ModuleStatusManagerInternal}
  */
-export const ACModule = new ACModuleInternal();
+export const ModuleStatusManager = new ModuleStatusManagerInternal(); // Renamed from ACModule
