@@ -1,6 +1,6 @@
 import { world, system, ItemStack, BlockPermutation } from "@minecraft/server";
 import { CONFIG as config, i18n } from "../config.js";
-import { sendMessageToAdmins, getScore, getPlayerRank, 효율, isAdmin } from "../util.js"; // Assuming isAdmin might be needed
+import { sendMessageToAdmins, getScore, getPlayerRank } from "../util.js";
 import { ACModule } from "../classes/module.js";
 import { showAdminPanel } from "../forms/admin_panel.js"; // Ensure this path is correct
 import { getPlayerState } from '../systems/periodic_checks.js'; // Import for player state
@@ -34,7 +34,7 @@ world.beforeEvents.itemUse.subscribe((eventData) => {
 
     // Anti-Grief: Prevent use of certain items if module is active
     if (ACModule.isActive("antigrief") && config.restricted_items_antigrief.includes(item.typeId)) {
-        if (!isAdmin(player)) { // Allow admins to use restricted items
+        if (!player.hasAdmin()) { // Allow admins to use restricted items
             eventData.cancel = true;
             player.sendMessage(i18n("system.antigrief_item_restriction", { item: item.typeId }));
             sendMessageToAdmins("system.antigrief_item_attempt_admin", { player: player.name, item: item.typeId });
