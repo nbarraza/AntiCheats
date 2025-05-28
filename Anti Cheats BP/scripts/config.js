@@ -271,6 +271,23 @@ export default {
             "whitelistedPrefixes": ["!"]
         }
     },
+    "uiSettings": {
+        "welcomeMessage": "Welcome to our server!",
+        "serverIP": "play.example.com",
+        "serverPort": "19132",
+        "customLinkURL": "https://discord.gg/example",
+        "customLinkTitle": "Discord",
+        "rules": "1. Be respectful.\\n2. No cheating.\\n3. Have fun!",
+        "featuresEnabled": {
+            "playerList": true,
+            "serverInfo": true,
+            "personalInfo": true,
+            "rulesButton": true,
+            "customLinkButton": true,
+            "systemInformationButton": true,
+            "reportPlayerButton": true
+        }
+    },
     "aliases": {
         "b": "ban",
         "k": "kick",
