@@ -227,8 +227,8 @@ Player.prototype.getMuteInfo = function(){
  */
 Player.prototype.ban = function(reason="No reason provided", unbanTime, permanent, admin) {
 	if (typeof reason !== "string") throw TypeError(i18n.getText("player.error.mute.paramTypeReason", { type: typeof reason })); // Re-using mute key for generic param type
-	if (typeof permanent !== "boolean") throw TypeError(`Parameter "permanent" is typeof "${typeof permanent}", should be typeof boolean`); // Will replace if a key is made
-	if (typeof unbanTime !== "number") throw TypeError(`Parameter "time" is typeof "${typeof unbanTime}", should be typeof number`); // Will replace if a key is made
+	if (typeof permanent !== "boolean") throw TypeError(i18n.getText("player.error.ban.paramTypePermanent", { type: typeof permanent }));
+	if (typeof unbanTime !== "number") throw TypeError(i18n.getText("player.error.ban.paramTypeTime", { type: typeof unbanTime }));
 	
 	if(admin && typeof admin !== "string"){
 		if (!(admin instanceof Player)) throw TypeError(i18n.getText("player.error.mute.adminInstance")); // Re-using mute key

@@ -1,6 +1,6 @@
 import { world, EntityDamageCause } from "@minecraft/server";
 import { CONFIG as config, i18n } from "../config.js";
-import { sendMessageToAdmins, getScore, getPlayerRank, 효율 } from "../util.js"; // Assuming 효율 is used, otherwise remove
+import { sendMessageToAdmins } from "../util.js";
 import { ACModule } from "../classes/module.js";
 import { Vector3Utils } from "../classes/vector3utils.js"; // Ensure this path is correct
 

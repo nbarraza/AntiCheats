@@ -28,7 +28,7 @@ newCommand({
 
         const targetName = args[1];
 
-        const gbanListString = world.getDynamicProperty("safeguard:gbanList");
+        const gbanListString = world.getDynamicProperty("ac:gbanList");
         let gbanList = [];
         if (typeof gbanListString === 'string') {
             try {
@@ -49,7 +49,21 @@ newCommand({
         }
 
         gbanList.push(targetName);
-        world.setDynamicProperty("safeguard:gbanList", JSON.stringify(gbanList));
+        world.setDynamicProperty("ac:gbanList", JSON.stringify(gbanList));
+
+        // Update live global ban lists
+        if (world.dynamicGbanListArray && Array.isArray(world.dynamicGbanListArray)) {
+            if (!world.dynamicGbanListArray.includes(targetName)) { // Ensure no duplicates if logic runs twice
+                world.dynamicGbanListArray.push(targetName);
+            }
+        } else {
+            logDebug("[OfflineBan] world.dynamicGbanListArray not found or not an array. Live list might be out of sync until next load.");
+        }
+        if (world.dynamicGbanNameSet && typeof world.dynamicGbanNameSet.add === 'function') {
+            world.dynamicGbanNameSet.add(targetName);
+        } else {
+            logDebug("[OfflineBan] world.dynamicGbanNameSet not found or not a Set. Live set might be out of sync until next load.");
+        }
 
         player.sendMessage(`§aPlayer ${targetName} has been added to the offline ban list.`);
         logDebug(`[OfflineBan] ${player.name} added ${targetName} to the offline ban list.`);
