@@ -2,7 +2,7 @@ import { world, system } from "@minecraft/server"; // Ensure world and system ar
 import { CONFIG as config, i18n } from "../config.js";
 import { sendMessageToAdmins, getScore, getPlayerRank, 효율, logDebug } from "../util.js"; // Assuming 효율 is still needed, otherwise remove
 import { ACModule } from "../classes/module.js";
-import { seedGlobalBanList } from "../assets/globalBanList.js"; // Assuming this is used or will be used
+import { seedGlobalBanList } from "../assets/global_ban_list.js"; // Assuming this is used or will be used
 import { inMemoryPlayerActivityLogs, MAX_LOG_ENTRIES, initializePlayerState, removePlayerState } from "../systems/periodic_checks.js";
 
 const gamertagRegex = /^[a-zA-Z0-9_ ]{3,16}$/; // Max length 16 for Xbox, 3-24 generally

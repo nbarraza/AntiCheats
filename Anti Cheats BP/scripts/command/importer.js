@@ -39,5 +39,6 @@ import "./src/ui.js"; // Added for the new !ui command
 import "./src/setserverlanguage.js";
 import "./src/mylanguage.js";
 import "./src/commands/owner.js";
+import "./src/panel.js"; // Added for the new !panel command
 
 import "../command/src/report";

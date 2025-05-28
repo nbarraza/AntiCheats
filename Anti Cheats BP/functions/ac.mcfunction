@@ -27,3 +27,4 @@ execute as @s[scores={ac:setup_success=2}] run scoreboard players set @s ac:setu
 tellraw @s[scores={ac:setup_success=0..1}] {"rawtext":[{"text":"§6[§eAnti Cheats§6]§r§c§l "},{"text":"SETUP ERROR: §r§4Experiments Required, turn on §7Beta APIs§r"}]}
 
 playsound random.anvil_land @s[scores={ac:setup_success=0..1}]
+
