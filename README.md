@@ -29,11 +29,28 @@ This addon for Minecraft Bedrock Edition helps server admins by providing anti-c
 
 ## Installation
 
-1.  **Download:** Get the `.mcaddon` file.
-2.  **Import:** Import the `.mcaddon` into Minecraft (usually by opening the file or through game settings).
-3.  **Apply to World:**
-    *   In a new or existing world, go to "Behavior Packs" and activate "Anti Cheats BP". The "Anti Cheats RP" (Resource Pack) should apply automatically.
-    *   **Enable "Beta APIs"** in your world settings. This is required.
+1.  **Download the Addon Files:**
+    *   **Option 1: `.mcaddon` file (Recommended for most users)**
+        *   Download the `AC.<version>.mcaddon` file (e.g., `AC.v1.2.3.mcaddon`) from the project's releases page. This single file bundles both the Behavior Pack and Resource Pack.
+    *   **Option 2: Separate `.mcpack` files**
+        *   Alternatively, you can download the individual pack files from the project's releases page:
+            *   `AC BPv<version>.mcpack` (Behavior Pack)
+            *   `AC RPv<version>.mcpack` (Resource Pack)
+        *   This method is for users who prefer to install or manage the packs separately.
+
+2.  **Import into Minecraft:**
+    *   **If using the `.mcaddon` file:**
+        *   Open the `.mcaddon` file (e.g., by double-clicking it). Minecraft should launch and import both the Behavior and Resource packs automatically.
+    *   **If using separate `.mcpack` files:**
+        *   Open the `AC BPv<version>.mcpack` file. Minecraft should launch and import the Behavior Pack.
+        *   Then, open the `AC RPv<version>.mcpack` file. Minecraft should launch and import the Resource Pack.
+        *   You may need to do this one at a time.
+
+3.  **Apply to Your World:**
+    *   Create a new world or edit an existing one.
+    *   Go to **Behavior Packs** under "Add-Ons". Find "Anti Cheats BP" in the "Available" packs and activate it.
+    *   Go to **Resource Packs**. "Anti Cheats RP" should be automatically activated in the "Active" packs list. If not, find it in "Available" and activate it.
+    *   **Crucially, enable "Beta APIs"** in your world's "Game" settings (under "Experiments"). This addon requires Beta APIs to function correctly.
 
 ## Configuration
 
