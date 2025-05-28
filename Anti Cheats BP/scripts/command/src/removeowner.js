@@ -1,3 +1,5 @@
+import { world } from "@minecraft/server";
+import { logDebug } from '../../assets/util.js'; // Adjusted path
 import { newCommand } from '../handle';
 
 newCommand({
@@ -16,10 +18,10 @@ newCommand({
     run: (data) => {
         try {
             const { player } = data;
-            player.setDynamicProperty("safeguard:ownerStatus",false); // API Call
-            player.sendMessage(`§6[§eSafeGuard§6]§f Your owner status was removed.`); // API Call
+            world.setDynamicProperty("ac:ownerPlayerName", ""); // API Call, changed to world and new key
+            player.sendMessage(`§6[§eAnti Cheats§6]§f Your owner status was removed.`); // API Call, updated prefix for consistency
         } catch (e) {
-            logDebug("[SafeGuard ERROR][removeowner]", e, e.stack);
+            logDebug("[AntiCheats ERROR][removeowner]", e, e.stack); // Updated prefix for consistency
             if (data && data.player) {
                 try {
                     data.player.sendMessage("§cAn error occurred while trying to remove owner status. Please check the console.");
