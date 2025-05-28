@@ -1,5 +1,5 @@
 import { system, world } from '@minecraft/server';
-import { newCommand } from '../handle';
+import { newCommand } from '../handle.js';
 import { i18n } from '../../assets/i18n.js';
 import { logDebug } from '../../assets/util.js';
 

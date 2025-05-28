@@ -1,5 +1,5 @@
-import { addPlayerToUnbanQueue, getPlayerByName } from '../../assets/util';
-import { newCommand } from '../handle';
+import { addPlayerToUnbanQueue, getPlayerByName } from '../../assets/util.js';
+import { newCommand } from '../handle.js';
 import { i18n } from '../../assets/i18n.js';
 
 newCommand({

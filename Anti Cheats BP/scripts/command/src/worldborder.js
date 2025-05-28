@@ -1,6 +1,6 @@
 import { scoreboardAction, sendMessageToAllAdmins, logDebug } from '../../assets/util.js'; // Added logDebug
-import config from '../../config';
-import { newCommand } from '../handle';
+import config from '../../config.js';
+import { newCommand } from '../handle.js';
 import { i18n } from '../../assets/i18n.js'; // Added i18n
 import * as Minecraft from "@minecraft/server";
 

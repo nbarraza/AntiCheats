@@ -1,7 +1,7 @@
-import { newCommand } from '../handle';
-import { i18n } from '../../assets/i18n';
-import { CONFIG as config } from '../../config'; // For command prefix
-import { logDebug } from '../../assets/util';
+import { newCommand } from '../handle.js';
+import { i18n } from '../../assets/i18n.js';
+import { CONFIG as config } from '../../config.js'; // For command prefix
+import { logDebug } from '../../assets/util.js';
 
 newCommand({
     name: "mylanguage",

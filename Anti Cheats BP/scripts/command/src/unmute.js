@@ -1,5 +1,5 @@
-import { getPlayerByName, logDebug, sendMessageToAllAdmins } from '../../assets/util';
-import { newCommand } from '../handle';
+import { getPlayerByName, logDebug, sendMessageToAllAdmins } from '../../assets/util.js';
+import { newCommand } from '../handle.js';
 import { i18n } from '../../assets/i18n.js';
 
 newCommand({

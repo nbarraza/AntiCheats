@@ -1,7 +1,7 @@
-import { newCommand } from '../handle';
-import { i18n } from '../../assets/i18n'; // Adjusted path to i18n
-import { CONFIG as config } from '../../config'; // For accessing command prefix for usage example
-import { logDebug } from '../../assets/util';
+import { newCommand } from '../handle.js';
+import { i18n } from '../../assets/i18n.js'; // Adjusted path to i18n
+import { CONFIG as config } from '../../config.js'; // For accessing command prefix for usage example
+import { logDebug } from '../../assets/util.js';
 
 newCommand({
     name: "setserverlanguage",
