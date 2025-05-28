@@ -61,7 +61,8 @@ export default {
         //if only owner status players can edit modules
         "ownerOnlySettings": true,
         "ownerPlayerNameManual": "", // Manually set the owner's exact name here. If set, this player becomes owner on first load if no owner is already designated.
-        "defaultLanguage": "en_US"
+        "defaultLanguage": "en_US",
+        "admin_panel_item_id": "safeguard:admin_panel" // ID for the item that opens the admin panel
     },
     "combat": {
         "autoclicker":{
@@ -269,6 +270,23 @@ export default {
             "minTime": 1500,
             //if a message starts with this word/symbol/letter or whatever you enter it won't be flagged for spam
             "whitelistedPrefixes": ["!"]
+        }
+    },
+    "uiSettings": {
+        "welcomeMessage": "Welcome to our server!",
+        "serverIP": "play.example.com",
+        "serverPort": "19132",
+        "customLinkURL": "https://discord.gg/example",
+        "customLinkTitle": "Discord",
+        "rules": "1. Be respectful.\\n2. No cheating.\\n3. Have fun!",
+        "featuresEnabled": {
+            "playerList": true,
+            "serverInfo": true,
+            "personalInfo": true,
+            "rulesButton": true,
+            "customLinkButton": true,
+            "systemInformationButton": true,
+            "reportPlayerButton": true
         }
     },
     "aliases": {

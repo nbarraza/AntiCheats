@@ -5,7 +5,7 @@ import * as Minecraft from '@minecraft/server'; // For types like Player, GameMo
 import * as config from "./config.js"; // Assuming this is still CONFIG.default structure
 import { i18n } from './assets/i18n.js';
 import { logDebug, sendMessageToAllAdmins } from "./assets/util.js"; // Selected utils, others are in their modules
-// import { globalBanList as seedGlobalBanList } from './assets/globalBanList.js'; // Moved to player_event_handlers
+// import { globalBanList as seedGlobalBanList } from './assets/global_ban_list.js'; // Moved to player_event_handlers
 // import { commandHandler } from './command/handle.js'; // Moved to chat_manager
 import "./command/importer.js"; // Still needed for command registration?
 import "./slash_commands.js"; // Still needed for slash command registration?

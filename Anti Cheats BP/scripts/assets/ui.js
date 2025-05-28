@@ -3,7 +3,8 @@ import { ActionFormData, MessageFormData, ModalFormData } from '@minecraft/serve
 import { addPlayerToUnbanQueue, copyInv, getPlayerByName, invsee, logDebug, millisecondTime, sendMessageToAllAdmins } from './util.js';
 import { ModuleStatusManager } from '../classes/module.js';
 import * as config from "../config.js";
-import { reportPlayerInternal } from '../command/src/report.js'; // Added for player reporting
+// import { reportPlayerInternal } from '../command/src/report.js'; // No longer needed here, submitReport will be used
+import { submitReport } from '../systems/report_system.js';      // For submitting player reports
 import { i18n } from './i18n.js'; // Added for localization
 
 const world = Minecraft.world;
@@ -1372,37 +1373,460 @@ async function handlePublicReportPlayer(reporter, previousForm) {
  * @returns {Promise<void>} A promise that resolves when the form handling is complete.
  * @throws {Error} If an error occurs while trying to display the form or handle its selection.
  */
-export async function showPublicInfoPanel(player) {
+export async function showPlayerList(player) {
     const form = new ActionFormData();
-    form.title("§l§3Public Information Panel");
-    form.body("Select an option:");
+    form.title("Online Players");
 
-    form.button("§eSystem Information", "textures/ui/icon_resource_pack.png"); 
-    form.button("§cReport Player", "textures/ui/icon_alert.png");         
-    
+    const allPlayers = world.getAllPlayers();
+    const owners = [];
+    const admins = [];
+    const normalPlayers = [];
+
+    for (const p of allPlayers) {
+        if (p.isOwner()) {
+            owners.push(p);
+        } else if (p.hasAdmin()) {
+            admins.push(p);
+        } else {
+            normalPlayers.push(p);
+        }
+    }
+
+    const playerButtons = []; // To keep track of player buttons vs section/back buttons
+
+    // Owners Section
+    form.button("§6--- Owners ---");
+    playerButtons.push({ type: "header" });
+    if (owners.length > 0) {
+        owners.forEach(p => {
+            form.button(`§6${p.name}`);
+            playerButtons.push({ type: "player", name: p.name });
+        });
+    } else {
+        form.button("§7None");
+        playerButtons.push({ type: "none" });
+    }
+
+    // Admins Section
+    form.button("§9--- Admins ---");
+    playerButtons.push({ type: "header" });
+    if (admins.length > 0) {
+        admins.forEach(p => {
+            form.button(`§9${p.name}`);
+            playerButtons.push({ type: "player", name: p.name });
+        });
+    } else {
+        form.button("§7None");
+        playerButtons.push({ type: "none" });
+    }
+
+    // Normal Players Section
+    form.button("§f--- Normal Players ---");
+    playerButtons.push({ type: "header" });
+    if (normalPlayers.length > 0) {
+        normalPlayers.forEach(p => {
+            form.button(`§f${p.name}`);
+            playerButtons.push({ type: "player", name: p.name });
+        });
+    } else {
+        form.button("§7None");
+        playerButtons.push({ type: "none" });
+    }
+
+    form.button("§cBack to Main Menu"); // Back button
+
     try {
         const response = await form.show(player);
+        if (response.canceled) {
+            logDebug(`[UI] PlayerList cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
+            return; // Or showPublicInfoPanel(player) if direct return to menu on escape is desired
+        }
 
-        if (response.cancelationReason) {
-            logDebug(`[UI] PublicInfoPanel cancelled by ${player.name}. Reason: ${response.cancelationReason}`);
+        // Check if the last button ("Back to Main Menu") was pressed
+        if (response.selection === playerButtons.length) { // playerButtons.length will be the index of the "Back" button
+            showPublicInfoPanel(player); // Go back to the main menu
+        }
+        // Player name buttons do nothing for now when clicked
+    } catch (e) {
+        logDebug(`[UI Error][showPlayerList] Error for ${player.name}: ${e} ${e.stack}`);
+        if (player && typeof player.sendMessage === 'function') {
+            player.sendMessage("§cAn error occurred while trying to display the player list. Please try again later.");
+        }
+    }
+}
+
+export async function showPublicInfoPanel(player) {
+    // Requirement 1: Import Config (config is already imported at the top of the file as `import * as config from "../config.js";`)
+    const uiSettings = config.default.uiSettings;
+    const featuresEnabled = uiSettings.featuresEnabled;
+
+    // Requirement 2: Use ActionFormData
+    const form = new ActionFormData();
+
+    // Requirement 3: Set Title
+    form.title(uiSettings.welcomeMessage || "Info Panel"); // Use welcome message as title, or fallback
+
+    // Requirement 4: Add Buttons Conditionally
+    const buttonActions = []; // To map selection to action
+
+    if (featuresEnabled.playerList) {
+        form.button("Online Players");
+        buttonActions.push({ text: "Online Players", action: () => showPlayerList(player) }); // Modified Action
+    }
+    if (featuresEnabled.serverInfo) {
+        form.button("Server Info");
+        buttonActions.push({ text: "Server Info", action: () => showServerInfo(player) }); // Modified Action
+    }
+    if (featuresEnabled.personalInfo) {
+        form.button("My Info");
+        buttonActions.push({ text: "My Info", action: () => showMyInfo(player) }); // Modified Action
+    }
+    if (featuresEnabled.rulesButton) {
+        form.button("Rules");
+        buttonActions.push({ text: "Rules", action: () => showRules(player) }); // Modified Action
+    }
+    if (featuresEnabled.customLinkButton) {
+        form.button(uiSettings.customLinkTitle || "Custom Link");
+        buttonActions.push({ text: uiSettings.customLinkTitle || "Custom Link", action: () => showCustomLink(player) }); // Modified Action
+    }
+    // Keep the old buttons if their features are enabled, as per the config structure
+    if (featuresEnabled.systemInformationButton) {
+        form.button("System Information"); 
+        buttonActions.push({ text: "System Information", action: () => showSystemInfo(player) }); // Modified Action
+    }
+    if (featuresEnabled.reportPlayerButton) {
+        form.button("Report Player"); 
+        buttonActions.push({ text: "Report Player", action: () => showReportPlayerForm(player) }); // Modified Action
+    }
+    
+    try {
+        // Requirement 5: Handle Button Actions
+        const response = await form.show(player);
+
+        if (response.canceled) {
+            logDebug(`[UI] PublicInfoPanel cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
             return;
         }
 
-        switch (response.selection) {
-            case 0: 
-                showPublicSystemInfo(player, showPublicInfoPanel);
-                break;
-            case 1: 
-                handlePublicReportPlayer(player, showPublicInfoPanel);
-                break;
-            default:
-                logDebug(`[UI Error][showPublicInfoPanel] Unexpected selection: ${response.selection} by ${player.name}`);
-                break;
+        if (response.selection !== undefined && buttonActions[response.selection]) {
+            buttonActions[response.selection].action();
+        } else if (response.selection !== undefined) {
+            logDebug(`[UI Error][showPublicInfoPanel] Unexpected selection: ${response.selection} by ${player.name}. No action mapped.`);
+            player.sendMessage("§cAn error occurred: Invalid selection.");
         }
+
     } catch (e) {
         logDebug(`[UI Error][showPublicInfoPanel] Error for ${player.name}: ${e} ${e.stack}`);
         if (player && typeof player.sendMessage === 'function') {
 			player.sendMessage("§cAn error occurred while trying to display the information panel. Please try again later.");
+        }
+    }
+}
+
+async function showSystemInfo(player) {
+    const form = new MessageFormData();
+    form.title("System Information");
+
+    const uiSettings = config.default.uiSettings;
+    const serverIP = uiSettings.serverIP || "Not Set";
+    const serverPort = uiSettings.serverPort || "Not Set";
+    
+    let ownerName = "Not Claimed";
+    try {
+        const ownerDynamicProp = world.getDynamicProperty("ac:ownerPlayerName");
+        if (typeof ownerDynamicProp === 'string' && ownerDynamicProp.trim() !== '') {
+            ownerName = ownerDynamicProp;
+        }
+    } catch (e) {
+        logDebug("[UI Error][showSystemInfo] Could not read ac:ownerPlayerName dynamic property.", e);
+    }
+
+    const defaultGameMode = world.gameMode || "Unknown";
+
+    let bodyText = `§lServer IP:§r ${serverIP}\n`;
+    bodyText += `§lServer Port:§r ${serverPort}\n\n`;
+    bodyText += `§lWorld Owner:§r ${ownerName}\n`;
+    bodyText += `§lDefault Gamemode:§r ${defaultGameMode}`;
+
+    form.body(bodyText);
+    form.button1("Refresh");          // Button to refresh
+    form.button2("Back to Main Menu"); // Button to go back
+
+    try {
+        const response = await form.show(player);
+        if (response.canceled) {
+            logDebug(`[UI] SystemInfo cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
+            return;
+        }
+
+        if (response.selection === 0) { // Refresh
+            showSystemInfo(player);
+        } else if (response.selection === 1) { // Back to Main Menu
+            showPublicInfoPanel(player);
+        }
+    } catch (e) {
+        logDebug(`[UI Error][showSystemInfo] Error for ${player.name}: ${e} ${e.stack}`);
+        if (player && typeof player.sendMessage === 'function') {
+            player.sendMessage("§cAn error occurred while trying to display system information.");
+        }
+    }
+}
+
+async function showReportPlayerForm(player) {
+    const form = new ModalFormData();
+    form.title("Report a Player");
+
+    const onlinePlayers = [...world.getPlayers()].filter(p => p.id !== player.id); // Exclude self
+    const playerNamesArray = ["--- Type Name Manually ---", ...onlinePlayers.map(p => p.name)];
+
+    form.dropdown("Select Online Player (or type manually):", playerNamesArray, 0); // Default to "Type Name Manually"
+    form.textField("Reported Player Name (if not in list/offline):", "Enter exact player name");
+    form.textArea("Reason for Report (be specific):", "Provide details of the incident...");
+
+    try {
+        const response = await form.show(player);
+
+        if (response.canceled) {
+            logDebug(`[UI] ReportPlayerForm cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
+            showPublicInfoPanel(player); // Go back to main menu if cancelled
+            return;
+        }
+
+        const [selectedPlayerIndex, manualName, reason] = response.formValues;
+        let reportedPlayerName = "";
+
+        if (selectedPlayerIndex > 0) { // Index 0 is "--- Type Name Manually ---"
+            // Ensure onlinePlayers array is not empty and index is valid
+            if(onlinePlayers.length > 0 && (selectedPlayerIndex -1) < onlinePlayers.length) {
+                reportedPlayerName = onlinePlayers[selectedPlayerIndex - 1].name;
+            } else {
+                 // This case should ideally not happen if dropdown is populated correctly
+                logDebug(`[UI Error][showReportPlayerForm] Invalid selectedPlayerIndex: ${selectedPlayerIndex} when onlinePlayers length is ${onlinePlayers.length}`);
+                player.sendMessage("§cError: Invalid player selection from dropdown.");
+                showReportPlayerForm(player); // Re-show form
+                return;
+            }
+        } else {
+            reportedPlayerName = manualName.trim();
+        }
+
+        if (!reportedPlayerName) {
+            player.sendMessage("§cError: You must select an online player or manually type a player's name.");
+            showReportPlayerForm(player); // Re-show form
+            return;
+        }
+
+        if (!reason || reason.trim().length === 0) {
+            player.sendMessage("§cError: A reason is required to submit a report.");
+            showReportPlayerForm(player); // Re-show form
+            return;
+        }
+        
+        // Prevent reporting self
+        if (reportedPlayerName === player.name) {
+            player.sendMessage("§cYou cannot report yourself.");
+            showReportPlayerForm(player); // Re-show form
+            return;
+        }
+
+        const success = await submitReport(player, reportedPlayerName, reason);
+
+        if (success) {
+            player.sendMessage("§aReport submitted successfully. Thank you for your contribution.");
+        } else {
+            player.sendMessage("§cFailed to submit report. Please try again or contact an admin.");
+        }
+        showPublicInfoPanel(player); // Navigate back to main menu
+
+    } catch (e) {
+        logDebug(`[UI Error][showReportPlayerForm] Error for ${player.name}: ${e} ${e.stack}`);
+        if (player && typeof player.sendMessage === 'function') {
+            player.sendMessage("§cAn error occurred while processing your report. Please try again.");
+        }
+        // Ensure navigation back even on error, if possible, or just log.
+        // Depending on error severity, showPublicInfoPanel might not be callable.
+        // For simplicity, we'll try. If it fails, error is already logged.
+        try {
+            showPublicInfoPanel(player);
+        } catch (navError) {
+            logDebug(`[UI Error][showReportPlayerForm] Error navigating back to main panel after another error: ${navError}`);
+        }
+    }
+}
+
+async function showCustomLink(player) {
+    const form = new MessageFormData();
+    const uiSettings = config.default.uiSettings;
+    const linkTitle = uiSettings.customLinkTitle || "Our Link";
+    const linkURL = uiSettings.customLinkURL || "No URL configured.";
+
+    form.title(linkTitle);
+    form.body(`You can find our ${linkTitle} at the following address (you may need to copy and paste):\n\n${linkURL}`);
+
+    form.button1("Back to Main Menu"); // Button to go back
+    form.button2("Close");             // Button to just close the dialog
+
+    try {
+        const response = await form.show(player);
+        if (response.canceled) {
+            logDebug(`[UI] CustomLink cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
+            return;
+        }
+
+        if (response.selection === 0) { // Back to Main Menu
+            showPublicInfoPanel(player);
+        }
+        // If selection is 1 (Close), do nothing, form closes.
+    } catch (e) {
+        logDebug(`[UI Error][showCustomLink] Error for ${player.name}: ${e} ${e.stack}`);
+        if (player && typeof player.sendMessage === 'function') {
+            player.sendMessage(`§cAn error occurred while trying to display the ${linkTitle}.`);
+        }
+    }
+}
+
+async function showRules(player) {
+    const form = new MessageFormData();
+    form.title("Server Rules");
+
+    const uiSettings = config.default.uiSettings;
+    const rules = uiSettings.rules || "No rules defined."; // Fallback if rules are not set
+
+    form.body(rules.replace(/\\n/g, '\n')); // Replace escaped newlines with actual newlines for display
+
+    form.button1("Back to Main Menu"); // Button to go back
+    form.button2("Close");             // Button to just close the dialog
+
+    try {
+        const response = await form.show(player);
+        if (response.canceled) {
+            // If form is cancelled (e.g. escape key), it often behaves like pressing the first available button or a default close.
+            // For consistency, we can choose to go back to main menu or do nothing.
+            // Going back to main menu is a common UX pattern for cancellation here.
+            logDebug(`[UI] Rules cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
+            // Depending on desired behavior, could call showPublicInfoPanel(player) here too.
+            // For now, let cancellation be just closing.
+            return;
+        }
+
+        if (response.selection === 0) { // Back to Main Menu
+            showPublicInfoPanel(player);
+        }
+        // If selection is 1 (Close), do nothing, form closes.
+    } catch (e) {
+        logDebug(`[UI Error][showRules] Error for ${player.name}: ${e} ${e.stack}`);
+        if (player && typeof player.sendMessage === 'function') {
+            player.sendMessage("§cAn error occurred while trying to display the server rules.");
+        }
+    }
+}
+
+async function showMyInfo(player) {
+    const form = new MessageFormData();
+    form.title("My Information");
+
+    let role = "Normal";
+    if (player.isOwner()) {
+        role = "Owner";
+    } else if (player.hasAdmin()) {
+        role = "Admin";
+    }
+
+    const location = player.location;
+    const coords = `X: ${Math.floor(location.x)}, Y: ${Math.floor(location.y)}, Z: ${Math.floor(location.z)}`;
+
+    let gameModeName = "Unknown";
+    try {
+        // Attempt to get gamemode using matches. Player.getGameMode() is not standard in @minecraft/server.
+        if (player.matches({ gameMode: Minecraft.GameMode.survival })) gameModeName = "Survival";
+        else if (player.matches({ gameMode: Minecraft.GameMode.creative })) gameModeName = "Creative";
+        else if (player.matches({ gameMode: Minecraft.GameMode.adventure })) gameModeName = "Adventure";
+        else if (player.matches({ gameMode: Minecraft.GameMode.spectator })) gameModeName = "Spectator";
+        // Note: Minecraft.GameMode.spectator might not always work with `matches` depending on API version/implementation details.
+        // A more robust way if available would be player.getGameMode() but that's often from @minecraft/server-gametest
+    } catch (e) {
+        logDebug(`[UI Error][showMyInfo] Error getting gamemode for ${player.name}: ${e}`);
+        // gameModeName remains "Unknown"
+    }
+
+
+    const dimension = player.dimension.id;
+
+    let bodyText = `§lName:§r ${player.name}\n`;
+    bodyText += `§lRole:§r ${role}\n`;
+    bodyText += `§lGamemode:§r ${gameModeName}\n`;
+    bodyText += `§lCoordinates:§r ${coords}\n`;
+    bodyText += `§lDimension:§r ${dimension}`;
+
+    form.body(bodyText);
+    form.button1("Refresh");         // Button for refreshing the info
+    form.button2("Back to Main Menu"); // Button to go back
+
+    try {
+        const response = await form.show(player);
+        if (response.canceled) {
+            logDebug(`[UI] MyInfo cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
+            return; 
+        }
+
+        if (response.selection === 0) { // Refresh
+            showMyInfo(player);
+        } else if (response.selection === 1) { // Back to Main Menu
+            showPublicInfoPanel(player);
+        }
+    } catch (e) {
+        logDebug(`[UI Error][showMyInfo] Error for ${player.name}: ${e} ${e.stack}`);
+        if (player && typeof player.sendMessage === 'function') {
+            player.sendMessage("§cAn error occurred while trying to display your information.");
+        }
+    }
+}
+
+async function showServerInfo(player) {
+    const form = new MessageFormData();
+    form.title("Server Information");
+
+    const uiSettings = config.default.uiSettings;
+    const welcomeMessage = uiSettings.welcomeMessage || "Welcome!";
+    const currentTimeTicks = world.getTime(); // Gets total world time in ticks
+    // Convert ticks to a more readable format (e.g., Day X, HH:MM)
+    // 24000 ticks = 1 Minecraft day. 1000 ticks = 1 hour. ~16.66 ticks = 1 minute.
+    const ticksPerDay = 24000;
+    const ticksPerHour = 1000;
+    const gameDay = Math.floor(currentTimeTicks / ticksPerDay) + 1; // Day starts at 1
+    const timeWithinDay = currentTimeTicks % ticksPerDay;
+    const gameHour = Math.floor(timeWithinDay / ticksPerHour); // 0-23 hour format
+    const timeWithinHour = timeWithinDay % ticksPerHour;
+    const gameMinute = Math.floor((timeWithinHour / ticksPerHour) * 60); // 0-59 minute format
+
+    const formattedTime = `Day ${gameDay}, ${String(gameHour).padStart(2, '0')}:${String(gameMinute).padStart(2, '0')}`;
+    
+    const onlinePlayers = world.getAllPlayers().length;
+
+    let bodyText = `${welcomeMessage}\n\n`;
+    bodyText += `§lCurrent In-Game Time:§r ${formattedTime} (Ticks: ${currentTimeTicks})\n`;
+    bodyText += `§lPlayers Online:§r ${onlinePlayers}`;
+
+    form.body(bodyText);
+    form.button1("Refresh"); // Button for refreshing the info
+    form.button2("Back to Main Menu");    // Button to go back
+
+    try {
+        const response = await form.show(player);
+        if (response.canceled) {
+            logDebug(`[UI] ServerInfo cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
+            return; 
+        }
+
+        if (response.selection === 0) { // Refresh
+            showServerInfo(player);
+        } else if (response.selection === 1) { // Back to Main Menu
+            showPublicInfoPanel(player);
+        }
+    } catch (e) {
+        logDebug(`[UI Error][showServerInfo] Error for ${player.name}: ${e} ${e.stack}`);
+        if (player && typeof player.sendMessage === 'function') {
+            player.sendMessage("§cAn error occurred while trying to display server information.");
 		}
 	}
 }
