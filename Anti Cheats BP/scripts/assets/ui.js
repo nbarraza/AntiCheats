@@ -1,7 +1,7 @@
 import * as Minecraft from '@minecraft/server';
 import { ActionFormData, MessageFormData, ModalFormData } from '@minecraft/server-ui';
 import { addPlayerToUnbanQueue, copyInv, getPlayerByName, invsee, logDebug, millisecondTime, sendMessageToAllAdmins } from './util.js';
-import { ACModule } from '../classes/module.js';
+import { ModuleStatusManager } from '../classes/module.js';
 import * as config from "../config.js";
 import { reportPlayerInternal } from '../command/src/report.js'; // Added for player reporting
 import { i18n } from './i18n.js'; // Added for localization
@@ -1422,10 +1422,10 @@ function moduleSettingsForm(player, previousForm){
 	let settingsModalForm = new ModalFormData() 
 		.title("§l§7Module Settings") 
 	
-	const validModules = ACModule.getValidModules();
+	const validModules = ModuleStatusManager.getValidModules();
 	for (let i = 0; i < validModules.length; i++) {
 		const setting = validModules[i];
-		const isSettingEnabled = ACModule.getModuleStatus(setting);
+		const isSettingEnabled = ModuleStatusManager.getModuleStatus(setting);
 		settingsModalForm.toggle(setting, { defaultValue: isSettingEnabled }); 
 	}
 
@@ -1436,11 +1436,11 @@ function moduleSettingsForm(player, previousForm){
 
 		for (let i = 0; i < validModules.length; i++) {
 			const setting = validModules[i];
-			const isSettingEnabled = ACModule.getModuleStatus(setting)
+			const isSettingEnabled = ModuleStatusManager.getModuleStatus(setting)
 			const shouldEnableSetting = formData.formValues[i];
 
 			if (isSettingEnabled !== shouldEnableSetting) {
-				ACModule.toggleModule(setting);
+				ModuleStatusManager.toggleModule(setting);
 				sendMessageToAllAdmins(`§6[§eAnti Cheats Notify§6]§f ${player.name}§f turned ${shouldEnableSetting ? "on" : "off"} §e${setting}§f!`,true);
 			}
 		}

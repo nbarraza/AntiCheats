@@ -9,7 +9,7 @@ import { logDebug, sendMessageToAllAdmins } from "./assets/util.js"; // Selected
 // import { commandHandler } from './command/handle.js'; // Moved to chat_manager
 import "./command/importer.js"; // Still needed for command registration?
 import "./slash_commands.js"; // Still needed for slash command registration?
-import { ACModule } from './classes/module.js';
+import { ModuleStatusManager } from './classes/module.js';
 // import { Vector3utils } from './classes/vector3.js'; // Moved to periodic_checks or other relevant modules
 
 import "./classes/player.js"; // Player prototype extensions
