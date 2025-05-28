@@ -1,6 +1,6 @@
 import { world, system, Player, EffectType, EntityDamageCause, GameMode } from "@minecraft/server";
 import { CONFIG as config, i18n } from "../config.js";
-import { sendMessageToAdmins, getScore, getPlayerRank, 효율, isAdmin, saveLogToFile, LOG_FILE_PREFIX } from "../util.js";
+import { sendMessageToAdmins, saveLogToFile, LOG_FILE_PREFIX } from "../util.js";
 import { logDebug } from "../assets/util.js"; // Assuming logDebug is in util.js or assets/util.js
 
 // Define the playerInternalStates Map
@@ -173,7 +173,7 @@ if (config.enable_log_saving) {
 if (ACModule.isActive("vanish")) {
     system.runInterval(() => {
         for (const player of world.getAllPlayers()) {
-            if (player.hasTag("vanished") && isAdmin(player)) {
+            if (player.hasTag("vanished") && player.hasAdmin()) {
                 player.onScreenDisplay.setActionBar(i18n("system.vanish_reminder"));
             }
         }

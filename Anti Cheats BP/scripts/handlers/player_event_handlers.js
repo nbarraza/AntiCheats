@@ -1,7 +1,6 @@
 import { world, system } from "@minecraft/server"; // Ensure world and system are imported
 import { CONFIG as config, i18n } from "../config.js";
 import { sendMessageToAdmins, getScore, getPlayerRank, 효율, logDebug } from "../util.js"; // Assuming 효율 is still needed, otherwise remove
-import { Initialize } from "../initialize.js"; // Corrected path
 import { ACModule } from "../classes/module.js";
 import { seedGlobalBanList } from "../assets/globalBanList.js"; // Assuming this is used or will be used
 import { inMemoryPlayerActivityLogs, MAX_LOG_ENTRIES, initializePlayerState, removePlayerState } from "../systems/periodic_checks.js";
@@ -28,8 +27,6 @@ world.afterEvents.playerJoin.subscribe((eventData) => {
     const currentTick = system.currentTick;
 
     initializePlayerState(playerId, initialLocation, currentTick);
-
-    Initialize(player); // Initialize player-specific settings or checks
 
     addPlayerActivityLog(player, "joined");
 
