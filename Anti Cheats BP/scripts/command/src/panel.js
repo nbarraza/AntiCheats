@@ -1,4 +1,4 @@
-import { newCommand } from "../../handle.js"; // Path relative to src/
+import { newCommand } from "../handle.js"; // Path relative to src/
 import { showAdminPanel } from "../../../forms/admin_panel.js"; // Path relative to src/
 
 newCommand({
