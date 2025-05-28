@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Anti Cheats BP",
+    "description": "Anti Cheats Behaviour Pack V__VERSION_STRING__.",
+    "uuid": "81b13565-181a-42ee-abd9-a7bd3cb2dba4",
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ],
+    "version": "__VERSION_ARRAY__"
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "cd2cd41a-1849-410e-8f0a-5d30fde4bd9a",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "entry": "scripts/index.js",
+      "uuid": "f626740d-50a6-49f1-a24a-834983b72134",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "3.0.0-alpha"
+    },
+    {
+      "module_name": "@minecraft/server-gametest",
+      "version": "2.0.0-alpha"
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": "3.0.0-alpha"
+    },
+    {
+      "uuid": "855e5b34-67fd-40c5-8f70-6d41efaefbd6",
+      "version": "__VERSION_ARRAY__"
+    }
+  ]
+}
