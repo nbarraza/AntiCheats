@@ -1,7 +1,7 @@
 import * as Minecraft from '@minecraft/server';
 import { logDebug, scoreboardAction } from './assets/util';
 import * as config from './config';
-import { globalBanList } from './assets/globalBanList.js'; // Added import
+import { globalBanList } from './assets/global_ban_list.js'; // Added import
 import { i18n } from './assets/i18n.js'; // Import i18n
 import { PACKAGED_LANGUAGE_DATA } from './assets/language_data.js'; // IMPORTED
 
