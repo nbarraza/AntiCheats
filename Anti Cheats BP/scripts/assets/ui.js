@@ -1373,7 +1373,7 @@ async function handlePublicReportPlayer(reporter, previousForm) {
  * @returns {Promise<void>} A promise that resolves when the form handling is complete.
  * @throws {Error} If an error occurs while trying to display the form or handle its selection.
  */
-export async function showPlayerList(player) {
+export async function showPlayerList_Public(player) {
     const form = new ActionFormData();
     form.title("Online Players");
 
@@ -1471,7 +1471,7 @@ export async function showPublicInfoPanel(player) {
 
     if (featuresEnabled.playerList) {
         form.button("Online Players");
-        buttonActions.push({ text: "Online Players", action: () => showPlayerList(player) }); // Modified Action
+        buttonActions.push({ text: "Online Players", action: () => showPlayerList_Public(player) }); // Modified Action
     }
     if (featuresEnabled.serverInfo) {
         form.button("Server Info");

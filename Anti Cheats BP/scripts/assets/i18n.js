@@ -1,5 +1,5 @@
 import { world } from '@minecraft/server';
-import { logDebug } from '../util.js'; // Assuming util.js is in the same directory
+import { logDebug } from './util.js';
 import { CONFIG as config } from '../config.js'; // Added import
 
 const translations = {};
