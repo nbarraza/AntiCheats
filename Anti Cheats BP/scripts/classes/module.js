@@ -1,5 +1,5 @@
 import {world} from "@minecraft/server";
-import { logDebug } from "../assets/util";
+import { logDebug } from "../assets/util.js";
 
 
 /**

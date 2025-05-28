@@ -1,5 +1,5 @@
 import * as Minecraft from "@minecraft/server";
-import * as config from "../config";
+import * as config from "../config.js";
 import { ModuleStatusManager } from "../classes/module.js";
 import { i18n } from './i18n.js'; // Added for localization
 const world = Minecraft.world;

@@ -75,7 +75,47 @@ jobs:
         zip -r "../AC.${{ env.FULL_TAG_NAME }}.mcaddon" ./*
         cd ..
 
-    - name: Upload Release Asset
+    - name: Zip Behavior Pack
+      shell: bash
+      env:
+        FULL_TAG_NAME: ${{ env.FULL_TAG_NAME }}
+      run: |
+        cd staging/"Anti Cheats BP"
+        zip -r "../../AC BP${{ env.FULL_TAG_NAME }}.mcpack" ./*
+        cd ../..
+
+    - name: Upload Behavior Pack Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        FULL_TAG_NAME: ${{ env.FULL_TAG_NAME }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./AC BP${{ env.FULL_TAG_NAME }}.mcpack
+        asset_name: AC BP${{ env.FULL_TAG_NAME }}.mcpack
+        asset_content_type: application/zip
+
+    - name: Zip Resource Pack
+      shell: bash
+      env:
+        FULL_TAG_NAME: ${{ env.FULL_TAG_NAME }}
+      run: |
+        cd staging/"Anti Cheats RP"
+        zip -r "../../AC RP${{ env.FULL_TAG_NAME }}.mcpack" ./*
+        cd ../..
+
+    - name: Upload Resource Pack Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        FULL_TAG_NAME: ${{ env.FULL_TAG_NAME }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./AC RP${{ env.FULL_TAG_NAME }}.mcpack
+        asset_name: AC RP${{ env.FULL_TAG_NAME }}.mcpack
+        asset_content_type: application/zip
+
+    - name: Upload Mcaddon Release Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
