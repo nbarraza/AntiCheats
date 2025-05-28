@@ -1374,35 +1374,62 @@ async function handlePublicReportPlayer(reporter, previousForm) {
  */
 export async function showPublicInfoPanel(player) {
     const form = new ActionFormData();
-    form.title("§l§3Public Information Panel");
-    form.body("Select an option:");
+    form.title("Online Players"); // Requirement 3.c
 
-    form.button("§eSystem Information", "textures/ui/icon_resource_pack.png"); 
-    form.button("§cReport Player", "textures/ui/icon_alert.png");         
+    const allPlayers = world.getAllPlayers(); // Requirement 1
+    const owners = [];
+    const admins = [];
+    const normalPlayers = [];
+
+    for (const p of allPlayers) { // Requirement 2
+        if (p.isOwner()) { // Requirement 2.a
+            owners.push(p);
+        } else if (p.hasAdmin()) { // Requirement 2.b
+            admins.push(p);
+        } else { // Requirement 2.c
+            normalPlayers.push(p);
+        }
+    }
+
+    // Using buttons for section headers and player names as per "buttons for each player... or just text if simpler"
+    // Buttons in ActionFormData will be clickable but will do nothing for now.
+
+    // Owners Section // Requirement 3.d
+    form.button("§6--- Owners ---"); // Section Label
+    if (owners.length > 0) {
+        owners.forEach(p => form.button(`§6${p.name}`));
+    } else {
+        form.button("§7None"); // Requirement 3.e
+    }
+
+    // Admins Section // Requirement 3.d
+    form.button("§9--- Admins ---"); // Section Label
+    if (admins.length > 0) {
+        admins.forEach(p => form.button(`§9${p.name}`));
+    } else {
+        form.button("§7None"); // Requirement 3.e
+    }
+
+    // Normal Players Section // Requirement 3.d
+    form.button("§f--- Normal Players ---"); // Section Label
+    if (normalPlayers.length > 0) {
+        normalPlayers.forEach(p => form.button(`§f${p.name}`));
+    } else {
+        form.button("§7None"); // Requirement 3.e
+    }
     
     try {
-        const response = await form.show(player);
+        // Requirement 4: Display UI
+        // The buttons currently do nothing when clicked, as per the allowance.
+        // To make them functional later, response.selection would be handled.
+        await form.show(player);
+        // No action needed after showing for now.
+        // If a "Back" or "Refresh" button was added, its selection would be handled here.
 
-        if (response.cancelationReason) {
-            logDebug(`[UI] PublicInfoPanel cancelled by ${player.name}. Reason: ${response.cancelationReason}`);
-            return;
-        }
-
-        switch (response.selection) {
-            case 0: 
-                showPublicSystemInfo(player, showPublicInfoPanel);
-                break;
-            case 1: 
-                handlePublicReportPlayer(player, showPublicInfoPanel);
-                break;
-            default:
-                logDebug(`[UI Error][showPublicInfoPanel] Unexpected selection: ${response.selection} by ${player.name}`);
-                break;
-        }
     } catch (e) {
         logDebug(`[UI Error][showPublicInfoPanel] Error for ${player.name}: ${e} ${e.stack}`);
         if (player && typeof player.sendMessage === 'function') {
-			player.sendMessage("§cAn error occurred while trying to display the information panel. Please try again later.");
+			player.sendMessage("§cAn error occurred while trying to display the player list. Please try again later.");
 		}
 	}
 }
