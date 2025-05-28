@@ -1,6 +1,6 @@
 import { world } from "@minecraft/server";
 import { logDebug } from '../../assets/util.js'; // Adjusted path
-import { newCommand } from '../handle';
+import { newCommand } from '../handle.js';
 
 newCommand({
     name:"removeowner",

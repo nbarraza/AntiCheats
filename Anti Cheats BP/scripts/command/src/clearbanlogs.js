@@ -1,5 +1,5 @@
 import { world } from '@minecraft/server';
-import { newCommand } from '../handle';
+import { newCommand } from '../handle.js';
 
 newCommand({
     name:"clearbanlogs",

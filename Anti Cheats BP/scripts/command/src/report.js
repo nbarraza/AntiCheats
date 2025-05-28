@@ -1,6 +1,6 @@
-import { getPlayerByName, logDebug, sendMessageToAllAdmins } from '../../assets/util';
-import {newCommand} from '../handle';
-import * as config from "../../config";
+import { getPlayerByName, logDebug, sendMessageToAllAdmins } from '../../assets/util.js';
+import {newCommand} from '../handle.js';
+import * as config from "../../config.js";
 import { world } from '@minecraft/server';
 
 newCommand({

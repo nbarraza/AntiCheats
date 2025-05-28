@@ -1,5 +1,5 @@
-import { newCommand } from '../handle';
-import { getPlayerByName, invsee, sendMessageToAllAdmins } from '../../assets/util';
+import { newCommand } from '../handle.js';
+import { getPlayerByName, invsee, sendMessageToAllAdmins } from '../../assets/util.js';
 import { i18n } from '../../assets/i18n.js';
 
 newCommand({

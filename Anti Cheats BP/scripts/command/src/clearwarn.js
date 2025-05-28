@@ -1,5 +1,5 @@
-import { newCommand } from '../handle';
-import { getPlayerByName,sendMessageToAllAdmins } from '../../assets/util';
+import { newCommand } from '../handle.js';
+import { getPlayerByName,sendMessageToAllAdmins } from '../../assets/util.js';
 
 newCommand({
     name: "clearwarn",

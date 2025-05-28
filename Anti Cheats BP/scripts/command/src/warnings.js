@@ -1,6 +1,6 @@
-import { newCommand } from '../handle';
-import { getPlayerByName, logDebug } from '../../assets/util';
-import { ACModule } from '../../classes/module';
+import { newCommand } from '../handle.js';
+import { getPlayerByName, logDebug } from '../../assets/util.js';
+import { ACModule } from '../../classes/module.js';
 
 newCommand({
     name: "warnings",

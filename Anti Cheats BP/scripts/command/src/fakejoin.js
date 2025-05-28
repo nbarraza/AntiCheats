@@ -1,4 +1,4 @@
-import { newCommand } from '../handle';
+import { newCommand } from '../handle.js';
 import { sendMessageToAllAdmins, logDebug } from "../../assets/util.js"; // Added logDebug
 import { world } from '@minecraft/server';
 import { i18n } from '../../assets/i18n.js'; // Added i18n
