@@ -1,5 +1,5 @@
 import {world} from "@minecraft/server";
-import { logDebug } from "../assets/util.js";
+// import { logDebug } from "../assets/util.js";
 
 
 /**
@@ -88,7 +88,7 @@ class ModuleStatusManagerInternal { // Renamed from ACModuleInternal
     
         world.setDynamicProperty(`ac:${moduleID}`,!currentModuleState);
     
-        logDebug(`[Anti Cheats] Toggled ${moduleID} to ${!currentModuleState}`);
+        // logDebug(`[Anti Cheats] Toggled ${moduleID} to ${!currentModuleState}`);
     }
     /**
      * Returns an array of all valid human-readable module names.
