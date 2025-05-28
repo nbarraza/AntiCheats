@@ -3,7 +3,7 @@
   "header": {
     "name": "Anti Cheats RP",
     "description": "Anti Cheats Resource Pack V__VERSION_STRING__.",
-    "uuid": "855e5b34-67fd-40c5-8f70-6d41efaefbd6",
+    "uuid": "9dca0c93-f6ec-4701-a74c-a774600640a4",
     "version": "__VERSION_ARRAY__",
     "min_engine_version": [
       1,
@@ -14,7 +14,7 @@
   "modules": [
     {
       "type": "resources",
-      "uuid": "2370fd7e-6d84-4871-b740-fd5e84a7059a",
+      "uuid": "da4ec34d-3a7a-4b10-bd5d-909810558a51",
       "version": [
         1,
         0,
@@ -24,7 +24,7 @@
   ],
   "dependencies": [
     {
-      "uuid": "81b13565-181a-42ee-abd9-a7bd3cb2dba4",
+      "uuid": "1564bfa3-6796-4b67-826a-03ca1ac2f3c1",
       "version": "__VERSION_ARRAY__"
     }
   ]
