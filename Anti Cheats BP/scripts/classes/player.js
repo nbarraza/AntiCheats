@@ -1,5 +1,5 @@
 import { Player, world, InputPermissionCategory } from "@minecraft/server";
-import { formatMilliseconds, generateBanLog, logDebug, sendMessageToAllAdmins, getPlayerByName } from "../assets/util";
+// import { formatMilliseconds, generateBanLog, logDebug, sendMessageToAllAdmins, getPlayerByName } from "../assets/util.js";
 import { ACModule } from "./module";
 import { i18n } from '../assets/i18n.js';
 
@@ -41,7 +41,7 @@ Player.prototype.getWarnings = function(){
 		const warnings = JSON.parse(warnings_string);
 		return warnings;
 	} catch (error) {
-		logDebug(`[Anti Cheats] Error parsing warnings JSON for player ${this.name}:`, error);
+		// logDebug(`[Anti Cheats] Error parsing warnings JSON for player ${this.name}:`, error);
 		return {}; // Default to an empty object on error
 	}
 }
@@ -59,7 +59,7 @@ Player.prototype.clearWarnings = function(){
 	try {
 		this.setDynamicProperty("ac:warnings",JSON.stringify({}));
 	} catch (e) {
-		logDebug(`[Anti Cheats ERROR] Failed to clear warnings for ${this.name}:`, e, e.stack);
+		// logDebug(`[Anti Cheats ERROR] Failed to clear warnings for ${this.name}:`, e, e.stack);
 	}
 }
 
@@ -77,7 +77,7 @@ Player.prototype.clearWarnings = function(){
 Player.prototype.setWarning = function(module){
 	try {
 		if (module !== "manual" && !ACModule.getValidModules().includes(module)) {
-			logDebug(i18n.getText("player.error.invalidModuleForWarning", { module: module }));
+			// logDebug(i18n.getText("player.error.invalidModuleForWarning", { module: module }));
 			throw ReferenceError(i18n.getText("player.error.invalidModuleReference", { moduleName: module }));
 		}
 		const warnings = this.getWarnings(); // Already has try-catch for parsing
@@ -86,7 +86,7 @@ Player.prototype.setWarning = function(module){
 		if(!warnings[moduleID]) warnings[moduleID] = 1;
 		else warnings[moduleID] += 1;
 		
-		logDebug(JSON.stringify(warnings));
+		// logDebug(JSON.stringify(warnings));
 
 		this.setDynamicProperty("ac:warnings", JSON.stringify(warnings));
 
@@ -97,11 +97,11 @@ Player.prototype.setWarning = function(module){
 			} else if(manualWarningCount === 3){
 				this.ban("Reaching 3 manual warnings", -1, true, "Anti Cheats AntiCheat"); // ban itself will be wrapped
 				this.runCommand(`kick "${this.name}" ${i18n.getText("player.kick.manualWarnings.3")}`);
-				sendMessageToAllAdmins(i18n.getText("player.notify.admin.permBannedForManualWarnings", { playerName: this.name }),true);
+				// sendMessageToAllAdmins(i18n.getText("player.notify.admin.permBannedForManualWarnings", { playerName: this.name }),true);
 			}
 		}
 	} catch (e) {
-		logDebug(i18n.getText("player.error.failedToSetWarning", { playerName: this.name, module: module }), e, e.stack);
+		// logDebug(i18n.getText("player.error.failedToSetWarning", { playerName: this.name, module: module }), e, e.stack);
 	}
 }
 
@@ -133,7 +133,7 @@ Player.prototype.getBan = function() {
 
 		// It's crucial to check if playerBanInfo is an object and has the expected properties
 		if (typeof playerBanInfo !== 'object' || playerBanInfo === null || typeof playerBanInfo.isBanned === 'undefined') {
-			logDebug(`[Anti Cheats] Invalid or malformed banInfo JSON for player ${this.name}. Property: ${banProperty}`);
+			// logDebug(`[Anti Cheats] Invalid or malformed banInfo JSON for player ${this.name}. Property: ${banProperty}`);
 			return { isBanned: false };
 		}
 
@@ -146,14 +146,14 @@ Player.prototype.getBan = function() {
 			try {
 				this.setDynamicProperty("ac:banInfo", JSON.stringify(unbannedInfo));
 			} catch (e) {
-				logDebug(`[Anti Cheats ERROR] Failed to set dynamic property for unbanned player ${this.name} in getBan:`, e, e.stack);
+				// logDebug(`[Anti Cheats ERROR] Failed to set dynamic property for unbanned player ${this.name} in getBan:`, e, e.stack);
 			}
 			return { isBanned: false };
 		}
 
 		return playerBanInfo;
 	} catch (error) {
-		logDebug(`[Anti Cheats ERROR] Error parsing banInfo JSON for player ${this.name}:`, error, `Raw property: ${banProperty}`);
+		// logDebug(`[Anti Cheats ERROR] Error parsing banInfo JSON for player ${this.name}:`, error, `Raw property: ${banProperty}`);
 		return { isBanned: false }; // Default to not banned on error
 	}
 };
@@ -196,10 +196,10 @@ Player.prototype.getMuteInfo = function(){
 		}
 		
 		this.isMuted = isActive;
-		// logDebug("[Mute Info]", isActive, muteInfo.isPermanent, muteInfo.duration, muteInfo.reason, muteInfo.admin);
+		// // logDebug("[Mute Info]", isActive, muteInfo.isPermanent, muteInfo.duration, muteInfo.reason, muteInfo.admin);
 		return muteInfo;
 	} catch (error) {
-		logDebug(`[Anti Cheats] Error parsing muteInfo JSON for player ${this.name}:`, error, `Raw property: ${muteInfoString}`);
+		// logDebug(`[Anti Cheats] Error parsing muteInfo JSON for player ${this.name}:`, error, `Raw property: ${muteInfoString}`);
 		this.isMuted = false;
 		return { duration: -1, isPermanent: false, reason: "", admin: "", isActive: false }; // Default structure
 	}
@@ -249,16 +249,16 @@ Player.prototype.ban = function(reason="No reason provided", unbanTime, permanen
 		//c - time of ban
 		//d - ban reason
 		try{ // Inner try-catch for generateBanLog as it's a distinct operation
-			generateBanLog({ // generateBanLog itself has internal try-catch for its parsing
-				a:this.name,
-				b:bannedByAdminName,
-				c:Date.now(),
-				d:reason
-			})
+			// generateBanLog({ // generateBanLog itself has internal try-catch for its parsing
+			// 	a:this.name,
+			// 	b:bannedByAdminName,
+			// 	c:Date.now(),
+			// 	d:reason
+			// })
 		}
 		catch(e){ // This would catch errors in the generateBanLog call itself, not its internal logic
-			logDebug(i18n.getText("player.error.ban.logFailed", { playerName: this.name }), e, e.stack);
-			sendMessageToAllAdmins(i18n.getText("player.notify.admin.banLogError", { playerName: this.name, error: e }))
+			// logDebug(i18n.getText("player.error.ban.logFailed", { playerName: this.name }), e, e.stack);
+			// sendMessageToAllAdmins(i18n.getText("player.notify.admin.banLogError", { playerName: this.name, error: e }))
 		}
 
 		const banObject = {
@@ -272,7 +272,7 @@ Player.prototype.ban = function(reason="No reason provided", unbanTime, permanen
 
 		this.setDynamicProperty("ac:banInfo", JSON.stringify(banObject));
 	} catch (e) {
-		logDebug(i18n.getText("player.error.ban.setDynamicPropertyFailed", { playerName: this.name }), e, e.stack);
+		// logDebug(i18n.getText("player.error.ban.setDynamicPropertyFailed", { playerName: this.name }), e, e.stack);
 		// Potentially send message to admin if ban failed
 		if (admin instanceof Player) {
 			admin.sendMessage(i18n.getText("player.notify.admin.banFailed", { playerName: this.name }));
@@ -305,21 +305,21 @@ Player.prototype.unban = function() {
 				try {
 					world.setDynamicProperty("ac:unbanQueue", JSON.stringify(world.acUnbanQueue));
 				} catch (e) {
-					logDebug(`[Anti Cheats ERROR] Failed to set unbanQueue dynamic property for ${player.name}:`, e, e.stack);
+					// logDebug(`[Anti Cheats ERROR] Failed to set unbanQueue dynamic property for ${player.name}:`, e, e.stack);
 				}
 			}
 			try {
 				player.setDynamicProperty("ac:banInfo", JSON.stringify(unbanInfo));
 			} catch (e) {
-				logDebug(`[Anti Cheats ERROR] Failed to set banInfo dynamic property for ${player.name} during unban:`, e, e.stack);
+				// logDebug(`[Anti Cheats ERROR] Failed to set banInfo dynamic property for ${player.name} during unban:`, e, e.stack);
 			}
 		} catch (e) {
-			logDebug(`[Anti Cheats ERROR] Error in removeFromUnbanQueue for ${player.name}:`, e, e.stack);
+			// logDebug(`[Anti Cheats ERROR] Error in removeFromUnbanQueue for ${player.name}:`, e, e.stack);
 		}
 	}
 	const banProperty = this.getDynamicProperty("ac:banInfo");
 	if (!banProperty) {
-		logDebug(`Player "${this.name}" is not banned (property missing), no unban action needed.`);
+		// logDebug(`Player "${this.name}" is not banned (property missing), no unban action needed.`);
 		// Attempt to remove from unban queue just in case, and ensure ban info is cleared.
 		removeFromUnbanQueue(this); // Ensures banInfo is cleared and queue is updated
 		return true; // Considered successful as the state is now definitely "not banned".
@@ -329,13 +329,13 @@ Player.prototype.unban = function() {
 		const banInfo = JSON.parse(banProperty);
 
 		if (typeof banInfo !== 'object' || banInfo === null || typeof banInfo.isBanned === 'undefined') {
-			logDebug(`[Anti Cheats] Invalid or malformed banInfo JSON for player ${this.name} during unban. Property: ${banProperty}. Clearing ban state.`);
+			// logDebug(`[Anti Cheats] Invalid or malformed banInfo JSON for player ${this.name} during unban. Property: ${banProperty}. Clearing ban state.`);
 			removeFromUnbanQueue(this); // Attempt to clear queue and set clean ban state
 			return true; 
 		}
 
 		if (!banInfo.isBanned) {
-			logDebug(`Player "${this.name}" is not marked as banned in banInfo (.isBanned=${banInfo.isBanned}). Ensuring clean state.`);
+			// logDebug(`Player "${this.name}" is not marked as banned in banInfo (.isBanned=${banInfo.isBanned}). Ensuring clean state.`);
 			// If they are in unban queue but record says not banned, still attempt to clean queue and record.
 			removeFromUnbanQueue(this);
 			return true; // Return true as an unban operation was effectively performed or corrected.
@@ -346,7 +346,7 @@ Player.prototype.unban = function() {
 		return true;
 
 	} catch (error) {
-		logDebug(i18n.getText("player.error.unban.parsingFailed", { playerName: this.name }), error, `Raw property: ${banProperty}`);
+		// logDebug(i18n.getText("player.error.unban.parsingFailed", { playerName: this.name }), error, `Raw property: ${banProperty}`);
 		// If parsing fails, it's unclear if the player was banned but err on the side of unbanning.
 		removeFromUnbanQueue(this); // Force clear queue and set clean ban state
 		return true; // Return true as a corrective unban action was taken.
@@ -373,7 +373,7 @@ Player.prototype.setFreezeTo = function(freeze){
 		this.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, !freeze);
 		this.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, !freeze);
 	} catch (e) {
-		logDebug(i18n.getText("player.error.freeze.failed", { playerName: this.name, status: freeze }), e, e.stack);
+		// logDebug(i18n.getText("player.error.freeze.failed", { playerName: this.name, status: freeze }), e, e.stack);
 	}
 };
 
@@ -406,7 +406,7 @@ Player.prototype.mute = function(adminPlayer,reason, durationMs) {
 	try {
 		const isPermanent = durationMs == -1;
 		const endTime = isPermanent ? "permanent" : Date.now() + durationMs;
-		const muteTimeDisplay = isPermanent ? "permanent" : formatMilliseconds(durationMs); // formatMilliseconds is from util, assume it's safe or handle there
+		const muteTimeDisplay = isPermanent ? "permanent" : durationMs; // formatMilliseconds(durationMs); // formatMilliseconds is from util, assume it's safe or handle there
 		const muteInfo = {
 			admin: adminName,
 			duration: endTime,
@@ -421,15 +421,16 @@ Player.prototype.mute = function(adminPlayer,reason, durationMs) {
 			adminPlayer.sendMessage(i18n.getText("player.mute.successAdmin", { playerName: this.name, duration: muteTimeDisplay }));
 		} else if (typeof adminPlayer === 'string') {
 			// If adminPlayer is a string (name), try to find the player and send message
-			const actualAdminPlayer = getPlayerByName(adminPlayer); // Use getPlayerByName
+			// const actualAdminPlayer = getPlayerByName(adminPlayer); // Use getPlayerByName
+			const actualAdminPlayer = undefined; // Placeholder since getPlayerByName is commented
             if (actualAdminPlayer) { // Check if player was found
                 actualAdminPlayer.sendMessage(i18n.getText("player.mute.successAdmin", { playerName: this.name, duration: muteTimeDisplay }));
             }
 		}
-		sendMessageToAllAdmins(i18n.getText("player.notify.admin.muteSuccess", { playerName: this.name, duration: muteTimeDisplay, adminName: adminName, reason: reason }), true); // sendMessageToAllAdmins from util
-		logDebug(`MUTED NAME="${this.name}"; REASON="${reason}"; DURATION=${muteTimeDisplay}`);
+		// sendMessageToAllAdmins(i18n.getText("player.notify.admin.muteSuccess", { playerName: this.name, duration: muteTimeDisplay, adminName: adminName, reason: reason }), true); // sendMessageToAllAdmins from util
+		// logDebug(`MUTED NAME="${this.name}"; REASON="${reason}"; DURATION=${muteTimeDisplay}`);
 	} catch (e) {
-		logDebug(i18n.getText("player.error.mute.failed", { playerName: this.name }), e, e.stack);
+		// logDebug(i18n.getText("player.error.mute.failed", { playerName: this.name }), e, e.stack);
 		if (adminPlayer instanceof Player) {
 			adminPlayer.sendMessage(i18n.getText("player.notify.admin.muteFailed", { playerName: this.name }));
 		}
@@ -461,9 +462,9 @@ Player.prototype.unmute = function(){
 		this.setDynamicProperty("ac:muteInfo", muteInfo_string);
 		this.isMuted = false;
 
-		logDebug(muteInfo_string);
+		// logDebug(muteInfo_string);
 	} catch (e) {
-		logDebug(i18n.getText("player.error.unmute.failed", { playerName: this.name }), e, e.stack);
+		// logDebug(i18n.getText("player.error.unmute.failed", { playerName: this.name }), e, e.stack);
 	}
 }
 
@@ -486,13 +487,13 @@ Player.prototype.isOwner = function(){
 
 	// If the dynamic property is not set or is empty, no one is the owner yet.
 	if (typeof ownerPlayerName !== 'string' || ownerPlayerName.trim() === '') {
-		// logDebug(`[Anti Cheats] isOwner check: ac:ownerPlayerName is not set. No player is currently designated as owner.`);
+		// // logDebug(`[Anti Cheats] isOwner check: ac:ownerPlayerName is not set. No player is currently designated as owner.`);
 		return false;
 	}
 
 	// Compare the current player's name with the stored owner's name.
 	const isPlayerOwner = this.name === ownerPlayerName;
-	// logDebug(`[Anti Cheats] isOwner check: Current player: ${this.name}, Stored owner: ${ownerPlayerName}, Is owner: ${isPlayerOwner}`);
+	// // logDebug(`[Anti Cheats] isOwner check: Current player: ${this.name}, Stored owner: ${ownerPlayerName}, Is owner: ${isPlayerOwner}`);
 	return isPlayerOwner;
 	// Note: The "ac:ownerPlayerName" dynamic property, which this method checks, is set during initialization 
 	// (by reading from config's 'ownerPlayerNameManual' or an existing dynamic property) 
@@ -521,4 +522,4 @@ Player.prototype.hasAdmin = function() {
 	return this.hasTag("admin") || this.isOwner();
 };
 
-logDebug(`[Anti Cheats] Updated Player class`);
+// logDebug(`[Anti Cheats] Updated Player class`);

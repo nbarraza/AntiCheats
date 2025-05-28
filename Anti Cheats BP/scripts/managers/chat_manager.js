@@ -1,6 +1,6 @@
 import { world } from "@minecraft/server";
 import { CONFIG as config, i18n } from "../config.js";
-import { sendMessageToAdmins, getPlayerRank, 효율 } from "../util.js";
+// import { sendMessageToAdmins, getPlayerRank } from "../assets/util.js";
 import { commandHandler } from "../command/handle.js";
 import { inMemoryCommandLogs, MAX_LOG_ENTRIES } from "../systems/periodic_checks.js"; // This will be created later
 
@@ -24,9 +24,9 @@ function handleAntiSpam(player, message) {
     playerSpamData.messages.push(now);
 
     if (playerSpamData.messages.length > messageLimit) {
-        sendMessageToAdmins(
+        // sendMessageToAdmins(
             "system.anti_spam_triggered_admin_notification", { player: player.name, message_limit: messageLimit, time_limit: config.anti_spam_time_limit }
-        );
+        // );
         player.sendMessage(i18n.getText("system.anti_spam_triggered_player_notification", { message_limit: messageLimit, time_limit: config.anti_spam_time_limit }, player));
         player.addTag("is_muted"); // Mute the player
         // Optionally, add a timed unmute here if desired
@@ -39,8 +39,8 @@ function handleAntiSpam(player, message) {
 
 // Function to format chat messages with rank
 function formatChatMessageWithRank(player, message) {
-    const rank = getPlayerRank(player);
-    const rankPrefix = rank === "일반" ? "" : `§l§7[§r${rank}§l§7]§r `;
+    // const rank = getPlayerRank(player);
+    const rankPrefix = rank === "일반" ? "" : `§l§7[§r${"rank"}§l§7]§r `; // Replaced rank with "rank" placeholder
     const chatMessage = `${rankPrefix}${player.name}: ${message}`;
     world.sendMessage(chatMessage);
 }
