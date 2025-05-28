@@ -1,7 +1,7 @@
 import { world, system, Player, EffectType, EntityDamageCause, GameMode } from "@minecraft/server";
 import { CONFIG as config, i18n } from "../config.js";
-// import { sendMessageToAdmins, saveLogToFile, LOG_FILE_PREFIX } from "../assets/util.js";
-// import { logDebug } from "../assets/util.js"; // Assuming logDebug is in util.js or assets/util.js
+import { sendMessageToAdmins, saveLogToFile, LOG_FILE_PREFIX } from "../assets/util.js";
+import { logDebug } from "../assets/util.js"; // Assuming logDebug is in util.js or assets/util.js
 
 // Define the playerInternalStates Map
 export const playerInternalStates = new Map();
@@ -19,15 +19,15 @@ export function initializePlayerState(playerId, initialLocation, currentTick) {
         deepValuableOresBrokenThisTick: 0 // Add this line
     };
     playerInternalStates.set(playerId, newState);
-    // logDebug(`Initialized internal state for player ${playerId}`);
+    logDebug(`Initialized internal state for player ${playerId}`);
 }
 
 export function removePlayerState(playerId) {
     const deleted = playerInternalStates.delete(playerId);
     if (deleted) {
-        // logDebug(`Removed internal state for player ${playerId}`);
+        logDebug(`Removed internal state for player ${playerId}`);
     } else {
-        // logDebug(`Attempted to remove state for player ${playerId}, but no state was found.`);
+        logDebug(`Attempted to remove state for player ${playerId}, but no state was found.`);
     }
 }
 
@@ -35,14 +35,14 @@ export function getPlayerState(playerId) {
     const state = playerInternalStates.get(playerId);
     if (!state) {
         // This case should ideally be prevented by robust join/leave event handling.
-        // // logDebug(`[WARNING] No internal state found for player ${playerId}. This might indicate an issue with state initialization on join.`);
+        // logDebug(`[WARNING] No internal state found for player ${playerId}. This might indicate an issue with state initialization on join.`);
         // Depending on strictness, could return a default state or null/undefined.
         // For now, returning what Map.get() returns (undefined if not found) is acceptable.
     }
     return state;
 }
 import { ACModule } from "../classes/module.js";
-import { Vector3Utils } from "../classes/vector3utils.js";
+import { Vector3utils } from "../classes/vector3.js";
 
 // Log arrays and constants
 export const MAX_LOG_ENTRIES = 100; // Define how many entries to keep in memory
@@ -102,7 +102,7 @@ system.runInterval(() => {
             if (ACModule.isActive("speed") && movementSpeed > maxSpeed && !player.hasEffect(EffectType.get("speed")) && !player.isFlying) {
                 state.speedVL = (state.speedVL || 0) + 1;
                 if (state.speedVL >= config.speed_detection_threshold) {
-                    // sendMessageToAdmins("detection.speed_detected_admin", { player: player.name, speed: movementSpeed.toFixed(2), max_speed: maxSpeed, vl: state.speedVL });
+                    sendMessageToAdmins("detection.speed_detected_admin", { player: player.name, speed: movementSpeed.toFixed(2), max_speed: maxSpeed, vl: state.speedVL });
                     if (config.speed_punish) { /* Implement punishment */ }
                     state.speedVL = 0;
                 }
@@ -114,7 +114,7 @@ system.runInterval(() => {
                 // More sophisticated checks: e.g., vertical speed, obstacles, gliding
                 state.flyVL = (state.flyVL || 0) + 1;
                 if (state.flyVL >= config.fly_detection_threshold) {
-                    // sendMessageToAdmins("detection.fly_detected_admin", { player: player.name, vl: state.flyVL });
+                    sendMessageToAdmins("detection.fly_detected_admin", { player: player.name, vl: state.flyVL });
                     if (config.fly_punish) { /* Implement punishment */ }
                     state.flyVL = 0;
                 }
@@ -127,7 +127,7 @@ system.runInterval(() => {
             if (ACModule.isActive("nuker")) {
                 let nukerBreakVl = state.nukerVLBreak || 0; // Read from state
                 if (nukerBreakVl > config.nuker_max_breaks_per_interval) {
-                     // sendMessageToAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
+                     sendMessageToAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
                      if (config.nuker_punish) { /* punishment */ }
                 }
                 state.nukerVLBreak = 0; // Reset in state
@@ -159,11 +159,11 @@ if (ACModule.isActive("nightvision")) {
 if (config.enable_log_saving) {
     system.runInterval(() => {
         if (inMemoryCommandLogs.length > 0) {
-            // saveLogToFile(LOG_FILE_PREFIX.COMMAND, inMemoryCommandLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.command}`).join("\n"));
+            saveLogToFile(LOG_FILE_PREFIX.COMMAND, inMemoryCommandLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.command}`).join("\n"));
             inMemoryCommandLogs = []; // Clear after saving
         }
         if (inMemoryPlayerActivityLogs.length > 0) {
-            // saveLogToFile(LOG_FILE_PREFIX.ACTIVITY, inMemoryPlayerActivityLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.activity}`).join("\n"));
+            saveLogToFile(LOG_FILE_PREFIX.ACTIVITY, inMemoryPlayerActivityLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.activity}`).join("\n"));
             inMemoryPlayerActivityLogs = []; // Clear after saving
         }
     }, config.log_save_interval_ticks);
