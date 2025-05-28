@@ -50,7 +50,7 @@ This addon for Minecraft Bedrock Edition helps server admins by providing anti-c
     *   Create a new world or edit an existing one.
     *   Go to **Behavior Packs** under "Add-Ons". Find "Anti Cheats BP" in the "Available" packs and activate it.
     *   Go to **Resource Packs**. "Anti Cheats RP" should be automatically activated in the "Active" packs list. If not, find it in "Available" and activate it.
-    *   **Crucially, enable "Beta APIs"** in your world's "Game" settings (under "Experiments"). This addon requires Beta APIs to function correctly.
+    *   **Enable "Beta APIs" AND "Custom Components V2"** in your world's "Experiments" settings. Both are required for the addon to function correctly.
 
 ## Configuration
 
