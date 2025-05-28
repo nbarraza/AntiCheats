@@ -3,7 +3,8 @@ import { ActionFormData, MessageFormData, ModalFormData } from '@minecraft/serve
 import { addPlayerToUnbanQueue, copyInv, getPlayerByName, invsee, logDebug, millisecondTime, sendMessageToAllAdmins } from './util.js';
 import { ModuleStatusManager } from '../classes/module.js';
 import * as config from "../config.js";
-import { reportPlayerInternal } from '../command/src/report.js'; // Added for player reporting
+// import { reportPlayerInternal } from '../command/src/report.js'; // No longer needed here, submitReport will be used
+import { submitReport } from '../systems/report_system.js';      // For submitting player reports
 import { i18n } from './i18n.js'; // Added for localization
 
 const world = Minecraft.world;
@@ -1495,7 +1496,7 @@ export async function showPublicInfoPanel(player) {
     }
     if (featuresEnabled.reportPlayerButton) {
         form.button("Report Player"); 
-        buttonActions.push({ text: "Report Player", action: () => showReportPlayerPlaceholder(player) }); // Modified Action
+        buttonActions.push({ text: "Report Player", action: () => showReportPlayerForm(player) }); // Modified Action
     }
     
     try {
@@ -1571,29 +1572,84 @@ async function showSystemInfo(player) {
     }
 }
 
-async function showReportPlayerPlaceholder(player) {
-    const form = new MessageFormData();
+async function showReportPlayerForm(player) {
+    const form = new ModalFormData();
     form.title("Report a Player");
-    form.body("This feature is coming soon! For urgent reports, please contact an admin directly.");
 
-    form.button1("Back to Main Menu"); // Button to go back
-    form.button2("Close");             // Button to just close the dialog
+    const onlinePlayers = [...world.getPlayers()].filter(p => p.id !== player.id); // Exclude self
+    const playerNamesArray = ["--- Type Name Manually ---", ...onlinePlayers.map(p => p.name)];
+
+    form.dropdown("Select Online Player (or type manually):", playerNamesArray, 0); // Default to "Type Name Manually"
+    form.textField("Reported Player Name (if not in list/offline):", "Enter exact player name");
+    form.textArea("Reason for Report (be specific):", "Provide details of the incident...");
 
     try {
         const response = await form.show(player);
+
         if (response.canceled) {
-            logDebug(`[UI] ReportPlayerPlaceholder cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
+            logDebug(`[UI] ReportPlayerForm cancelled by ${player.name}. Reason: ${response.cancelationReason || "Form closed"}`);
+            showPublicInfoPanel(player); // Go back to main menu if cancelled
             return;
         }
 
-        if (response.selection === 0) { // Back to Main Menu
-            showPublicInfoPanel(player);
+        const [selectedPlayerIndex, manualName, reason] = response.formValues;
+        let reportedPlayerName = "";
+
+        if (selectedPlayerIndex > 0) { // Index 0 is "--- Type Name Manually ---"
+            // Ensure onlinePlayers array is not empty and index is valid
+            if(onlinePlayers.length > 0 && (selectedPlayerIndex -1) < onlinePlayers.length) {
+                reportedPlayerName = onlinePlayers[selectedPlayerIndex - 1].name;
+            } else {
+                 // This case should ideally not happen if dropdown is populated correctly
+                logDebug(`[UI Error][showReportPlayerForm] Invalid selectedPlayerIndex: ${selectedPlayerIndex} when onlinePlayers length is ${onlinePlayers.length}`);
+                player.sendMessage("§cError: Invalid player selection from dropdown.");
+                showReportPlayerForm(player); // Re-show form
+                return;
+            }
+        } else {
+            reportedPlayerName = manualName.trim();
         }
-        // If selection is 1 (Close), do nothing, form closes.
+
+        if (!reportedPlayerName) {
+            player.sendMessage("§cError: You must select an online player or manually type a player's name.");
+            showReportPlayerForm(player); // Re-show form
+            return;
+        }
+
+        if (!reason || reason.trim().length === 0) {
+            player.sendMessage("§cError: A reason is required to submit a report.");
+            showReportPlayerForm(player); // Re-show form
+            return;
+        }
+        
+        // Prevent reporting self
+        if (reportedPlayerName === player.name) {
+            player.sendMessage("§cYou cannot report yourself.");
+            showReportPlayerForm(player); // Re-show form
+            return;
+        }
+
+        const success = await submitReport(player, reportedPlayerName, reason);
+
+        if (success) {
+            player.sendMessage("§aReport submitted successfully. Thank you for your contribution.");
+        } else {
+            player.sendMessage("§cFailed to submit report. Please try again or contact an admin.");
+        }
+        showPublicInfoPanel(player); // Navigate back to main menu
+
     } catch (e) {
-        logDebug(`[UI Error][showReportPlayerPlaceholder] Error for ${player.name}: ${e} ${e.stack}`);
+        logDebug(`[UI Error][showReportPlayerForm] Error for ${player.name}: ${e} ${e.stack}`);
         if (player && typeof player.sendMessage === 'function') {
-            player.sendMessage("§cAn error occurred. Please try again.");
+            player.sendMessage("§cAn error occurred while processing your report. Please try again.");
+        }
+        // Ensure navigation back even on error, if possible, or just log.
+        // Depending on error severity, showPublicInfoPanel might not be callable.
+        // For simplicity, we'll try. If it fails, error is already logged.
+        try {
+            showPublicInfoPanel(player);
+        } catch (navError) {
+            logDebug(`[UI Error][showReportPlayerForm] Error navigating back to main panel after another error: ${navError}`);
         }
     }
 }
