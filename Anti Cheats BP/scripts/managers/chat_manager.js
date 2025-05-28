@@ -1,6 +1,6 @@
 import { world } from "@minecraft/server";
 import { CONFIG as config, i18n } from "../config.js";
-import { sendMessageToAdmins, getPlayerRank, 효율 } from "../util.js";
+import { sendMessageToAdmins, getPlayerRank } from "../assets/util.js";
 import { commandHandler } from "../command/handle.js";
 import { inMemoryCommandLogs, MAX_LOG_ENTRIES } from "../systems/periodic_checks.js"; // This will be created later
 

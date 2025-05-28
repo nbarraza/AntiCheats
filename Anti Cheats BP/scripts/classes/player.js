@@ -1,5 +1,5 @@
 import { Player, world, InputPermissionCategory } from "@minecraft/server";
-import { formatMilliseconds, generateBanLog, logDebug, sendMessageToAllAdmins, getPlayerByName } from "../assets/util";
+import { formatMilliseconds, generateBanLog, logDebug, sendMessageToAllAdmins, getPlayerByName } from "../assets/util.js";
 import { ACModule } from "./module";
 import { i18n } from '../assets/i18n.js';
 

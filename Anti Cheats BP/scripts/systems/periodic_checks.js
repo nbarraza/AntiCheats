@@ -1,6 +1,6 @@
 import { world, system, Player, EffectType, EntityDamageCause, GameMode } from "@minecraft/server";
 import { CONFIG as config, i18n } from "../config.js";
-import { sendMessageToAdmins, saveLogToFile, LOG_FILE_PREFIX } from "../util.js";
+import { sendMessageToAdmins, saveLogToFile, LOG_FILE_PREFIX } from "../assets/util.js";
 import { logDebug } from "../assets/util.js"; // Assuming logDebug is in util.js or assets/util.js
 
 // Define the playerInternalStates Map
@@ -42,7 +42,7 @@ export function getPlayerState(playerId) {
     return state;
 }
 import { ACModule } from "../classes/module.js";
-import { Vector3Utils } from "../classes/vector3utils.js";
+import { Vector3utils } from "../classes/vector3.js";
 
 // Log arrays and constants
 export const MAX_LOG_ENTRIES = 100; // Define how many entries to keep in memory

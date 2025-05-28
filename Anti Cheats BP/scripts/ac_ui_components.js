@@ -6,11 +6,11 @@
 import * as Minecraft from '@minecraft/server';
 import { ActionFormData, MessageFormData, ModalFormData } from '@minecraft/server-ui';
 // Adjusted path: Assuming util.js is in 'Anti Cheats BP/scripts/assets/'
-import { addPlayerToUnbanQueue, copyInv, getPlayerByName, invsee, logDebug, millisecondTime, sendMessageToAllAdmins } from '../assets/util.js'; 
+import { addPlayerToUnbanQueue, copyInv, getPlayerByName, invsee, logDebug, millisecondTime, sendMessageToAllAdmins } from './assets/util.js'; 
 // Adjusted path and class name: Assuming module.js is in 'Anti Cheats BP/scripts/classes/' and uses ACModule
-import { ACModule } from '../classes/module.js'; 
+import { ACModule } from './classes/module.js'; 
 // Adjusted path: Assuming config.js is in 'Anti Cheats BP/scripts/'
-import * as config from "../config.js"; 
+import * as config from "./config.js"; 
 
 const world = Minecraft.world;
 
