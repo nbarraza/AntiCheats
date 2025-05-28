@@ -1,6 +1,6 @@
 import * as Minecraft from "@minecraft/server";
 import * as config from "../config";
-import { ACModule } from "../classes/module";
+import { ModuleStatusManager } from "../classes/module.js";
 import { i18n } from './i18n.js'; // Added for localization
 const world = Minecraft.world;
 
@@ -467,14 +467,14 @@ export function sendAnticheatAlert(detectedPlayer, detectionType, detectionValue
 	if (typeof detectionType !== "string") throw TypeError(`"detectionType" is typeof ${typeof detectionType}, not string`);
 	if (typeof detectionValue !== "string" && typeof detectionValue !== "number") throw TypeError(`"detectionValue" is typeof ${typeof detectionValue}, not string or number`);
 
-	if (!ACModule.getValidModules().includes(module)) throw ReferenceError(`"${module}" isn't an Anti Cheats module.`);
+	if (!ModuleStatusManager.getValidModules().includes(module)) throw ReferenceError(`"${module}" isn't an Anti Cheats module.`);
 
 	try {
 		// Duplicated checks removed from here
 
 		detectedPlayer.setWarning(module); // This now has its own try-catch
 
-		if (ACModule.getModuleStatus(ACModule.Modules.autoMod)) {
+		if (ModuleStatusManager.getModuleStatus(ModuleStatusManager.Modules.autoMod)) {
 			sendMessageToAllAdmins("util.alert.autoModKick.adminNotify", { playerName: detectedPlayer.name, module: module, detectionValue: detectionValue }, true);
 			detectedPlayer.runCommand(`kick "${detectedPlayer.name}" ${i18n.getText("util.alert.autoModKick.playerReason", { module: module, detectionValue: detectionValue })}`);
 		}
