@@ -1,5 +1,11 @@
-import { ActionFormData, MessageFormData } from '@minecraft/server-ui'; // Added MessageFormData
-import { Player, world } from '@minecraft/server'; // Added world for dynamic properties
+import { ActionFormData, MessageFormData } from '@minecraft/server-ui'; 
+import { Player, world } from '@minecraft/server'; 
+import { 
+    settingSelector, 
+    playerSelectionForm, 
+    unbanForm, 
+    banLogForm 
+} from '../ac_ui_components.js'; // Corrected import path
 
 /**
  * Displays the full details of a single player report.
@@ -181,14 +187,14 @@ export async function showAdminPanel(player) {
     const form = new ActionFormData();
     form.title("Admin Panel");
 
-    // Define buttons and their corresponding placeholder actions
     const buttons = [
-        { text: "Settings", action: () => player.sendMessage("You selected: Settings. (Functionality pending integration)") },
-        { text: "Player Actions", action: () => player.sendMessage("You selected: Player Actions. (Functionality pending integration)") },
-        { text: "Quick Ban Player", action: () => player.sendMessage("You selected: Quick Ban Player. (Functionality pending integration)") },
-        { text: "Unban Player", action: () => player.sendMessage("You selected: Unban Player. (Functionality pending integration)") },
-        { text: "Ban Logs", action: () => player.sendMessage("You selected: Ban Logs. (Functionality pending integration)") },
-        { text: "§cClose", action: () => {} } // Close button does nothing or logs
+        { text: "Settings", action: () => settingSelector(player, showAdminPanel) },
+        { text: "Player Actions", action: () => playerSelectionForm(player, "action", showAdminPanel) },
+        { text: "Quick Ban Player", action: () => playerSelectionForm(player, "ban", showAdminPanel) },
+        { text: "Unban Player", action: () => unbanForm(player, showAdminPanel) },
+        { text: "Ban Logs", action: () => banLogForm(player, showAdminPanel) },
+        { text: "View Submitted Reports", action: () => showReportListViewer(player, showAdminPanel) },
+        { text: "§cClose", action: () => {} } 
     ];
 
     buttons.forEach(button => form.button(button.text));
