@@ -1,5 +1,5 @@
 // import { world } from '@minecraft/server'; // No longer needed as dynamic properties for lang are removed
-// import { logDebug } from './util.js'; // No longer needed as language loading is removed
+// import { logDebug } from './logger.js'; // No longer needed as language loading is removed
 
 // fallbackTranslations contains all the English strings used by the Anti Cheats system.
 const fallbackTranslations = {
