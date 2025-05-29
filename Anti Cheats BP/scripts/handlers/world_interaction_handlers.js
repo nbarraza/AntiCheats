@@ -1,5 +1,6 @@
 import { world, system, ItemStack, BlockPermutation } from "@minecraft/server";
-import { CONFIG as config, i18n } from "../config.js";
+import configData from "../config.js";
+import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
 import { sendMessageToAdmins, getScore, getPlayerRank } from "../assets/util.js";
 import { ACModule } from "../classes/module.js";
 import { showAdminPanel } from "../forms/admin_panel.js"; // Ensure this path is correct
@@ -20,7 +21,7 @@ world.afterEvents.itemUse.subscribe((eventData) => {
     }
 
     // Admin Panel Item
-    if (item.typeId === config.admin_panel_item_id && player.hasTag("admin")) {
+    if (item.typeId === configData.admin_panel_item_id && player.hasTag("admin")) {
         system.run(() => { // Use system.run to avoid issues with opening forms in events
             showAdminPanel(player);
         });
@@ -33,7 +34,7 @@ world.beforeEvents.itemUse.subscribe((eventData) => {
     const item = eventData.itemStack;
 
     // Anti-Grief: Prevent use of certain items if module is active
-    if (ACModule.isActive("antigrief") && config.restricted_items_antigrief.includes(item.typeId)) {
+    if (ACModule.isActive("antigrief") && configData.restricted_items_antigrief.includes(item.typeId)) {
         if (!player.hasAdmin()) { // Allow admins to use restricted items
             eventData.cancel = true;
             player.sendMessage(i18n("system.antigrief_item_restriction", { item: item.typeId }));
@@ -56,12 +57,12 @@ world.afterEvents.playerBreakBlock.subscribe((eventData) => {
         // If proceeding, subsequent nuker checks relying on 'state' will effectively be skipped or might error.
     }
 
-    const nukerConfig = config.nuker_detection; // Assuming nuker config is structured like this
+    const nukerConfig = configData.nuker_detection; // Assuming nuker config is structured like this
     const antiNukerActive = ACModule.isActive("nuker");
     const autoModOn = ACModule.isActive("automod"); // Assuming an automod module status
 
     // Anti-Grief: Log block breaks (moved before nuker for clarity, can be anywhere)
-    if (ACModule.isActive("antigrief") && config.log_block_breaks_antigrief) {
+    if (ACModule.isActive("antigrief") && configData.log_block_breaks_antigrief) {
         // console.warn(`[AntiGrief] ${player.name} broke ${blockId}`);
     }
 
@@ -90,7 +91,7 @@ world.afterEvents.playerBreakBlock.subscribe((eventData) => {
                     for (const item of items) item.kill();
                     eventData.block.setPermutation(blockPermutation); // Restore the block
 
-                    if (autoModOn && config.nuker_punish_automod) { // Assuming a config for automod punishment
+                    if (autoModOn && configData.nuker_punish_automod) { // Assuming a config for automod punishment
                         player.runCommandAsync("gamemode adventure @s"); // Ensure commands are run async
                         player.teleport({ x: player.location.x, y: 325, z: player.location.z }, { dimension: player.dimension, rotation: { x: 0, y: 0 }, keepVelocity: false });
                     }
@@ -111,7 +112,7 @@ world.afterEvents.entitySpawn.subscribe((eventData) => {
     const entity = eventData.entity;
 
     // Anti-Grief: Prevent spawning of certain entities if module is active
-    if (ACModule.isActive("antigrief") && config.restricted_entities_antigrief.includes(entity.typeId)) {
+    if (ACModule.isActive("antigrief") && configData.restricted_entities_antigrief.includes(entity.typeId)) {
         // Check if spawned by a player and if that player is not an admin
         // This requires knowing the spawner. If the entity is spawned by an explosion (e.g. TNT spawns items),
         // or by a player directly (e.g. spawn egg), the logic would differ.
