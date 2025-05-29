@@ -1,5 +1,6 @@
 import { world, system, Player, EffectType, EntityDamageCause, GameMode } from "@minecraft/server";
-import { CONFIG as config, i18n } from "../config.js";
+import configData from "../config.js";
+import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
 import { sendMessageToAdmins, saveLogToFile, LOG_FILE_PREFIX } from "../assets/util.js";
 import { logDebug } from "../assets/util.js"; // Assuming logDebug is in util.js or assets/util.js
 
@@ -51,7 +52,7 @@ let currentTickCounter = 0;
 
 // Beta Features Warning (if used)
 function betaFeatures() {
-    if (config.enable_beta_features_warning) {
+    if (configData.enable_beta_features_warning) {
         world.sendMessage(i18n("system.beta_features_enabled"));
     }
 }
@@ -94,26 +95,26 @@ system.runInterval(() => {
         // --- 10-Tick Interval Checks (Speed, Fly) ---
         if (currentTickCounter % 10 === 0) {
             const movementSpeed = Vector3Utils.magnitude({ x: playerVelocity.x, y: 0, z: playerVelocity.z }); // Horizontal speed
-            const maxSpeed = player.isSprinting ? config.max_sprint_speed : config.max_walk_speed;
+            const maxSpeed = player.isSprinting ? configData.max_sprint_speed : configData.max_walk_speed;
 
             // Speed Check
             if (ACModule.isActive("speed") && movementSpeed > maxSpeed && !player.hasEffect(EffectType.get("speed")) && !player.isFlying) {
                 state.speedVL = (state.speedVL || 0) + 1;
-                if (state.speedVL >= config.speed_detection_threshold) {
+                if (state.speedVL >= configData.speed_detection_threshold) {
                     sendMessageToAdmins("detection.speed_detected_admin", { player: player.name, speed: movementSpeed.toFixed(2), max_speed: maxSpeed, vl: state.speedVL });
-                    if (config.speed_punish) { /* Implement punishment */ }
+                    if (configData.speed_punish) { /* Implement punishment */ }
                     state.speedVL = 0;
                 }
             }
 
             // Fly Check (basic ground check)
             let lastGroundTime = state.lastGroundTime;
-            if (ACModule.isActive("fly") && !isPlayerOnGround && !player.isFlying && !player.hasEffect(EffectType.get("levitation")) && (system.currentTick - lastGroundTime > config.fly_max_air_time_ticks)) {
+            if (ACModule.isActive("fly") && !isPlayerOnGround && !player.isFlying && !player.hasEffect(EffectType.get("levitation")) && (system.currentTick - lastGroundTime > configData.fly_max_air_time_ticks)) {
                 // More sophisticated checks: e.g., vertical speed, obstacles, gliding
                 state.flyVL = (state.flyVL || 0) + 1;
-                if (state.flyVL >= config.fly_detection_threshold) {
+                if (state.flyVL >= configData.fly_detection_threshold) {
                     sendMessageToAdmins("detection.fly_detected_admin", { player: player.name, vl: state.flyVL });
-                    if (config.fly_punish) { /* Implement punishment */ }
+                    if (configData.fly_punish) { /* Implement punishment */ }
                     state.flyVL = 0;
                 }
             } else if (isPlayerOnGround) {
@@ -124,9 +125,9 @@ system.runInterval(() => {
             // Nuker VL decay/check
             if (ACModule.isActive("nuker")) {
                 let nukerBreakVl = state.nukerVLBreak || 0; // Read from state
-                if (nukerBreakVl > config.nuker_max_breaks_per_interval) {
+                if (nukerBreakVl > configData.nuker_max_breaks_per_interval) {
                      sendMessageToAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
-                     if (config.nuker_punish) { /* punishment */ }
+                     if (configData.nuker_punish) { /* punishment */ }
                 }
                 state.nukerVLBreak = 0; // Reset in state
             }
@@ -147,14 +148,14 @@ if (ACModule.isActive("nightvision")) {
                 // This requires tracking how players get effects, which is complex.
                 // A simpler check could be if they have it for > X minutes without admin intervention.
                 // For now, this is a placeholder for more specific logic.
-                // Example: if (effect.duration > config.night_vision_max_duration && !isAdmin(player)) { ... }
+                // Example: if (effect.duration > configData.night_vision_max_duration && !isAdmin(player)) { ... }
             }
         }
-    }, config.night_vision_check_interval_ticks);
+    }, configData.night_vision_check_interval_ticks);
 }
 
 // --- Log Saving Interval ---
-if (config.enable_log_saving) {
+if (configData.enable_log_saving) {
     system.runInterval(() => {
         if (inMemoryCommandLogs.length > 0) {
             saveLogToFile(LOG_FILE_PREFIX.COMMAND, inMemoryCommandLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.command}`).join("\n"));
@@ -164,7 +165,7 @@ if (config.enable_log_saving) {
             saveLogToFile(LOG_FILE_PREFIX.ACTIVITY, inMemoryPlayerActivityLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.activity}`).join("\n"));
             inMemoryPlayerActivityLogs = []; // Clear after saving
         }
-    }, config.log_save_interval_ticks);
+    }, configData.log_save_interval_ticks);
 }
 
 // --- Vanish Reminder Interval ---
@@ -175,7 +176,7 @@ if (ACModule.isActive("vanish")) {
                 player.onScreenDisplay.setActionBar(i18n("system.vanish_reminder"));
             }
         }
-    }, config.vanish_reminder_interval_ticks);
+    }, configData.vanish_reminder_interval_ticks);
 }
 
 // Call betaFeatures on load if enabled
