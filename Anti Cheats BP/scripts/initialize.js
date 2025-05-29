@@ -2,7 +2,7 @@ import * as Minecraft from '@minecraft/server';
 import { logDebug, scoreboardAction } from './assets/util.js';
 import * as config from './config';
 import { globalBanList } from './assets/global_ban_list.js'; // Added import
-import { i18n } from './assets/i18n.js'; // Import i18n
+// Removed i18n import
 import { PACKAGED_LANGUAGE_DATA } from './assets/language_data.js'; // IMPORTED
 
 // PACKAGED_LANGUAGE_DATA object removed from here
@@ -17,41 +17,6 @@ const world = Minecraft.world;
 // 'world' is typically: const world = Minecraft.world; (already in the file)
 // 'logDebug' should be imported: import { logDebug, ... } from './assets/util'; (already in the file)
 // 'PACKAGED_LANGUAGE_DATA' should also be defined in this file (from the previous step).
-
-function setupLanguageDynamicProperties() {
-    const loadedLanguageCodes = [];
-    
-    if (typeof PACKAGED_LANGUAGE_DATA !== 'object' || PACKAGED_LANGUAGE_DATA === null) {
-        logDebug("[Anti Cheats ERROR] PACKAGED_LANGUAGE_DATA is not defined or not an object. Cannot setup languages.");
-        // Still set a default for availableLanguages to prevent errors in i18n.js
-        try {
-            world.setDynamicProperty("ac:availableLanguages", JSON.stringify(["en_US"]));
-        } catch (e) {
-            logDebug("[Anti Cheats ERROR] Failed to set default ac:availableLanguages:", e);
-        }
-        return;
-    }
-
-    for (const langCode in PACKAGED_LANGUAGE_DATA) {
-        if (Object.hasOwnProperty.call(PACKAGED_LANGUAGE_DATA, langCode)) {
-            const langContentString = PACKAGED_LANGUAGE_DATA[langCode];
-            try {
-                world.setDynamicProperty(`ac:lang/${langCode}`, langContentString);
-                loadedLanguageCodes.push(langCode);
-                // Removed logDebug: Stored translations for [langCode]
-            } catch (e) {
-                logDebug(`[Anti Cheats ERROR] Failed to set dynamic property for language ${langCode}:`, e);
-            }
-        }
-    }
-
-    try {
-        world.setDynamicProperty("ac:availableLanguages", JSON.stringify(loadedLanguageCodes.length > 0 ? loadedLanguageCodes : ["en_US"]));
-        // Removed logDebug: Set 'ac:availableLanguages'
-    } catch (e) {
-        logDebug("[Anti Cheats ERROR] Failed to set 'ac:availableLanguages' dynamic property:", e);
-    }
-}
 
 /**
  * Initializes the Anti Cheats addon.
@@ -272,12 +237,6 @@ export function Initialize(){
         world.dynamicGbanListArray = loadedGbanList; // Store the array
         world.dynamicGbanNameSet = new Set(loadedGbanList.map(entry => (typeof entry === 'string' ? entry : entry.name)));
         // Removed logDebug: Dynamic Global Ban List initialized
-
-        setupLanguageDynamicProperties(); // Call the function to set up language dynamic properties
-        i18n.reloadLanguages(); // Add this line
-        // Removed logDebug: i18n languages reloaded after setup.
-        i18n.setLanguage(config.default.other.defaultLanguage);
-        // Removed logDebug: Attempted to set initial language
 
         // New Owner Designation Logic
         try {
