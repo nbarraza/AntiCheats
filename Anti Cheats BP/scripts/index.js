@@ -78,8 +78,8 @@ system.run(() => { // Final initialization run
 system.run(async () => {
     try {
         const currentVersion = world.getDynamicProperty("ac:version");
-        if (currentVersion !== config.CONFIG.version) { // Assuming config is now CONFIG.default -> CONFIG
-            world.setDynamicProperty("ac:version", config.CONFIG.version);
+        if (currentVersion !== config.version) { // Assuming config is now CONFIG.default -> CONFIG
+            world.setDynamicProperty("ac:version", config.version);
             // Potentially send a message to admins about the update if it's a significant version change
             // This could also be part of Initialize() or a dedicated update/migration script.
         }

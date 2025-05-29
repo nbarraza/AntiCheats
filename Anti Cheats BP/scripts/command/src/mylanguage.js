@@ -1,11 +1,11 @@
 import { newCommand } from '../handle.js';
 import { i18n } from '../../assets/i18n.js';
-import { CONFIG as config } from '../../config.js'; // For command prefix
+import configData from '../../config.js'; // For command prefix
 import { logDebug } from '../../assets/util.js';
 
 newCommand({
     name: "mylanguage",
-    description: `Sets your preferred language for Anti Cheats messages. Usage: ${config.default.chat.prefix}mylanguage <lang_code>`,
+    description: `Sets your preferred language for Anti Cheats messages. Usage: ${configData.chat.prefix}mylanguage <lang_code>`,
     adminOnly: false, // Available to all players
     ownerOnly: false,
     run: (data) => {
@@ -13,7 +13,7 @@ newCommand({
         const args = data.args;
 
         if (args.length < 2) {
-            player.sendMessage(`§cUsage: ${config.default.chat.prefix}mylanguage <language_code>`);
+            player.sendMessage(`§cUsage: ${configData.chat.prefix}mylanguage <language_code>`);
             player.sendMessage(`§cAvailable languages: ${i18n.getAvailableLanguages().join(', ')}`);
             return;
         }

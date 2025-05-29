@@ -1,15 +1,12 @@
-// START OF SafeGuard v2/scripts/assets/ui.js CONTENT
-// Note: This code is adapted from SafeGuard's v2/scripts/assets/ui.js
+// START OF Anti Cheats v2/scripts/assets/ui.js CONTENT
+// Note: This code is adapted from Anti Cheats's v2/scripts/assets/ui.js
 // and integrated into the Anti Cheats project structure.
-// Paths and some class names (SafeguardModule -> ACModule) might be adjusted.
+// Paths and some class names (ACModule -> ACModule) might be adjusted.
 
 import * as Minecraft from '@minecraft/server';
 import { ActionFormData, MessageFormData, ModalFormData } from '@minecraft/server-ui';
-// Adjusted path: Assuming util.js is in 'Anti Cheats BP/scripts/assets/'
 import { addPlayerToUnbanQueue, copyInv, getPlayerByName, invsee, logDebug, millisecondTime, sendMessageToAllAdmins } from './assets/util.js'; 
-// Adjusted path and class name: Assuming module.js is in 'Anti Cheats BP/scripts/classes/' and uses ACModule
 import { ACModule } from './classes/module.js'; 
-// Adjusted path: Assuming config.js is in 'Anti Cheats BP/scripts/'
 import * as config from "./config.js"; 
 
 const world = Minecraft.world;
@@ -39,12 +36,12 @@ function banForm(player,targetPlayer,type,banReason){
                 })
         }
         else if(type=="slow"){
-                let banFormModal = new ModalFormData() // Renamed variable to avoid conflict
-                .title("Anti Cheats Ban Form") // Changed Safeguard to Anti Cheats
+                let banFormModal = new ModalFormData()
+                .title("Anti Cheats Ban Form")
                 .slider("Ban Time:\n\nDays",0,360,1,0)
                 .slider("Hours",0,23,1,0)
                 .slider("Minutes",0,59,1,0)
-                .toggle("Permanent", false) // Removed options object as per current project style
+                .toggle("Permanent", false)
                 banFormModal.show(player).then((banFormData) => {
                         if(banFormData.canceled) return player.sendMessage(`§6[§eAnti Cheats§6]§f Ban cancelled.`);
                         const now = Date.now();
@@ -74,8 +71,8 @@ function banForm(player,targetPlayer,type,banReason){
 }
 
 export function unbanForm(player){
-        let unbanModalForm = new ModalFormData() // Renamed variable
-        .title("Anti Cheats Player Unban") // Changed Safeguard to Anti Cheats
+        let unbanModalForm = new ModalFormData()
+        .title("Anti Cheats Player Unban")
         .textField("Player Name","Player name to unban (case sensitive)");
 
         unbanModalForm.show(player).then((formData) => {
@@ -89,16 +86,16 @@ export function unbanForm(player){
         })
 }
 
-export function settingSelector(player, previousFormCallback){ // Added previousFormCallback for navigation
-        if (config.default.other.ownerOnlySettings && !player.isOwner()) return ownerLoginForm(player, () => settingSelector(player, previousFormCallback), previousFormCallback);
+export function settingSelector(player, previousFormCallback){
+        if (config.other.ownerOnlySettings && !player.isOwner()) return ownerLoginForm(player, () => settingSelector(player, previousFormCallback), previousFormCallback);
 
         const form = new ActionFormData()
-                .title("Anti Cheats Settings") // Changed Safeguard to Anti Cheats
+                .title("Anti Cheats Settings")
                 .body(`Please select an option from below:`)
                 .button("Module Settings")
                 .button("Config Editor")
                 .button("Config Debug")
-                .button("§cBack"); // Added Back button
+                .button("§cBack");
         player.playSound("random.pop");
 
         form.show(player).then((formData) => {
@@ -119,8 +116,8 @@ export function settingSelector(player, previousFormCallback){ // Added previous
                 }
         })
 }
-export function banLogForm(player, previousFormCallback){ // Added previousFormCallback
-        const logs = world.getDynamicProperty("ac:banLogs"); // Changed safeguard to ac
+export function banLogForm(player, previousFormCallback){
+        const logs = world.getDynamicProperty("ac:banLogs");
 
         if (!logs || String(logs).length < 3) return player.sendMessage(`§6[§eAnti Cheats§6]§f No logs to display`); // Check length for "[]"
         
@@ -141,14 +138,14 @@ export function banLogForm(player, previousFormCallback){ // Added previousFormC
         }
         
         const form = new ActionFormData()
-                .title("Anti Cheats Ban Logs") // Changed Safeguard to Anti Cheats
+                .title("Anti Cheats Ban Logs")
                 .body(`Select a player to view ban log on:`);
 
         for(const log of newLogs){
                 if(!log || !log.a) continue; 
                 form.button(log.a);
         }
-        form.button("§cBack"); // Added back button
+        form.button("§cBack");
 
         form.show(player).then((formData) => {
                 if (formData.canceled) {
@@ -192,7 +189,7 @@ export function banLogForm(player, previousFormCallback){ // Added previousFormC
                                     return;
                                 }
                                 
-                                const filteredLogs = currentLogsArr.filter(logEntry => logEntry.a !== bannedPerson); // Assuming logId is not present as in original SafeGuard
+                                const filteredLogs = currentLogsArr.filter(logEntry => logEntry.a !== bannedPerson);
 
                                 if (filteredLogs.length === currentLogsArr.length) {
                                         logDebug(`No log found for banned person: ${bannedPerson}`);
@@ -218,12 +215,12 @@ export function banLogForm(player, previousFormCallback){ // Added previousFormC
 
 // Internal function, not exported directly but used by exported functions
 function ownerLoginForm(player, nextFormOnSuccess, previousFormForNext){
-        if(!config.default.OWNER_PASSWORD){ 
+        if(!config.OWNER_PASSWORD){ 
                 player.sendMessage(`§6[§eAnti Cheats§6]§4 Error!§c You have not set an owner password inside of the configuration file, access denied.`);
                 if (previousFormForNext) previousFormForNext(player);
                 return;
         }
-        const form = new ModalFormData().title("Anti Cheats Owner Login"); // Changed Safeguard to Anti Cheats
+        const form = new ModalFormData().title("Anti Cheats Owner Login");
         form.textField("Owner Password","Enter password here...");
 
         form.show(player).then((formData) => {
@@ -231,9 +228,9 @@ function ownerLoginForm(player, nextFormOnSuccess, previousFormForNext){
                     if (previousFormForNext) previousFormForNext(player);
                     return;
                 }
-                if (formData.formValues[0] === config.default.OWNER_PASSWORD) {
+                if (formData.formValues[0] === config.OWNER_PASSWORD) {
                         player.sendMessage("§6[§eAnti Cheats§6]§a Access granted, you now have owner status.");
-                        player.setDynamicProperty("ac:ownerStatus",true); // Changed safeguard to ac
+                        player.setDynamicProperty("ac:ownerStatus",true);
                         // player.setDynamicProperty("ac:rankId" ,"owner"); // This should be handled by rank system if integrated
                         if (nextFormOnSuccess) nextFormOnSuccess(player, previousFormForNext); 
                 }
@@ -244,13 +241,13 @@ function ownerLoginForm(player, nextFormOnSuccess, previousFormForNext){
         })
 }
 
-export function configDebugForm(player, previousFormCallback){ // Added previousFormCallback
+export function configDebugForm(player, previousFormCallback){
         const form = new ActionFormData()
-                .title("Anti Cheats Config Debugger") // Changed Safeguard to Anti Cheats
+                .title("Anti Cheats Config Debugger")
                 .body(`Please select an option from below:`)
                 .button("Export Config to Console")
                 .button("Reset Config")
-                .button("§cBack"); // Added Back button
+                .button("§cBack");
 
         form.show(player).then((formData) => {
                 if (formData.canceled) {
@@ -259,12 +256,12 @@ export function configDebugForm(player, previousFormCallback){ // Added previous
                 }
                 switch (formData.selection) {
                         case 0:
-                                console.warn(JSON.stringify(config.default)); 
+                                console.warn(JSON.stringify(config)); 
                                 player.sendMessage(`§6[§eAnti Cheats§6]§f The config was exported to the console`);
                                 configDebugForm(player, previousFormCallback); // Re-show form
                                 break;
                         case 1:
-                                world.setDynamicProperty("ac:config",undefined); // Changed safeguard to ac
+                                world.setDynamicProperty("ac:config",undefined);
                                 player.sendMessage(`§6[§eAnti Cheats§6]§f The config was reset. Run §e/reload§f`);
                                 configDebugForm(player, previousFormCallback); // Re-show form
                                 break;
@@ -275,16 +272,16 @@ export function configDebugForm(player, previousFormCallback){ // Added previous
         })
 }
 
-export function configEditorForm(player, previousFormCallback) { // Added previousFormCallback
+export function configEditorForm(player, previousFormCallback) {
         if (!player.isOwner()) return ownerLoginForm(player, () => configEditorForm(player, previousFormCallback), previousFormCallback);
 
-        const mainConfigForm = new ActionFormData().title("Anti Cheats Config Editor"); // Changed Safeguard to Anti Cheats
-        const configOptions = Object.keys(config.default).filter(key => typeof config.default[key] === "object");
+        const mainConfigForm = new ActionFormData().title("Anti Cheats Config Editor");
+        const configOptions = Object.keys(config).filter(key => typeof config[key] === "object");
 
         for (let i = 0; i < configOptions.length; i++) {
                 mainConfigForm.button(configOptions[i]);
         }
-        mainConfigForm.button("§cBack"); // Added Back button
+        mainConfigForm.button("§cBack");
 
         mainConfigForm.show(player).then((configSelection) => {
                 if (configSelection.canceled) {
@@ -300,7 +297,7 @@ export function configEditorForm(player, previousFormCallback) { // Added previo
                 const configModuleForm = new ModalFormData();
                 configModuleForm.title(`Settings: ${selectedModule}`);
 
-                const configModuleOptions = Object.entries(config.default[selectedModule]);
+                const configModuleOptions = Object.entries(config[selectedModule]);
                 const formFields = []; 
 
                 for (const [key, value] of configModuleOptions) {
@@ -339,17 +336,17 @@ export function configEditorForm(player, previousFormCallback) { // Added previo
                                 return;
                         }
                         
-                        let currentConfig = world.getDynamicProperty("ac:config"); // Changed safeguard to ac
+                        let currentConfig = world.getDynamicProperty("ac:config");
                         let parsedConfig = {};
                         if (currentConfig && typeof currentConfig === 'string') {
                             try { parsedConfig = JSON.parse(currentConfig); } catch (e) { console.warn("Error parsing dynamic config, starting fresh."); }
                         } else { 
-                            parsedConfig = JSON.parse(JSON.stringify(config.default)); 
+                            parsedConfig = JSON.parse(JSON.stringify(config)); 
                         }
 
                         formFields.forEach((fieldInfo, index) => {
                                 const keys = fieldInfo.path.split('.');
-                                let targetObject = parsedConfig[selectedModule]; // Use parsedConfig
+                                let targetObject = parsedConfig[selectedModule];
 
                                 for (let i = 0; i < keys.length - 1; i++) {
                                     if (!targetObject[keys[i]] || typeof targetObject[keys[i]] !== 'object') {
@@ -366,9 +363,9 @@ export function configEditorForm(player, previousFormCallback) { // Added previo
                                                 targetObject[finalKey] = Boolean(newValue);
                                                 break;
                                         case "number":
-                                                // Ensure config.default[selectedModule][finalKey] or similar path exists for default value
+                                                // Ensure config[selectedModule][finalKey] or similar path exists for default value
                                                 let defaultValueNum = 0;
-                                                let tempTarget = config.default[selectedModule];
+                                                let tempTarget = config[selectedModule];
                                                 for(const k of keys) { if(tempTarget && typeof tempTarget === 'object' && k in tempTarget) tempTarget = tempTarget[k]; else { tempTarget = undefined; break;} }
                                                 if(typeof tempTarget === 'number') defaultValueNum = tempTarget;
 
@@ -379,7 +376,7 @@ export function configEditorForm(player, previousFormCallback) { // Added previo
                                                 break;
                                 }
                         });
-                        world.setDynamicProperty("ac:config",JSON.stringify(parsedConfig)); // Changed safeguard to ac
+                        world.setDynamicProperty("ac:config",JSON.stringify(parsedConfig));
 
                         player.sendMessage(`§6[§eAnti Cheats§6]§r Configuration updated successfully! Reload for some changes to take effect.`);
                         configEditorForm(player, previousFormCallback); // Re-show after saving
@@ -387,9 +384,9 @@ export function configEditorForm(player, previousFormCallback) { // Added previo
         });
 }
 
-export function moduleSettingsForm(player, previousFormCallback){ // Added previousFormCallback
+export function moduleSettingsForm(player, previousFormCallback){
         let settingsform = new ModalFormData()
-        .title("Anti Cheats Module Settings"); // Changed Safeguard to Anti Cheats
+        .title("Anti Cheats Module Settings");
 
         const validModules = ACModule.getValidModules(); 
         for (let i = 0; i < validModules.length; i++) {
@@ -420,10 +417,10 @@ export function moduleSettingsForm(player, previousFormCallback){ // Added previ
         });
 }
 
-export function playerSelectionForm(player,action, previousFormCallback){ // Added previousFormCallback
+export function playerSelectionForm(player,action, previousFormCallback){
         let players = [...world.getPlayers()];
         let form = new ActionFormData()
-        .title("Anti Cheats Player Selector") // Changed Safeguard to Anti Cheats
+        .title("Anti Cheats Player Selector")
         .body(`Please select a player from ${players.length} online players:`);
         players.forEach((targetPlayer) => {
                 let playerName = targetPlayer.name;
@@ -433,7 +430,7 @@ export function playerSelectionForm(player,action, previousFormCallback){ // Add
 
                 form.button(playerName,"textures/ui/icon_steve.png");
         })
-        form.button("§cBack"); // Added Back button
+        form.button("§cBack");
 
         form.show(player).then((formData) => {
                 if(formData.canceled) {
@@ -449,11 +446,11 @@ export function playerSelectionForm(player,action, previousFormCallback){ // Add
                 const selectedPlayer = players[formData.selection];
 
                 if(action == "action") return playerActionForm(player,selectedPlayer, () => playerSelectionForm(player, action, previousFormCallback)); // Pass a breadcrumb
-                if(action == "ban") return banForm(player,selectedPlayer,"quick") // banForm does not currently support breadcrumbs in this version
+                if(action == "ban") return banForm(player,selectedPlayer,"quick")
         })
 }
 
-export function playerActionForm(player,targetPlayer, previousFormCallback){ // Added previousFormCallback
+export function playerActionForm(player,targetPlayer, previousFormCallback){
         if(targetPlayer.hasAdmin()) {
             player.sendMessage(`§6[§eAnti Cheats§6]§r Can't perform actions on §e${targetPlayer.name}§f they're an admin.`);
             if (previousFormCallback) previousFormCallback(player);
@@ -463,7 +460,7 @@ export function playerActionForm(player,targetPlayer, previousFormCallback){ // 
         const playerActions = ["Ban Player","Kick Player","Warn Player","Freeze Player","Mute Player","View Inventory","Copy Inventory","Unmute Player","Unfreeze Player","Remove All Warnings"];
 
         let form = new ModalFormData()
-        .title(`Anti Cheats Actions: ${targetPlayer.name}`) // Changed Safeguard to Anti Cheats
+        .title(`Anti Cheats Actions: ${targetPlayer.name}`)
         .dropdown(`Select an Action for ${targetPlayer.name}:`,playerActions)
         .textField("Reason (optional)","")
         form.show(player).then((formData) => {
@@ -479,9 +476,8 @@ export function playerActionForm(player,targetPlayer, previousFormCallback){ // 
 
                 switch(action){
                         case 0: // Ban Player
-                                // banForm in this version doesn't take a previousFormCallback, so we can't directly return to playerActionForm
                                 banForm(player,targetPlayer,"slow",reason);
-                                if (previousFormCallback) previousFormCallback(player); // Manually call to return after ban attempt
+                                if (previousFormCallback) previousFormCallback(player); 
                                 break;
                         case 1: // Kick Player
                                 player.runCommand(`kick "${targetPlayer.name}" ${reason}`); 
@@ -494,7 +490,7 @@ export function playerActionForm(player,targetPlayer, previousFormCallback){ // 
                                 if (previousFormCallback) previousFormCallback(player);
                                 break;
                         case 3: // Freeze Player
-                                if (targetPlayer.getDynamicProperty("ac:freezeStatus")) { // Changed safeguard to ac
+                                if (targetPlayer.getDynamicProperty("ac:freezeStatus")) {
                                     player.sendMessage(`§6[§eAnti Cheats§6]§f §e${targetPlayer.name}§f is already frozen.`);
                                 } else {
                                     targetPlayer.setFreezeTo(true); 
@@ -509,8 +505,6 @@ export function playerActionForm(player,targetPlayer, previousFormCallback){ // 
                                 break;
                         case 5: // View Inventory
                                 invsee(player,targetPlayer); 
-                                // invsee might have its own UI flow, may not need explicit previousFormCallback here
-                                // For safety, let's assume it might need it or that playerActionForm should be re-shown.
                                 if (previousFormCallback) previousFormCallback(player);
                                 break;
                         case 6: // Copy Inventory
@@ -528,7 +522,7 @@ export function playerActionForm(player,targetPlayer, previousFormCallback){ // 
                                 if (previousFormCallback) previousFormCallback(player);
                                 break;
                         case 8: // Unfreeze Player
-                                if (!targetPlayer.getDynamicProperty("ac:freezeStatus")) { // Changed safeguard to ac
+                                if (!targetPlayer.getDynamicProperty("ac:freezeStatus")) {
                                     player.sendMessage(`§6[§eAnti Cheats§6]§f §e${targetPlayer.name}§f is not frozen.`);
                                 } else {
                                     targetPlayer.setFreezeTo(false); 
@@ -545,4 +539,4 @@ export function playerActionForm(player,targetPlayer, previousFormCallback){ // 
                 }
         })
 }
-// END OF SafeGuard v2/scripts/assets/ui.js CONTENT
+// END OF Anti Cheats v2/scripts/assets/ui.js CONTENT

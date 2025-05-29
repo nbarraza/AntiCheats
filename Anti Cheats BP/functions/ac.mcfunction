@@ -14,9 +14,6 @@ tag @s add admin
 gamerule sendcommandfeedback false
 gamerule commandblockoutput false
 
-# Add tag to NPCs (for future use)
-tag @e[type=npc] add ac:friend
-
 tellraw @s[scores={ac:setup_success=3..}] {"rawtext":[{"text":"§6[§eAnti Cheats§6]§r§c§l "},{"text":"SETUP ERROR: §r§4AntiCheat already setup!§r"}]}
 
 playsound random.levelup @s[scores={ac:setup_success=2}]
