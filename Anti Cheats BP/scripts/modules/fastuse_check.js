@@ -24,10 +24,8 @@ const playerLastItemUseTime = new Map();
 export function initializeFastUseCheck() {
     const fastUseConfig = config.default.itemInteractions?.fastUseCheck;
     if (!fastUseConfig || !fastUseConfig.enabled) {
-        logDebug("[FastUseCheck] Disabled by config.");
         return;
     }
-    logDebug("[FastUseCheck] Initializing...");
 
     /**
      * Event handler for `world.beforeEvents.itemUse`.
@@ -85,8 +83,6 @@ export function initializeFastUseCheck() {
                 if (action === "cancelEvent") {
                     event.cancel = true;
                     logDebug(`[FastUseCheck] Cancelled item use for ${player.name} due to FastUse.`);
-                    // Optionally send a message to the player
-                    // player.sendMessage("§cYou are using items too quickly!");
                 } else if (action === "customCommand") {
                     let command = fastUseConfig.customCommand;
                     command = command.replace(/{playerName}/g, player.name)

@@ -61,8 +61,7 @@ export default {
         //if only owner status players can edit modules
         "ownerOnlySettings": true,
         "ownerPlayerNameManual": "", // Manually set the owner's exact name here. If set, this player becomes owner on first load if no owner is already designated.
-        "defaultLanguage": "en_US",
-        "admin_panel_item_id": "safeguard:admin_panel" // ID for the item that opens the admin panel
+        "admin_panel_item_id": "ac:admin_panel" // ID for the item that opens the admin panel
     },
     "combat": {
         "autoclicker":{

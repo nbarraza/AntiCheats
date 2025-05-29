@@ -16,7 +16,7 @@ newCommand({
      */
     run: (data) => {
         try {
-            const {player, args} = data; // Ensure args is destructured
+            const {player, args} = data;
             const setNameUnban = args.slice(1).join(" ").replace(/["@]/g, "");
             
             if (!setNameUnban) { // Basic validation for player name

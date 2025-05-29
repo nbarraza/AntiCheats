@@ -27,10 +27,8 @@ const playerLastRotation = new Map();
 export function initializeRotationCheck() {
     const rotationConfig = config.default.packetChecks?.invalidHeadRotationCheck;
     if (!rotationConfig || !rotationConfig.enabled) {
-        logDebug("[RotationCheck] Disabled by config.");
         return;
     }
-    logDebug("[RotationCheck] Initializing...");
 
     /**
      * Periodically executed function (every tick) to check player head rotations.
