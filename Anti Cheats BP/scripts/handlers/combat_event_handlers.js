@@ -1,15 +1,15 @@
 import { world, EntityDamageCause } from "@minecraft/server";
-import { CONFIG as config } from "../config.js";
-import { sendMessageToAdmins } from "../util.js";
+import configData from "../config.js";
+import { sendMessageToAdmins } from "../assets/util.js";
 import { ACModule } from "../classes/module.js";
-import { Vector3Utils } from "../classes/vector3utils.js"; // Ensure this path is correct
+import { Vector3utils } from "../classes/vector3.js"; // Ensure this path is correct
 
 // Entity Hit Entity Event (Potential Reach/Attack Aura, Kill Aura)
 world.afterEvents.entityHitEntity.subscribe((eventData) => {
     const { damagingEntity: attacker, hitEntity: victim } = eventData;
 
     if (!attacker || !victim || !(attacker.typeId === "minecraft:player")) return;
-    if (victim.typeId !== "minecraft:player" && !config.detect_entity_aura) return; // Only players or if entity aura is on
+    if (victim.typeId !== "minecraft:player" && !configData.detect_entity_aura) return; // Only players or if entity aura is on
 
     const player = attacker; // player is the attacker
 
@@ -21,17 +21,17 @@ world.afterEvents.entityHitEntity.subscribe((eventData) => {
 
     // Reach Check
     if (ACModule.isActive("reach")) {
-        const distance = Vector3Utils.distance(player.location, victim.location);
-        const maxReach = player.isSneaking ? config.max_reach_sneaking : config.max_reach;
+        const distance = Vector3utils.distance(player.location, victim.location);
+        const maxReach = player.isSneaking ? configData.max_reach_sneaking : configData.max_reach;
         if (distance > maxReach) {
             let reachVl = (player.getDynamicProperty("reach_vl") || 0) + 1;
             player.setDynamicProperty("reach_vl", reachVl);
 
-            if (reachVl >= config.reach_detection_threshold) {
+            if (reachVl >= configData.reach_detection_threshold) {
                 sendMessageToAdmins(
                     "detection.reach_detected_admin", { player: player.name, distance: distance.toFixed(2), max_reach: maxReach }
                 );
-                if (config.reach_punish) {
+                if (configData.reach_punish) {
                     // Implement punishment (e.g., player.runCommandAsync("kick ..."))
                 }
                 player.setDynamicProperty("reach_vl", 0); // Reset after detection/punishment
@@ -50,12 +50,12 @@ world.afterEvents.entityHurt.subscribe((eventData) => {
     // NoFall Check (basic, assumes custom fall distance tracking)
     if (ACModule.isActive("nofall") && damageSource.cause === EntityDamageCause.fall) {
         const fallDistance = player.getDynamicProperty("fall_distance_custom") || 0;
-        if (fallDistance > config.nofall_min_fall_distance && damage < 1) { // Survived a lethal fall
+        if (fallDistance > configData.nofall_min_fall_distance && damage < 1) { // Survived a lethal fall
             let nofallVl = (player.getDynamicProperty("nofall_vl") || 0) + 1;
             player.setDynamicProperty("nofall_vl", nofallVl);
-            if (nofallVl >= config.nofall_detection_threshold) {
+            if (nofallVl >= configData.nofall_detection_threshold) {
                 sendMessageToAdmins("detection.nofall_detected_admin", { player: player.name, fall_distance: fallDistance.toFixed(2) });
-                if (config.nofall_punish) {
+                if (configData.nofall_punish) {
                     // Implement punishment
                 }
                 player.setDynamicProperty("nofall_vl", 0);

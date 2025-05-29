@@ -1,6 +1,6 @@
 import { world, Player } from '@minecraft/server';
 // import * as config from '../config.js'; // If maxReports becomes configurable
-// import { sendMessageToAdmins } from '../util.js'; // If a utility function is preferred for admin notifications
+// import { sendMessageToAdmins } from '../assets/util.js'; // If a utility function is preferred for admin notifications
 
 /**
  * Submits a new player report and stores it in world dynamic properties.
