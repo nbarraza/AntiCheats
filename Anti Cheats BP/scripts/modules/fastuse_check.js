@@ -1,7 +1,7 @@
 import * as Minecraft from '@minecraft/server';
 import * as config from '../config.js';
 import { logDebug, sendMessageToAdmins } from '../assets/util.js';
-import { i18n } from '../assets/i18n.js'; // Added for localization
+// Removed i18n import
 
 const world = Minecraft.world;
 /**
@@ -24,10 +24,8 @@ const playerLastItemUseTime = new Map();
 export function initializeFastUseCheck() {
     const fastUseConfig = config.default.itemInteractions?.fastUseCheck;
     if (!fastUseConfig || !fastUseConfig.enabled) {
-        logDebug("[FastUseCheck] Disabled by config.");
         return;
     }
-    logDebug("[FastUseCheck] Initializing...");
 
     /**
      * Event handler for `world.beforeEvents.itemUse`.
@@ -75,18 +73,15 @@ export function initializeFastUseCheck() {
             if (violations >= fastUseConfig.violationThreshold) {
                 player.setDynamicProperty("ac:fastUseViolations", 0); // Reset violations
 
-                const message = i18n.getText("modules.fastuse.notify.adminFlag", {
+                sendMessageToAllAdmins("modules.fastuse.notify.adminFlag", {
                     playerName: player.name,
                     itemName: itemStack.typeId.replace("minecraft:", "")
                 });
-                sendMessageToAdmins(message);
                 
                 const action = fastUseConfig.action;
                 if (action === "cancelEvent") {
                     event.cancel = true;
                     logDebug(`[FastUseCheck] Cancelled item use for ${player.name} due to FastUse.`);
-                    // Optionally send a message to the player
-                    // player.sendMessage("§cYou are using items too quickly!");
                 } else if (action === "customCommand") {
                     let command = fastUseConfig.customCommand;
                     command = command.replace(/{playerName}/g, player.name)

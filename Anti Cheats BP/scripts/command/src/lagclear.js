@@ -20,7 +20,7 @@ newCommand({
      */
     run: async (data) => {
         try {
-            const { dimension, name: playerName } = data.player; // Get player name for logging
+            const { dimension, name: playerName } = data.player;
 
             world.sendMessage(i18n.getText("command.lagclear.countdownInitial"));
 
@@ -42,10 +42,10 @@ newCommand({
             let totalKilled = 0;
 
             for (const queryOptions of entityTypesToClear) {
-                const entities = dimension.getEntities(queryOptions); // API Call
+                const entities = dimension.getEntities(queryOptions);
                 for (const entity of entities) {
                     try {
-                        entity.remove(); // API Call
+                        entity.remove();
                         totalKilled++;
                     } catch (entityRemoveError) {
                         logDebug(`[SafeGuard ERROR] Failed to remove entity ${entity.typeId || 'unknown type'} during lagclear:`, entityRemoveError, entityRemoveError.stack);

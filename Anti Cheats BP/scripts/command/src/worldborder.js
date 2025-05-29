@@ -45,7 +45,6 @@ newCommand({
                 world.setDynamicProperty("ac:worldBorder",0);
                 world.worldBorder = null;
 
-                //notify admins
                 sendMessageToAllAdmins("notify.worldborder.removed", { playerName: player.name }, true);
                 player.sendMessage(i18n.getText("command.worldborder.removed", {}, player));
                 return;
