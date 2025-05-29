@@ -1,6 +1,7 @@
 import * as Minecraft from '@minecraft/server';
 import { ActionFormData, MessageFormData, ModalFormData } from '@minecraft/server-ui';
-import { addPlayerToUnbanQueue, copyInv, getPlayerByName, invsee, logDebug, millisecondTime, sendMessageToAllAdmins } from './util.js';
+import { addPlayerToUnbanQueue, copyInv, getPlayerByName, invsee, millisecondTime, sendMessageToAllAdmins } from './util.js';
+import { logDebug } from './logger.js';
 import { ModuleStatusManager } from '../classes/module.js';
 import CONFIG from "../config.js";
 // import { reportPlayerInternal } from '../command/src/report.js'; // No longer needed here, submitReport will be used
