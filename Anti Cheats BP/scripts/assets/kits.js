@@ -13,7 +13,6 @@ import { logDebug } from './util';
 export function giveIronKit(playerName) {
   const player = world.getPlayers({ name: playerName })[0];
 
-  logDebug(player);
   const { x, y, z } = player.location;
 
 
@@ -89,8 +88,6 @@ export function giveIronKit(playerName) {
   const chest = world.getDimension("overworld").getBlock({ x: x + 1, y: y, z: z })
   const inventory = chest.getComponent("minecraft:inventory").container;
 
-  // const inventory = player.getComponent("minecraft:inventory").container;
-
   inventory.setItem(0, Helmet)
   inventory.setItem(1, Chest)
   inventory.setItem(2, Pants)
@@ -114,7 +111,6 @@ export function giveIronKit(playerName) {
 export function giveDiamondKit(playerName) {
   const player = world.getPlayers({ name: playerName })[0];
 
-  logDebug(player);
   const { x, y, z } = player.location;
 
 
@@ -190,8 +186,6 @@ export function giveDiamondKit(playerName) {
   const chest = world.getDimension("overworld").getBlock({ x: x + 1, y: y, z: z })
   const inventory = chest.getComponent("minecraft:inventory").container;
 
-  // const inventory = player.getComponent("minecraft:inventory").container;
-
   inventory.setItem(0, Helmet)
   inventory.setItem(1, Chest)
   inventory.setItem(2, Pants)
@@ -215,7 +209,6 @@ export function giveDiamondKit(playerName) {
 export function giveNetheriteKit(playerName) {
   const player = world.getPlayers({ name: playerName })[0];
 
-  logDebug(player);
   const { x, y, z } = player.location;
 
 
@@ -290,8 +283,6 @@ export function giveNetheriteKit(playerName) {
 
   const chest = world.getDimension("overworld").getBlock({ x: x + 1, y: y, z: z })
   const inventory = chest.getComponent("minecraft:inventory").container;
-
-  // const inventory = player.getComponent("minecraft:inventory").container;
 
   inventory.setItem(0, Helmet)
   inventory.setItem(1, Chest)

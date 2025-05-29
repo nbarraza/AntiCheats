@@ -16,7 +16,7 @@ newCommand({
      */
     run: (data) => {
         try {
-            data.player.runCommand("function admin_cmds/summon_npc"); // API Call
+            data.player.runCommand("function admin_cmds/summon_npc");
         } catch (e) {
             logDebug("[SafeGuard ERROR][summon_npc]", e, e.stack);
             if (data && data.player) {

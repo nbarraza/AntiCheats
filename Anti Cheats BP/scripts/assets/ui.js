@@ -27,7 +27,6 @@ function getLogsFromPropertyWithCache(dynamicPropertyKey, logTypeNameForError) {
 
     if (cached && (currentTime - cached.timestamp < UI_LOG_CACHE_DURATION_MS) && cached.raw === rawLogs) {
         // Cache is valid if time hasn't expired AND raw string hasn't changed
-        // logDebug(`[UI Cache] Using cached logs for ${dynamicPropertyKey}`);
         return cached.data;
     }
 
@@ -47,13 +46,11 @@ function getLogsFromPropertyWithCache(dynamicPropertyKey, logTypeNameForError) {
         }
     }
     
-    // logDebug(`[UI Cache] Caching new logs for ${dynamicPropertyKey}`);
     uiLogCache[dynamicPropertyKey] = { data: logsArray, timestamp: currentTime, raw: rawLogs };
     return logsArray;
 }
 
 
-//ban form
 /**
  * Handles the ban process for a target player.
  * It can perform a "quick" permanent ban or a "slow" ban with configurable duration.
@@ -1456,17 +1453,13 @@ export async function showPlayerList_Public(player) {
 }
 
 export async function showPublicInfoPanel(player) {
-    // Requirement 1: Import Config (config is already imported at the top of the file as `import * as config from "../config.js";`)
     const uiSettings = config.default.uiSettings;
     const featuresEnabled = uiSettings.featuresEnabled;
 
-    // Requirement 2: Use ActionFormData
     const form = new ActionFormData();
 
-    // Requirement 3: Set Title
     form.title(uiSettings.welcomeMessage || "Info Panel"); // Use welcome message as title, or fallback
 
-    // Requirement 4: Add Buttons Conditionally
     const buttonActions = []; // To map selection to action
 
     if (featuresEnabled.playerList) {
@@ -1500,7 +1493,6 @@ export async function showPublicInfoPanel(player) {
     }
     
     try {
-        // Requirement 5: Handle Button Actions
         const response = await form.show(player);
 
         if (response.canceled) {
@@ -1832,7 +1824,6 @@ async function showServerInfo(player) {
 }
 
 
-//settings form
 /**
  * Displays a form to toggle Anti-Cheat modules on or off.
  *

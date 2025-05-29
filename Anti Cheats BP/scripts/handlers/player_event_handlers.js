@@ -97,20 +97,6 @@ world.afterEvents.playerSpawn.subscribe((eventData) => {
         addPlayerActivityLog(player, "initially spawned");
         // Perform actions specific to the very first time a player spawns in the world
 
-        // Set player language preference based on their client locale
-        try {
-            const playerLocale = player.locale;
-            const availableLanguages = i18n.getAvailableLanguages(); // Ensure i18n is imported
-
-            if (availableLanguages.includes(playerLocale)) {
-                player.setDynamicProperty("ac:user_language", playerLocale);
-                logDebug(`[PlayerLang] Set language for ${player.name} to ${playerLocale} based on client locale.`);
-            } else {
-                logDebug(`[PlayerLang] Player ${player.name}'s locale ${playerLocale} is not in available languages: [${availableLanguages.join(', ')}]. User language not set.`);
-            }
-        } catch (e) {
-            logDebug(`[PlayerLang] Error setting language for ${player.name}: ${e}`);
-        }
     } else {
         addPlayerActivityLog(player, "respawned");
         // Perform actions for respawns (e.g., after death)

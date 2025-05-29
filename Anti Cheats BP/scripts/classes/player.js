@@ -196,7 +196,6 @@ Player.prototype.getMuteInfo = function(){
 		}
 		
 		this.isMuted = isActive;
-		// logDebug("[Mute Info]", isActive, muteInfo.isPermanent, muteInfo.duration, muteInfo.reason, muteInfo.admin);
 		return muteInfo;
 	} catch (error) {
 		logDebug(`[Anti Cheats] Error parsing muteInfo JSON for player ${this.name}:`, error, `Raw property: ${muteInfoString}`);
@@ -486,13 +485,11 @@ Player.prototype.isOwner = function(){
 
 	// If the dynamic property is not set or is empty, no one is the owner yet.
 	if (typeof ownerPlayerName !== 'string' || ownerPlayerName.trim() === '') {
-		// logDebug(`[Anti Cheats] isOwner check: ac:ownerPlayerName is not set. No player is currently designated as owner.`);
 		return false;
 	}
 
 	// Compare the current player's name with the stored owner's name.
 	const isPlayerOwner = this.name === ownerPlayerName;
-	// logDebug(`[Anti Cheats] isOwner check: Current player: ${this.name}, Stored owner: ${ownerPlayerName}, Is owner: ${isPlayerOwner}`);
 	return isPlayerOwner;
 	// Note: The "ac:ownerPlayerName" dynamic property, which this method checks, is set during initialization 
 	// (by reading from config's 'ownerPlayerNameManual' or an existing dynamic property) 
@@ -520,5 +517,3 @@ Player.prototype.hasAdmin = function() {
 	// this is in case I ever change the admin tag or if the user wants to change it
 	return this.hasTag("admin") || this.isOwner();
 };
-
-logDebug(`[Anti Cheats] Updated Player class`);
