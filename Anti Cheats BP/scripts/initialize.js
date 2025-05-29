@@ -1,9 +1,8 @@
 import * as Minecraft from '@minecraft/server';
-import { logDebug, scoreboardAction } from './assets/util.js';
-import * as config from './config';
+import { logDebug } from './assets/util.js';
+import * as config from './config.js';
 import { globalBanList } from './assets/global_ban_list.js'; // Added import
 // Removed i18n import
-import { PACKAGED_LANGUAGE_DATA } from './assets/language_data.js'; // IMPORTED
 
 // PACKAGED_LANGUAGE_DATA object removed from here
 
