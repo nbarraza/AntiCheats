@@ -16,7 +16,7 @@ newCommand({
      */
     run: (data) => {
         try {
-            data.player.runCommand("function admin_cmds/vanish"); // API Call
+            data.player.runCommand("function admin_cmds/vanish");
         } catch (e) {
             logDebug("[SafeGuard ERROR][vanish]", e, e.stack);
             if (data && data.player) {

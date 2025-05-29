@@ -1,6 +1,6 @@
 import { Player, world, InputPermissionCategory } from "@minecraft/server";
 import { formatMilliseconds, generateBanLog, logDebug, sendMessageToAllAdmins, getPlayerByName } from "../assets/util.js";
-import { ACModule } from "./module";
+import { ACModule } from "./module.js";
 import { i18n } from '../assets/i18n.js';
 
 /** @property {number} initialClick - Timestamp of the initial click for CPS calculation. Primarily for internal use by anti-cheat modules. */
@@ -97,7 +97,7 @@ Player.prototype.setWarning = function(module){
 			} else if(manualWarningCount === 3){
 				this.ban("Reaching 3 manual warnings", -1, true, "Anti Cheats AntiCheat"); // ban itself will be wrapped
 				this.runCommand(`kick "${this.name}" ${i18n.getText("player.kick.manualWarnings.3")}`);
-				sendMessageToAllAdmins(i18n.getText("player.notify.admin.permBannedForManualWarnings", { playerName: this.name }),true);
+				sendMessageToAllAdmins("player.notify.admin.permBannedForManualWarnings", { playerName: this.name }, true);
 			}
 		}
 	} catch (e) {
@@ -196,7 +196,6 @@ Player.prototype.getMuteInfo = function(){
 		}
 		
 		this.isMuted = isActive;
-		// logDebug("[Mute Info]", isActive, muteInfo.isPermanent, muteInfo.duration, muteInfo.reason, muteInfo.admin);
 		return muteInfo;
 	} catch (error) {
 		logDebug(`[Anti Cheats] Error parsing muteInfo JSON for player ${this.name}:`, error, `Raw property: ${muteInfoString}`);
@@ -258,7 +257,7 @@ Player.prototype.ban = function(reason="No reason provided", unbanTime, permanen
 		}
 		catch(e){ // This would catch errors in the generateBanLog call itself, not its internal logic
 			logDebug(i18n.getText("player.error.ban.logFailed", { playerName: this.name }), e, e.stack);
-			sendMessageToAllAdmins(i18n.getText("player.notify.admin.banLogError", { playerName: this.name, error: e }))
+			sendMessageToAllAdmins("player.notify.admin.banLogError", { playerName: this.name, error: e })
 		}
 
 		const banObject = {
@@ -426,7 +425,7 @@ Player.prototype.mute = function(adminPlayer,reason, durationMs) {
                 actualAdminPlayer.sendMessage(i18n.getText("player.mute.successAdmin", { playerName: this.name, duration: muteTimeDisplay }));
             }
 		}
-		sendMessageToAllAdmins(i18n.getText("player.notify.admin.muteSuccess", { playerName: this.name, duration: muteTimeDisplay, adminName: adminName, reason: reason }), true); // sendMessageToAllAdmins from util
+		sendMessageToAllAdmins("player.notify.admin.muteSuccess", { playerName: this.name, duration: muteTimeDisplay, adminName: adminName, reason: reason }, true); // sendMessageToAllAdmins from util
 		logDebug(`MUTED NAME="${this.name}"; REASON="${reason}"; DURATION=${muteTimeDisplay}`);
 	} catch (e) {
 		logDebug(i18n.getText("player.error.mute.failed", { playerName: this.name }), e, e.stack);
@@ -486,13 +485,11 @@ Player.prototype.isOwner = function(){
 
 	// If the dynamic property is not set or is empty, no one is the owner yet.
 	if (typeof ownerPlayerName !== 'string' || ownerPlayerName.trim() === '') {
-		// logDebug(`[Anti Cheats] isOwner check: ac:ownerPlayerName is not set. No player is currently designated as owner.`);
 		return false;
 	}
 
 	// Compare the current player's name with the stored owner's name.
 	const isPlayerOwner = this.name === ownerPlayerName;
-	// logDebug(`[Anti Cheats] isOwner check: Current player: ${this.name}, Stored owner: ${ownerPlayerName}, Is owner: ${isPlayerOwner}`);
 	return isPlayerOwner;
 	// Note: The "ac:ownerPlayerName" dynamic property, which this method checks, is set during initialization 
 	// (by reading from config's 'ownerPlayerNameManual' or an existing dynamic property) 
@@ -520,5 +517,3 @@ Player.prototype.hasAdmin = function() {
 	// this is in case I ever change the admin tag or if the user wants to change it
 	return this.hasTag("admin") || this.isOwner();
 };
-
-logDebug(`[Anti Cheats] Updated Player class`);

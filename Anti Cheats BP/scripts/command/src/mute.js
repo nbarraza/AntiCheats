@@ -84,16 +84,16 @@ newCommand({
 			let timeInMs;
 			switch (timeUnit) {
 				case "S":
-					timeInMs = timeValue * 1000; // seconds to ms
+					timeInMs = timeValue * 1000;
 					break;
 				case "M":
-					timeInMs = timeValue * 1000 * 60; // minutes to ms
+					timeInMs = timeValue * 1000 * 60;
 					break;
 				case "H":
-					timeInMs = timeValue * 1000 * 60 * 60; // hours to ms
+					timeInMs = timeValue * 1000 * 60 * 60;
 					break;
 				case "D":
-					timeInMs = timeValue * 1000 * 60 * 60 * 24; // days to ms
+					timeInMs = timeValue * 1000 * 60 * 60 * 24;
 					break;
 				default: // Should not happen due to regex, but as a fallback
 					player.sendMessage(i18n.getText("command.mute.error.invalidTimeUnit", {}, player));

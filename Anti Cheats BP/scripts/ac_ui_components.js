@@ -15,7 +15,6 @@ import * as config from "./config.js";
 const world = Minecraft.world;
 
 
-//ban form
 // This function is internal to this module, called by playerActionForm and playerSelectionForm.
 function banForm(player,targetPlayer,type,banReason){
         if(targetPlayer.hasAdmin()) return player.sendMessage(`§6[§eAnti Cheats§6]§r Can't ban §e${targetPlayer.name}§f they're an admin.`);
