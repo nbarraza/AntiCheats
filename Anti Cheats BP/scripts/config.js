@@ -54,7 +54,7 @@ export default {
         //dev stuff
         // For production servers, it's recommended to set "consoleDebugMode" to false
         // to reduce console spam and potential minor performance overhead.
-        "consoleDebugMode": true,
+        "consoleDebugMode": false,
         // Wether to send detection alerts to everyone (true) or just to admins (false).
         // Defaulted to false to prevent chat spam on busy servers. Admins can enable if public alerts are desired.
         "sendAlertsToEveryone": false,
