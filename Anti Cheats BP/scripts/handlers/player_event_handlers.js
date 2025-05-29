@@ -1,6 +1,6 @@
 import { world, system } from "@minecraft/server"; // Ensure world and system are imported
 import { CONFIG as config, i18n } from "../config.js";
-import { sendMessageToAdmins, getScore, getPlayerRank, 효율, logDebug } from "../util.js"; // Assuming 효율 is still needed, otherwise remove
+import { sendMessageToAdmins, getScore, getPlayerRank, logDebug } from "../util.js"; // Assuming 효율 is still needed, otherwise remove
 import { ACModule } from "../classes/module.js";
 import { seedGlobalBanList } from "../assets/global_ban_list.js"; // Assuming this is used or will be used
 import { inMemoryPlayerActivityLogs, MAX_LOG_ENTRIES, initializePlayerState, removePlayerState } from "../systems/periodic_checks.js";
@@ -115,22 +115,9 @@ world.afterEvents.playerSpawn.subscribe((eventData) => {
         addPlayerActivityLog(player, "respawned");
         // Perform actions for respawns (e.g., after death)
     }
-    // Resetting properties on spawn might be needed for some checks
-    // player.setDynamicProperty("last_ground_time", world.currentTick); // Will be handled by internal state
-    // player.setDynamicProperty("last_position_y", player.location.y); // Will be handled by internal state
     // For spawn, if state needs re-initialization or specific updates (like lastGroundTime):
-    const playerState = removePlayerState(player.id); // Remove old state if any (e.g. if player re-logged quickly)
+    removePlayerState(player.id); // Remove old state if any (e.g. if player re-logged quickly)
     initializePlayerState(player.id, player.location, system.currentTick); // Re-initialize state
-    // Or, more selectively:
-    // const state = getPlayerState(player.id);
-    // if (state) {
-    //     state.lastGroundTime = system.currentTick;
-    //     state.lastPositionY = player.location.y;
-    //     state.lastLocation = player.location; // Update location on respawn
-    // } else {
-    //     // This case might happen if player joins and spawns in the same tick, or if there's a leave/join issue
-    //     initializePlayerState(player.id, player.location, system.currentTick);
-    // }
 });
 
 // Player Game Mode Change Event
