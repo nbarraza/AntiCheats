@@ -22,10 +22,8 @@ const system = Minecraft.system;
 export function initializeContextualKillauraCheck() {
     const killauraConfig = config.default.combat?.contextualKillauraCheck;
     if (!killauraConfig || !killauraConfig.enabled) {
-        logDebug("[ContextualKillaura] Disabled by config.");
         return;
     }
-    logDebug("[ContextualKillaura] Initializing...");
 
     // Note: Detecting "using item" and "chest open" accurately server-side for all cases can be very complex.
     // This implementation will make best-effort attempts or focus on what's feasible.

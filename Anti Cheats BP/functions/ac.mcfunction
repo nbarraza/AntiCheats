@@ -23,7 +23,6 @@ playsound random.levelup @s[scores={ac:setup_success=2}]
 tellraw @s[scores={ac:setup_success=2}] {"rawtext":[{"text":"§6[§eAnti Cheats§6]§r Add tag §eadmin§r to all the staff §o/tag NAME add admin§r"}]}
 tellraw @s[scores={ac:setup_success=2}] {"rawtext":[{"text":"§6[§eAnti Cheats§6]§r §aSuccessfully setup the anti-cheat!§r"}]}
 execute as @s[scores={ac:setup_success=2}] run scoreboard players set @s ac:setup_success 3
-#errors
 tellraw @s[scores={ac:setup_success=0..1}] {"rawtext":[{"text":"§6[§eAnti Cheats§6]§r§c§l "},{"text":"SETUP ERROR: §r§4Experiments Required, turn on §7Beta APIs§r"}]}
 
 playsound random.anvil_land @s[scores={ac:setup_success=0..1}]

@@ -7,6 +7,7 @@ import { PACKAGED_LANGUAGE_DATA } from './assets/language_data.js'; // IMPORTED
 
 // PACKAGED_LANGUAGE_DATA object removed from here
 
+// Removed logDebug: "[Anti Cheats] Setting up language dynamic properties..."
 let inMemoryGeneralLogs = [];
 const MAX_GENERAL_LOG_ENTRIES = 100; 
 
@@ -18,7 +19,6 @@ const world = Minecraft.world;
 // 'PACKAGED_LANGUAGE_DATA' should also be defined in this file (from the previous step).
 
 function setupLanguageDynamicProperties() {
-    logDebug("[Anti Cheats] Setting up language dynamic properties...");
     const loadedLanguageCodes = [];
     
     if (typeof PACKAGED_LANGUAGE_DATA !== 'object' || PACKAGED_LANGUAGE_DATA === null) {
@@ -38,7 +38,7 @@ function setupLanguageDynamicProperties() {
             try {
                 world.setDynamicProperty(`ac:lang/${langCode}`, langContentString);
                 loadedLanguageCodes.push(langCode);
-                logDebug(`[Anti Cheats] Stored translations for [${langCode}] in dynamic property.`);
+                // Removed logDebug: Stored translations for [langCode]
             } catch (e) {
                 logDebug(`[Anti Cheats ERROR] Failed to set dynamic property for language ${langCode}:`, e);
             }
@@ -47,7 +47,7 @@ function setupLanguageDynamicProperties() {
 
     try {
         world.setDynamicProperty("ac:availableLanguages", JSON.stringify(loadedLanguageCodes.length > 0 ? loadedLanguageCodes : ["en_US"]));
-        logDebug(`[Anti Cheats] Set 'ac:availableLanguages' to: ${JSON.stringify(loadedLanguageCodes)}`);
+        // Removed logDebug: Set 'ac:availableLanguages'
     } catch (e) {
         logDebug("[Anti Cheats ERROR] Failed to set 'ac:availableLanguages' dynamic property:", e);
     }
@@ -89,7 +89,7 @@ export function Initialize(){
             if (world.scoreboard.getObjective(obj) == undefined) {
                 try {
                     world.scoreboard.addObjective(obj, obj); // Use obj as display name too, or customize
-                    logDebug(`[Anti Cheats] Created scoreboard objective: ${obj}`);
+                    // Removed logDebug: Created scoreboard objective
                 } catch (e) {
                     logDebug(`[Anti Cheats] Failed to create scoreboard objective ${obj}:`, e);
                 }
@@ -106,7 +106,7 @@ export function Initialize(){
                 world.gameRules.sendCommandFeedback = false;
                 world.gameRules.commandBlockOutput = false;
                 world.setDynamicProperty("ac:gamerulesSet", true);
-                logDebug("[Anti Cheats] Initialized gamerules (sendCommandFeedback, commandBlockOutput).");
+                // Removed logDebug: Initialized gamerules
             } catch (e) {
                 logDebug("[Anti Cheats] Failed to initialize gamerules:", e);
             }
@@ -139,7 +139,7 @@ export function Initialize(){
             logDebug("[Anti Cheats] Error parsing unbanQueue JSON, defaulting to empty array:", error);
             world.acUnbanQueue = [];
         }
-        logDebug(`[Anti Cheats] Unban Queue: `, JSON.stringify(world.acUnbanQueue));
+        // Removed logDebug: Unban Queue content
 
         /**
          * @description Initializes the device ban list (`world.acDeviceBan`) by parsing the
@@ -152,7 +152,7 @@ export function Initialize(){
             logDebug("[Anti Cheats] Error parsing deviceBan JSON, defaulting to empty array:", error);
             world.acDeviceBan = [];
         }
-        logDebug(`[Anti Cheats] Device Ban List: `, JSON.stringify(world.acDeviceBan));
+        // Removed logDebug: Device Ban List content
 
         /**
          * @description Checks the addon version stored in "ac:version" dynamic property.
@@ -234,7 +234,7 @@ export function Initialize(){
                         config.default[i] = editedConfig[i];
                     }
                 }
-                logDebug(`[Anti Cheats] Loaded config from dynamic properties.`);
+                // Removed logDebug: Loaded config from dynamic properties.
             } catch (error) {
                 logDebug(`[Anti Cheats] Error parsing editedConfig JSON from dynamic property "ac:config":`, error);
                 // Proceed with default config if parsing fails
@@ -271,28 +271,28 @@ export function Initialize(){
         }
         world.dynamicGbanListArray = loadedGbanList; // Store the array
         world.dynamicGbanNameSet = new Set(loadedGbanList.map(entry => (typeof entry === 'string' ? entry : entry.name)));
-        logDebug(`[Anti Cheats] Dynamic Global Ban List initialized. ${world.dynamicGbanListArray.length} entries, Set size: ${world.dynamicGbanNameSet.size}`);
+        // Removed logDebug: Dynamic Global Ban List initialized
 
         setupLanguageDynamicProperties(); // Call the function to set up language dynamic properties
         i18n.reloadLanguages(); // Add this line
-        logDebug("[Anti Cheats] i18n languages reloaded after setup."); // And this line for logging
+        // Removed logDebug: i18n languages reloaded after setup.
         i18n.setLanguage(config.default.other.defaultLanguage);
-        logDebug(`[Anti Cheats] Attempted to set initial language to configured default: ${config.default.other.defaultLanguage}`);
+        // Removed logDebug: Attempted to set initial language
 
         // New Owner Designation Logic
         try {
             const existingOwner = world.getDynamicProperty("ac:ownerPlayerName");
             if (existingOwner !== undefined && typeof existingOwner === 'string' && existingOwner.trim() !== '') {
-                logDebug(`[Anti Cheats] Existing Owner Found: ${existingOwner}`);
+                // Removed logDebug: Existing Owner Found
             } else {
-                logDebug("[Anti Cheats] No existing owner found in dynamic property 'ac:ownerPlayerName'.");
+                // Removed logDebug: No existing owner found
                 const configOwnerName = config.default.other.ownerPlayerNameManual;
                 if (typeof configOwnerName === 'string' && configOwnerName.trim() !== '') {
                     world.setDynamicProperty("ac:ownerPlayerName", configOwnerName);
-                    logDebug(`[Anti Cheats] Owner designated from config.js: ${configOwnerName}`);
+                    // Removed logDebug: Owner designated from config.js
                     // Consider adding a world.sendMessage or similar if you want to announce this.
                 } else {
-                    logDebug("[Anti Cheats] No owner manually set in config.js (ownerPlayerNameManual is blank). Owner can be claimed using !owner command.");
+                    // Removed logDebug: No owner manually set in config.js
                 }
             }
         } catch (e) {
@@ -302,7 +302,7 @@ export function Initialize(){
         // Mark script setup as complete using both a dynamic property and a runtime flag.
         world.setDynamicProperty("ac:scriptSetupComplete", true);
         world.acInitialized = true; // General initialization flag for runtime checks.
-        logDebug("[Anti Cheats] Initialized and script setup marked as complete.");
+        // Removed logDebug: Initialized and script setup marked as complete.
         
 
         /**
@@ -387,8 +387,7 @@ export function Initialize(){
                     // the calculation `deltaTicks / (deltaTimeMs / 1000)` should handle this.
 
                     world.setDynamicProperty("ac:systemInfo_scriptTps", observedTpsValue);
-                    // logDebug(`Script-Observed TPS: ${observedTpsValue}`); // Optional: for debugging TPS calculation
-
+                    // logDebug(`Script-Observed TPS: ${observedTpsValue}`); // Optional: for debugging TPS calculation - KEEP THIS COMMENTED
                     // Update baselines for the next interval
                     lastTickTime = currentTick;
                     lastWallClockTime = currentWallClockTime;
