@@ -18,10 +18,10 @@ let commands = {};
 export function newCommand(obj){
     if(typeof obj !== "object") throw TypeError(`The function "newCommand()" takes in an object as a parameter`);
     if(obj.disabled) return;
-    if(commands[obj.name]) return console.error(`§4[SafeGuard] A command named "${obj.name}" already exists!`)
+    if(commands[obj.name]) return console.error(`§4[Anti Cheats] A command named "${obj.name}" already exists!`)
     if(!obj.description) {
         obj.description = "No description provided";
-        console.error(`§4[SafeGuard] The command "${obj.name}" does not have a description!`)
+        console.error(`§4[Anti Cheats] The command "${obj.name}" does not have a description!`)
     }
     if(obj.adminOnly !== false) obj.adminOnly = true;
     commands[obj.name] = obj;
@@ -60,19 +60,19 @@ export function commandHandler(data){
     const player = data.sender;
 	const message = data.message;
     const args = message.substring(prefix.length).split(" ");
-    const cmdName = args[0]; // This is what the user typed
+    const cmdName = args[0];
 
     let actualCmdName = cmdName;
-    const commandAliases = config.default.aliases; // Get aliases from config
+    const commandAliases = config.default.aliases;
     if (commandAliases && commandAliases[cmdName]) {
         actualCmdName = commandAliases[cmdName];
     }
 
-    const command = commands[actualCmdName]; // Use the resolved command name
+    const command = commands[actualCmdName];
 
     // If 'command' is not found, it means neither the typed alias nor the resolved actualCmdName is a valid command.
     // In this case, showing what the user typed (cmdName, which is args[0]) is appropriate.
-    if (!command) return player.sendMessage(`§r§6[§eSafeGuard§6]§c Unknown command: §f${args[0]}`);
+    if (!command) return player.sendMessage(`§r§6[§eAnti Cheats§6]§c Unknown command: §f${args[0]}`);
 
     let runData = {
         args: args,
@@ -82,14 +82,14 @@ export function commandHandler(data){
     // If the actual command is 'help', pass commandsData. Note: alias 'h' would resolve actualCmdName to 'help'.
     if(actualCmdName == "help") runData.commandsData = getHelpData(); 
 
-    if(command.adminOnly && !player.hasAdmin()) return player.sendMessage('§6[§eSafeGuard§6]§r§c You need admin tag to run this!');
-    if (command.ownerOnly && !player.isOwner()) return player.sendMessage('§6[§eSafeGuard§6]§r§c You need owner status to run this!')
+    if(command.adminOnly && !player.hasAdmin()) return player.sendMessage('§6[§eAnti Cheats§6]§r§c You need admin tag to run this!');
+    if (command.ownerOnly && !player.isOwner()) return player.sendMessage('§6[§eAnti Cheats§6]§r§c You need owner status to run this!')
 
     try{
         command.run(runData);
     }
     catch(error){
         // Report the error with the actual command name that was executed.
-        player.sendMessage(`§6[§eSafeGuard§6]§r§c Caught error while running command "${actualCmdName}":\n\n${error}\n${error.stack}`);
+        player.sendMessage(`§6[§eAnti Cheats§6]§r§c Caught error while running command "${actualCmdName}":\n\n${error}\n${error.stack}`);
     }
 }

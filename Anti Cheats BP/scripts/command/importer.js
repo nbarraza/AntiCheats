@@ -6,7 +6,6 @@
  * classes, or methods itself but relies on the side effects of the imported modules.
  */
 
-//import all commands
 import "../command/src/ban";
 import "../command/src/unban";
 import "../command/src/invsee";

@@ -1,7 +1,7 @@
 import * as Minecraft from '@minecraft/server';
 import * as config from '../config.js';
 import { logDebug, sendMessageToAllAdmins } from '../assets/util.js';
-import { i18n } from '../assets/i18n.js'; // Added for localization
+// Removed i18n import
 
 const world = Minecraft.world;
 /**
@@ -23,10 +23,8 @@ const playerLastSwingTime = new Map(); // Stores player.id -> timestamp
  */
 export function initializeNoSwingCheck() {
     if (!config.default.combat.noSwingCheck.enabled) {
-        logDebug("[NoSwingCheck] Disabled by config.");
         return;
     }
-    logDebug("[NoSwingCheck] Initializing...");
 
     // Subscribe to player swing events to record the time
     if (world.afterEvents.playerSwing) {
@@ -97,8 +95,7 @@ export function initializeNoSwingCheck() {
             if (violations >= config.default.combat.noSwingCheck.violationThreshold) {
                 player.setDynamicProperty("ac:noSwingViolations", 0); // Reset violations
 
-                const message = i18n.getText("modules.noswing.notify.adminFlag", { playerName: player.name });
-                sendMessageToAllAdmins(message, true);
+                sendMessageToAllAdmins("modules.noswing.notify.adminFlag", { playerName: player.name }, true);
 
                 const action = config.default.combat.noSwingCheck.action;
                 if (action === "customCommand") {

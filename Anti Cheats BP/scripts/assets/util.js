@@ -505,8 +505,6 @@ export function sendAnticheatAlert(detectedPlayer, detectionType, detectionValue
  * @param {string} logData - The string data to log.
  */
 export function saveLogToFile(logPrefix, logData) {
-    logDebug(`[saveLogToFile PLACHOLDER] Attempting to save log. Prefix: ${logPrefix}`);
-    logDebug(`[saveLogToFile PLACHOLDER] Data (first 200 chars): ${logData.substring(0, 200)}...`);
     // In a real environment with file access, this would write to:
     // e.g., fs.writeFileSync(`${logPrefix}${new Date().toISOString().split('T')[0]}.log`, logData + '\n', { flag: 'a' });
 }
