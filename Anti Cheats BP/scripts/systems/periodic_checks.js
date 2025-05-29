@@ -40,7 +40,7 @@ export function getPlayerState(playerId) {
     }
     return state;
 }
-import { ACModule } from "../classes/module.js";
+import { ModuleStatusManager } from "../classes/module.js";
 import { Vector3utils } from "../classes/vector3.js";
 
 // Log arrays and constants
@@ -77,7 +77,7 @@ system.runInterval(() => {
         const lastTickPos = state.lastLocation; // Use state.lastLocation
 
         // Update fall distance for NoFall
-        if (ACModule.isActive("nofall")) {
+        if (ModuleStatusManager.getModuleStatus("nofall")) {
             let currentFallDistance = state.fallDistanceCustom;
             if (!isPlayerOnGround && player.location.y < state.lastPositionY) {
                 state.fallDistanceCustom = currentFallDistance + (state.lastPositionY - player.location.y);
@@ -98,7 +98,7 @@ system.runInterval(() => {
             const maxSpeed = player.isSprinting ? configData.max_sprint_speed : configData.max_walk_speed;
 
             // Speed Check
-            if (ACModule.isActive("speed") && movementSpeed > maxSpeed && !player.hasEffect(EffectType.get("speed")) && !player.isFlying) {
+            if (ModuleStatusManager.getModuleStatus("speed") && movementSpeed > maxSpeed && !player.hasEffect(EffectType.get("speed")) && !player.isFlying) {
                 state.speedVL = (state.speedVL || 0) + 1;
                 if (state.speedVL >= configData.speed_detection_threshold) {
                     sendMessageToAdmins("detection.speed_detected_admin", { player: player.name, speed: movementSpeed.toFixed(2), max_speed: maxSpeed, vl: state.speedVL });
@@ -109,7 +109,7 @@ system.runInterval(() => {
 
             // Fly Check (basic ground check)
             let lastGroundTime = state.lastGroundTime;
-            if (ACModule.isActive("fly") && !isPlayerOnGround && !player.isFlying && !player.hasEffect(EffectType.get("levitation")) && (system.currentTick - lastGroundTime > configData.fly_max_air_time_ticks)) {
+            if (ModuleStatusManager.getModuleStatus("fly") && !isPlayerOnGround && !player.isFlying && !player.hasEffect(EffectType.get("levitation")) && (system.currentTick - lastGroundTime > configData.fly_max_air_time_ticks)) {
                 // More sophisticated checks: e.g., vertical speed, obstacles, gliding
                 state.flyVL = (state.flyVL || 0) + 1;
                 if (state.flyVL >= configData.fly_detection_threshold) {
@@ -123,7 +123,7 @@ system.runInterval(() => {
             }
 
             // Nuker VL decay/check
-            if (ACModule.isActive("nuker")) {
+            if (ModuleStatusManager.getModuleStatus("nuker")) {
                 let nukerBreakVl = state.nukerVLBreak || 0; // Read from state
                 if (nukerBreakVl > configData.nuker_max_breaks_per_interval) {
                      sendMessageToAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
@@ -139,7 +139,7 @@ system.runInterval(() => {
 }, 1); // Run every tick for core checks like NoFall updates
 
 // --- Night Vision Detection Interval ---
-if (ACModule.isActive("nightvision")) {
+if (ModuleStatusManager.getModuleStatus("nightvision")) {
     system.runInterval(() => {
         for (const player of world.getAllPlayers()) {
             if (player.hasEffect(EffectType.get("night_vision"))) {
@@ -169,7 +169,7 @@ if (configData.enable_log_saving) {
 }
 
 // --- Vanish Reminder Interval ---
-if (ACModule.isActive("vanish")) {
+if (ModuleStatusManager.getModuleStatus("vanish")) {
     system.runInterval(() => {
         for (const player of world.getAllPlayers()) {
             if (player.hasTag("vanished") && player.hasAdmin()) {
