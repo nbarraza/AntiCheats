@@ -1,7 +1,7 @@
 import * as Minecraft from '@minecraft/server';
 import * as config from '../config.js';
 import { logDebug, sendMessageToAllAdmins } from '../assets/util.js';
-import { i18n } from '../assets/i18n.js'; // Added for localization
+// Removed i18n import
 
 const world = Minecraft.world;
 
@@ -29,13 +29,12 @@ function handleReachViolation(player, reachTypeStr, actualDistance, maxAllowedDi
     if (violations >= reachConfig.violationThreshold) {
         player.setDynamicProperty("ac:reachViolations", 0); // Reset violations
 
-        const message = i18n.getText("modules.reach.notify.adminFlag", {
+        sendMessageToAllAdmins("modules.reach.notify.adminFlag", {
             playerName: player.name,
             reachType: reachTypeStr,
             actualDistance: actualDistance.toFixed(2),
             maxAllowedDistance: maxAllowedDistance.toFixed(2)
-        });
-        sendMessageToAllAdmins(message, true);
+        }, true);
 
         const action = reachConfig.action;
         if (action === "customCommand" && reachConfig.customCommand) {

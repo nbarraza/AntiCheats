@@ -1,7 +1,7 @@
 import * as Minecraft from '@minecraft/server';
 import * as config from '../config.js';
 import { logDebug, sendMessageToAdmins } from '../assets/util.js';
-import { i18n } from '../assets/i18n.js'; // Added for localization
+// Removed i18n import
 
 const world = Minecraft.world;
 const system = Minecraft.system;
@@ -100,11 +100,10 @@ export function initializeContextualKillauraCheck() {
             if (violations >= killauraConfig.violationThreshold) {
                 player.setDynamicProperty("ac:contextKillauraViolations", 0); 
 
-                const message = i18n.getText("modules.contextualKillaura.notify.adminFlag", {
+                sendMessageToAdmins("modules.contextualKillaura.notify.adminFlag", {
                     playerName: player.name,
                     violationType: violationType
                 });
-                sendMessageToAdmins(message);
                 
                 const action = killauraConfig.action;
                 if (action === "customCommand") {

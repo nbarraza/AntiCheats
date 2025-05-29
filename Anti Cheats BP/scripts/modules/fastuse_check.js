@@ -1,7 +1,7 @@
 import * as Minecraft from '@minecraft/server';
 import * as config from '../config.js';
 import { logDebug, sendMessageToAdmins } from '../assets/util.js';
-import { i18n } from '../assets/i18n.js'; // Added for localization
+// Removed i18n import
 
 const world = Minecraft.world;
 /**
@@ -73,11 +73,10 @@ export function initializeFastUseCheck() {
             if (violations >= fastUseConfig.violationThreshold) {
                 player.setDynamicProperty("ac:fastUseViolations", 0); // Reset violations
 
-                const message = i18n.getText("modules.fastuse.notify.adminFlag", {
+                sendMessageToAllAdmins("modules.fastuse.notify.adminFlag", {
                     playerName: player.name,
                     itemName: itemStack.typeId.replace("minecraft:", "")
                 });
-                sendMessageToAdmins(message);
                 
                 const action = fastUseConfig.action;
                 if (action === "cancelEvent") {

@@ -1,7 +1,7 @@
 import * as Minecraft from '@minecraft/server';
 import * as config from '../config.js';
-import { logDebug, sendMessageToAdmins } from '../assets/util.js';
-import { i18n } from '../assets/i18n.js'; // Added for localization
+import { logDebug, sendMessageToAllAdmins } from '../assets/util.js';
+// Removed i18n import
 
 const world = Minecraft.world;
 const system = Minecraft.system;
@@ -103,12 +103,11 @@ function handleViolation(player, type, value) {
     if (violations >= rotationConfig.violationThreshold) {
         player.setDynamicProperty("ac:rotationViolations", 0); // Reset violations
 
-        const message = i18n.getText("modules.rotation.notify.adminFlag", {
+        sendMessageToAllAdmins("modules.rotation.notify.adminFlag", {
             playerName: player.name,
             type: type,
             value: String(value) // Ensure value is string for localization
         });
-        sendMessageToAdmins(message);
         
         const action = rotationConfig.action;
         if (action === "customCommand") {
