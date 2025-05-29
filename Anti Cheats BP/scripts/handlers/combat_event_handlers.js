@@ -2,7 +2,7 @@ import { world, EntityDamageCause } from "@minecraft/server";
 import { CONFIG as config } from "../config.js";
 import { sendMessageToAdmins } from "../assets/util.js";
 import { ACModule } from "../classes/module.js";
-import { Vector3Utils } from "../classes/vector3utils.js"; // Ensure this path is correct
+import { Vector3utils } from "../classes/vector3.js"; // Ensure this path is correct
 
 // Entity Hit Entity Event (Potential Reach/Attack Aura, Kill Aura)
 world.afterEvents.entityHitEntity.subscribe((eventData) => {
@@ -21,7 +21,7 @@ world.afterEvents.entityHitEntity.subscribe((eventData) => {
 
     // Reach Check
     if (ACModule.isActive("reach")) {
-        const distance = Vector3Utils.distance(player.location, victim.location);
+        const distance = Vector3utils.distance(player.location, victim.location);
         const maxReach = player.isSneaking ? config.max_reach_sneaking : config.max_reach;
         if (distance > maxReach) {
             let reachVl = (player.getDynamicProperty("reach_vl") || 0) + 1;
