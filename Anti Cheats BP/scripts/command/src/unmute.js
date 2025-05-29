@@ -17,9 +17,9 @@ newCommand({
      */
     run: (data) => {
         try {
-            const {player, args} = data; // Ensure args is destructured
+            const {player, args} = data;
 
-            const setNameUnmute = args.slice(1).join(" ").replace(/["@]/g, ""); // Use args from destructured data
+            const setNameUnmute = args.slice(1).join(" ").replace(/["@]/g, "");
             if (!setNameUnmute) { // Basic validation for player name
                 player.sendMessage(i18n.getText("command.unmute.usage", {}, player));
                 return;

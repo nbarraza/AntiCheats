@@ -70,10 +70,8 @@ function handleReachViolation(player, reachTypeStr, actualDistance, maxAllowedDi
 export function initializeReachCheck() {
     const reachConfig = config.default.combat.reachCheck; // Get the full reach config
     if (!reachConfig || !reachConfig.enabled) {
-        logDebug("[ReachCheck] Disabled by config.");
         return;
     }
-    logDebug("[ReachCheck] Initializing...");
 
     // Entity Hit Check (using afterEvents, so cannot be cancelled by this handler directly)
     /**

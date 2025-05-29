@@ -23,10 +23,8 @@ const playerLastSwingTime = new Map(); // Stores player.id -> timestamp
  */
 export function initializeNoSwingCheck() {
     if (!config.default.combat.noSwingCheck.enabled) {
-        logDebug("[NoSwingCheck] Disabled by config.");
         return;
     }
-    logDebug("[NoSwingCheck] Initializing...");
 
     // Subscribe to player swing events to record the time
     if (world.afterEvents.playerSwing) {

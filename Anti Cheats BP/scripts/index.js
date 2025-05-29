@@ -4,13 +4,9 @@ import * as Minecraft from '@minecraft/server'; // For types like Player, GameMo
 // Local Script Imports
 import * as config from "./config.js"; // Assuming this is still CONFIG.default structure
 import { i18n } from './assets/i18n.js';
-// import { logDebug, sendMessageToAllAdmins } from "./assets/util.js"; // Selected utils, others are in their modules
-// import { globalBanList as seedGlobalBanList } from './assets/global_ban_list.js'; // Moved to player_event_handlers
-// import { commandHandler } from './command/handle.js'; // Moved to chat_manager
 import "./command/importer.js"; // Still needed for command registration?
 import "./slash_commands.js"; // Still needed for slash command registration?
 import { ModuleStatusManager } from './classes/module.js';
-// import { Vector3utils } from './classes/vector3.js'; // Moved to periodic_checks or other relevant modules
 
 import "./classes/player.js"; // Player prototype extensions
 import { Initialize } from './initialize.js';
@@ -24,8 +20,6 @@ import "./handlers/combat_event_handlers.js";
 import "./handlers/world_interaction_handlers.js";
 import "./systems/periodic_checks.js";
 
-
-// logDebug("[Anti Cheats] Script Loaded - Refactored Structure");
 
 // --- Global Variables and Constants ---
 // Most global variables (currentTickCounter, log arrays, MAX_LOG_ENTRIES, gamertagRegex)
@@ -68,17 +62,14 @@ system.run(() => { // Final initialization run
                      player.currentGamemode = player.getGameMode();
                 }
 			} catch (playerError) {
-				// logDebug("[Anti Cheats ERROR] Error setting currentGamemode for player on initial run:", player?.name, playerError, playerError.stack);
 			}
 		}
 		
 		initializeReachCheck(); 
 		initializeNoSwingCheck(); 
 
-		// logDebug("[Anti Cheats] Initial setup checks complete.");
 
 	} catch (e) {
-		// logDebug("[Anti Cheats ERROR] Error in final system.run for initialization:", e, e.stack);
 	}
 });
 
@@ -89,11 +80,9 @@ system.run(async () => {
         const currentVersion = world.getDynamicProperty("ac:version");
         if (currentVersion !== config.CONFIG.version) { // Assuming config is now CONFIG.default -> CONFIG
             world.setDynamicProperty("ac:version", config.CONFIG.version);
-            // logDebug(`[Anti Cheats] Updated ac:version from ${currentVersion} to ${config.CONFIG.version}`);
             // Potentially send a message to admins about the update if it's a significant version change
             // This could also be part of Initialize() or a dedicated update/migration script.
         }
     } catch (e) {
-        // logDebug("[Anti Cheats ERROR] Error checking/setting ac:version dynamic property:", e, e.stack);
     }
 });

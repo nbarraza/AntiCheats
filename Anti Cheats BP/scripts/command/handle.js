@@ -60,15 +60,15 @@ export function commandHandler(data){
     const player = data.sender;
 	const message = data.message;
     const args = message.substring(prefix.length).split(" ");
-    const cmdName = args[0]; // This is what the user typed
+    const cmdName = args[0];
 
     let actualCmdName = cmdName;
-    const commandAliases = config.default.aliases; // Get aliases from config
+    const commandAliases = config.default.aliases;
     if (commandAliases && commandAliases[cmdName]) {
         actualCmdName = commandAliases[cmdName];
     }
 
-    const command = commands[actualCmdName]; // Use the resolved command name
+    const command = commands[actualCmdName];
 
     // If 'command' is not found, it means neither the typed alias nor the resolved actualCmdName is a valid command.
     // In this case, showing what the user typed (cmdName, which is args[0]) is appropriate.

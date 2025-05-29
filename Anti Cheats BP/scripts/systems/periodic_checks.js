@@ -19,13 +19,12 @@ export function initializePlayerState(playerId, initialLocation, currentTick) {
         deepValuableOresBrokenThisTick: 0 // Add this line
     };
     playerInternalStates.set(playerId, newState);
-    logDebug(`Initialized internal state for player ${playerId}`);
 }
 
 export function removePlayerState(playerId) {
     const deleted = playerInternalStates.delete(playerId);
     if (deleted) {
-        logDebug(`Removed internal state for player ${playerId}`);
+        // Removed logDebug for successful state removal
     } else {
         logDebug(`Attempted to remove state for player ${playerId}, but no state was found.`);
     }
@@ -35,7 +34,6 @@ export function getPlayerState(playerId) {
     const state = playerInternalStates.get(playerId);
     if (!state) {
         // This case should ideally be prevented by robust join/leave event handling.
-        // logDebug(`[WARNING] No internal state found for player ${playerId}. This might indicate an issue with state initialization on join.`);
         // Depending on strictness, could return a default state or null/undefined.
         // For now, returning what Map.get() returns (undefined if not found) is acceptable.
     }
