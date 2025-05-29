@@ -1,6 +1,6 @@
 import { world, system, ItemStack, BlockPermutation } from "@minecraft/server";
 import { CONFIG as config, i18n } from "../config.js";
-import { sendMessageToAdmins, getScore, getPlayerRank } from "../util.js";
+import { sendMessageToAdmins, getScore, getPlayerRank } from "../assets/util.js";
 import { ACModule } from "../classes/module.js";
 import { showAdminPanel } from "../forms/admin_panel.js"; // Ensure this path is correct
 import { getPlayerState } from '../systems/periodic_checks.js'; // Import for player state
