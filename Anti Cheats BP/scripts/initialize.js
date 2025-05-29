@@ -120,12 +120,12 @@ export function Initialize(){
 
         /**
          * @description Checks the addon version stored in "ac:version" dynamic property.
-         * If not set, it initializes it with the version from `config.default.version`.
+         * If not set, it initializes it with the version from `config.version`.
          */
         world.acVersion = world.getDynamicProperty("ac:version");
         if(!world.acVersion){
-            world.setDynamicProperty("ac:version",config.default.version);
-            world.acVersion = config.default.version;
+            world.setDynamicProperty("ac:version",config.version);
+            world.acVersion = config.version;
         }
 
         /**
@@ -194,8 +194,8 @@ export function Initialize(){
             try {
                 const editedConfig = JSON.parse(editedConfigString);
                 for (const i of Object.keys(editedConfig)) {
-                    if (config.default.hasOwnProperty(i)) { // Ensure we only update existing config keys
-                        config.default[i] = editedConfig[i];
+                    if (config.hasOwnProperty(i)) { // Ensure we only update existing config keys
+                        config[i] = editedConfig[i];
                     }
                 }
                 // Removed logDebug: Loaded config from dynamic properties.
@@ -244,7 +244,7 @@ export function Initialize(){
                 // Removed logDebug: Existing Owner Found
             } else {
                 // Removed logDebug: No existing owner found
-                const configOwnerName = config.default.other.ownerPlayerNameManual;
+                const configOwnerName = config.other.ownerPlayerNameManual;
                 if (typeof configOwnerName === 'string' && configOwnerName.trim() !== '') {
                     world.setDynamicProperty("ac:ownerPlayerName", configOwnerName);
                     // Removed logDebug: Owner designated from config.js
