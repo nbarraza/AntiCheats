@@ -1,5 +1,6 @@
 import { world, system } from "@minecraft/server"; // Ensure world and system are imported
-import { CONFIG as config, i18n } from "../config.js";
+import configData from "../config.js";
+import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
 import { sendMessageToAdmins } from "../assets/util.js"; // Assuming 효율 is still needed, otherwise remove
 import { ACModule } from "../classes/module.js";
 import { seedGlobalBanList } from "../assets/global_ban_list.js"; // Assuming this is used or will be used
@@ -45,7 +46,7 @@ world.afterEvents.playerJoin.subscribe((eventData) => {
     }
 
     // Welcome message
-    if (config.enable_welcome_message) {
+    if (configData.enable_welcome_message) {
         player.sendMessage(i18n.getText("system.welcome_message", { player: player.name }, player));
     }
 
@@ -110,7 +111,7 @@ world.afterEvents.playerSpawn.subscribe((eventData) => {
 world.afterEvents.playerGameModeChange.subscribe((eventData) => {
     const player = eventData.player;
     addPlayerActivityLog(player, `game mode changed from ${eventData.oldGameMode} to ${eventData.newGameMode}`);
-    if (config.log_gamemode_changes) {
+    if (configData.log_gamemode_changes) {
         sendMessageToAdmins("system.gamemode_change_alert", {
             player: player.name,
             old_gamemode: eventData.oldGameMode,

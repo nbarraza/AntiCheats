@@ -1,11 +1,11 @@
 import { newCommand } from '../handle.js';
 import { i18n } from '../../assets/i18n.js'; // Adjusted path to i18n
-import { CONFIG as config } from '../../config.js'; // For accessing command prefix for usage example
+import configData from '../../config.js'; // For accessing command prefix for usage example
 import { logDebug } from '../../assets/util.js';
 
 newCommand({
     name: "setserverlanguage",
-    description: `Sets the server's display language globally. Usage: ${config.default.chat.prefix}setserverlanguage <lang_code>`,
+    description: `Sets the server's display language globally. Usage: ${configData.chat.prefix}setserverlanguage <lang_code>`,
     adminOnly: true,
     ownerOnly: false,
     run: (data) => {
@@ -13,7 +13,7 @@ newCommand({
         const args = data.args;
 
         if (args.length < 2) {
-            player.sendMessage(`§cUsage: ${config.default.chat.prefix}setserverlanguage <language_code>`);
+            player.sendMessage(`§cUsage: ${configData.chat.prefix}setserverlanguage <language_code>`);
             player.sendMessage(`§cAvailable languages: ${i18n.getAvailableLanguages().join(', ')}`);
             return;
         }

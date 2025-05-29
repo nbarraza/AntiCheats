@@ -56,14 +56,14 @@ export function getHelpData() {
  *                 if they lack permissions, or if an error occurs during command execution.
  */
 export function commandHandler(data){
-    const prefix = config.default.chat.prefix;
+    const prefix = config.chat.prefix;
     const player = data.sender;
 	const message = data.message;
     const args = message.substring(prefix.length).split(" ");
     const cmdName = args[0];
 
     let actualCmdName = cmdName;
-    const commandAliases = config.default.aliases;
+    const commandAliases = config.aliases;
     if (commandAliases && commandAliases[cmdName]) {
         actualCmdName = commandAliases[cmdName];
     }

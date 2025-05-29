@@ -25,7 +25,7 @@ newCommand({
             const playerIsAdmin = player.hasAdmin(); // Wrapped
             const playerIsOwner = player.isOwner(); // Wrapped
 
-            let helpMessage = `${i18n.getText("command.help.serverPrefixHeader", {}, player)}§6${config.default.chat.prefix}§e
+            let helpMessage = `${i18n.getText("command.help.serverPrefixHeader", {}, player)}§6${config.chat.prefix}§e
 ${i18n.getText("command.help.availableCommandsHeader", {}, player)}
 
 `;
