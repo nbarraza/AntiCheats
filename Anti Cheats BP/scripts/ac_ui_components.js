@@ -87,7 +87,7 @@ export function unbanForm(player){
 }
 
 export function settingSelector(player, previousFormCallback){
-        if (config.default.other.ownerOnlySettings && !player.isOwner()) return ownerLoginForm(player, () => settingSelector(player, previousFormCallback), previousFormCallback);
+        if (config.other.ownerOnlySettings && !player.isOwner()) return ownerLoginForm(player, () => settingSelector(player, previousFormCallback), previousFormCallback);
 
         const form = new ActionFormData()
                 .title("Anti Cheats Settings")
@@ -215,7 +215,7 @@ export function banLogForm(player, previousFormCallback){
 
 // Internal function, not exported directly but used by exported functions
 function ownerLoginForm(player, nextFormOnSuccess, previousFormForNext){
-        if(!config.default.OWNER_PASSWORD){ 
+        if(!config.OWNER_PASSWORD){ 
                 player.sendMessage(`§6[§eAnti Cheats§6]§4 Error!§c You have not set an owner password inside of the configuration file, access denied.`);
                 if (previousFormForNext) previousFormForNext(player);
                 return;
@@ -228,7 +228,7 @@ function ownerLoginForm(player, nextFormOnSuccess, previousFormForNext){
                     if (previousFormForNext) previousFormForNext(player);
                     return;
                 }
-                if (formData.formValues[0] === config.default.OWNER_PASSWORD) {
+                if (formData.formValues[0] === config.OWNER_PASSWORD) {
                         player.sendMessage("§6[§eAnti Cheats§6]§a Access granted, you now have owner status.");
                         player.setDynamicProperty("ac:ownerStatus",true);
                         // player.setDynamicProperty("ac:rankId" ,"owner"); // This should be handled by rank system if integrated
@@ -256,7 +256,7 @@ export function configDebugForm(player, previousFormCallback){
                 }
                 switch (formData.selection) {
                         case 0:
-                                console.warn(JSON.stringify(config.default)); 
+                                console.warn(JSON.stringify(config)); 
                                 player.sendMessage(`§6[§eAnti Cheats§6]§f The config was exported to the console`);
                                 configDebugForm(player, previousFormCallback); // Re-show form
                                 break;
@@ -276,7 +276,7 @@ export function configEditorForm(player, previousFormCallback) {
         if (!player.isOwner()) return ownerLoginForm(player, () => configEditorForm(player, previousFormCallback), previousFormCallback);
 
         const mainConfigForm = new ActionFormData().title("Anti Cheats Config Editor");
-        const configOptions = Object.keys(config.default).filter(key => typeof config.default[key] === "object");
+        const configOptions = Object.keys(config).filter(key => typeof config[key] === "object");
 
         for (let i = 0; i < configOptions.length; i++) {
                 mainConfigForm.button(configOptions[i]);
@@ -297,7 +297,7 @@ export function configEditorForm(player, previousFormCallback) {
                 const configModuleForm = new ModalFormData();
                 configModuleForm.title(`Settings: ${selectedModule}`);
 
-                const configModuleOptions = Object.entries(config.default[selectedModule]);
+                const configModuleOptions = Object.entries(config[selectedModule]);
                 const formFields = []; 
 
                 for (const [key, value] of configModuleOptions) {
@@ -341,7 +341,7 @@ export function configEditorForm(player, previousFormCallback) {
                         if (currentConfig && typeof currentConfig === 'string') {
                             try { parsedConfig = JSON.parse(currentConfig); } catch (e) { console.warn("Error parsing dynamic config, starting fresh."); }
                         } else { 
-                            parsedConfig = JSON.parse(JSON.stringify(config.default)); 
+                            parsedConfig = JSON.parse(JSON.stringify(config)); 
                         }
 
                         formFields.forEach((fieldInfo, index) => {
@@ -363,9 +363,9 @@ export function configEditorForm(player, previousFormCallback) {
                                                 targetObject[finalKey] = Boolean(newValue);
                                                 break;
                                         case "number":
-                                                // Ensure config.default[selectedModule][finalKey] or similar path exists for default value
+                                                // Ensure config[selectedModule][finalKey] or similar path exists for default value
                                                 let defaultValueNum = 0;
-                                                let tempTarget = config.default[selectedModule];
+                                                let tempTarget = config[selectedModule];
                                                 for(const k of keys) { if(tempTarget && typeof tempTarget === 'object' && k in tempTarget) tempTarget = tempTarget[k]; else { tempTarget = undefined; break;} }
                                                 if(typeof tempTarget === 'number') defaultValueNum = tempTarget;
 
