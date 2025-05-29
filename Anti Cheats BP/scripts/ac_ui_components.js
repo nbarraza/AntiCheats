@@ -1,8 +1,3 @@
-// START OF Anti Cheats v2/scripts/assets/ui.js CONTENT
-// Note: This code is adapted from Anti Cheats's v2/scripts/assets/ui.js
-// and integrated into the Anti Cheats project structure.
-// Paths and some class names (ACModule -> ACModule) might be adjusted.
-
 import * as Minecraft from '@minecraft/server';
 import { ActionFormData, MessageFormData, ModalFormData } from '@minecraft/server-ui';
 import { addPlayerToUnbanQueue, copyInv, getPlayerByName, invsee, logDebug, millisecondTime, sendMessageToAllAdmins } from './assets/util.js'; 
@@ -539,4 +534,3 @@ export function playerActionForm(player,targetPlayer, previousFormCallback){
                 }
         })
 }
-// END OF Anti Cheats v2/scripts/assets/ui.js CONTENT
