@@ -2,7 +2,7 @@ import { world, system } from "@minecraft/server"; // Removed ItemStack, BlockPe
 import configData from "../config.js";
 import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
 import { sendMessageToAdmins } from "../assets/util.js"; // Removed getScore, getPlayerRank
-import { ACModule } from "../classes/module.js";
+import { ModuleStatusManager } from "../classes/module.js";
 import { showAdminPanel } from "../forms/admin_panel.js"; // Ensure this path is correct
 import { getPlayerState } from '../systems/periodic_checks.js'; // Import for player state
 
@@ -12,7 +12,7 @@ world.afterEvents.itemUse.subscribe((eventData) => {
     const item = eventData.itemStack;
 
     // Trident High Damage / Fly Check (Module based)
-    if (item.typeId === "minecraft:trident" && ACModule.isActive("trident")) {
+    if (item.typeId === "minecraft:trident" && ModuleStatusManager.isActive("trident")) {
         // Logic for trident high damage/fly would be here or called from here.
         // This might involve checking player velocity changes, if they are Riptide enchanted, etc.
         // Example: player.setDynamicProperty("last_used_trident_time", world.currentTick);
@@ -34,7 +34,7 @@ world.beforeEvents.itemUse.subscribe((eventData) => {
     const item = eventData.itemStack;
 
     // Anti-Grief: Prevent use of certain items if module is active
-    if (ACModule.isActive("antigrief") && configData.restricted_items_antigrief.includes(item.typeId)) {
+    if (ModuleStatusManager.isActive("antigrief") && configData.restricted_items_antigrief.includes(item.typeId)) {
         if (!player.hasAdmin()) { // Allow admins to use restricted items
             eventData.cancel = true;
             player.sendMessage(i18n("system.antigrief_item_restriction", { item: item.typeId }));
@@ -58,11 +58,11 @@ world.afterEvents.playerBreakBlock.subscribe((eventData) => {
     }
 
     const nukerConfig = configData.nuker_detection; // Assuming nuker config is structured like this
-    const antiNukerActive = ACModule.isActive("nuker");
-    const autoModOn = ACModule.isActive("automod"); // Assuming an automod module status
+    const antiNukerActive = ModuleStatusManager.isActive("nuker");
+    const autoModOn = ModuleStatusManager.isActive("automod"); // Assuming an automod module status
 
     // Anti-Grief: Log block breaks (moved before nuker for clarity, can be anywhere)
-    if (ACModule.isActive("antigrief") && configData.log_block_breaks_antigrief) {
+    if (ModuleStatusManager.isActive("antigrief") && configData.log_block_breaks_antigrief) {
         // console.warn(`[AntiGrief] ${player.name} broke ${blockId}`);
     }
 
@@ -112,7 +112,7 @@ world.afterEvents.entitySpawn.subscribe((eventData) => {
     const entity = eventData.entity;
 
     // Anti-Grief: Prevent spawning of certain entities if module is active
-    if (ACModule.isActive("antigrief") && configData.restricted_entities_antigrief.includes(entity.typeId)) {
+    if (ModuleStatusManager.isActive("antigrief") && configData.restricted_entities_antigrief.includes(entity.typeId)) {
         // Check if spawned by a player and if that player is not an admin
         // This requires knowing the spawner. If the entity is spawned by an explosion (e.g. TNT spawns items),
         // or by a player directly (e.g. spawn egg), the logic would differ.
