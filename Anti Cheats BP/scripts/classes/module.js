@@ -116,4 +116,3 @@ class ModuleStatusManagerInternal { // Renamed from ACModuleInternal
  * @type {ModuleStatusManagerInternal}
  */
 export const ModuleStatusManager = new ModuleStatusManagerInternal(); // Renamed from ACModule
-export const ACModule = ModuleStatusManager;
