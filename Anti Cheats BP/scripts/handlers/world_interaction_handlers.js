@@ -1,7 +1,7 @@
 import { world, system } from "@minecraft/server"; // Removed ItemStack, BlockPermutation
 import configData from "../config.js";
 import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
-import { sendMessageToAdmins } from "../assets/util.js"; // Removed getScore, getPlayerRank
+import { sendMessageToAllAdmins } from "../assets/util.js"; // Removed getScore, getPlayerRank
 import { ModuleStatusManager } from "../classes/module.js";
 import { showAdminPanel } from "../forms/admin_panel.js"; // Ensure this path is correct
 import { getPlayerState } from '../systems/periodic_checks.js'; // Import for player state
@@ -38,7 +38,7 @@ world.beforeEvents.itemUse.subscribe((eventData) => {
         if (!player.hasAdmin()) { // Allow admins to use restricted items
             eventData.cancel = true;
             player.sendMessage(i18n("system.antigrief_item_restriction", { item: item.typeId }));
-            sendMessageToAdmins("system.antigrief_item_attempt_admin", { player: player.name, item: item.typeId });
+            sendMessageToAllAdmins("system.antigrief_item_attempt_admin", { player: player.name, item: item.typeId });
         }
     }
 });
@@ -95,7 +95,7 @@ world.afterEvents.playerBreakBlock.subscribe((eventData) => {
                         player.runCommandAsync("gamemode adventure @s"); // Ensure commands are run async
                         player.teleport({ x: player.location.x, y: 325, z: player.location.z }, { dimension: player.dimension, rotation: { x: 0, y: 0 }, keepVelocity: false });
                     }
-                    sendMessageToAdmins("detection.nuker_deep_ore_admin", { player: player.name, blocks: state.deepValuableOresBrokenThisTick });
+                    sendMessageToAllAdmins("detection.nuker_deep_ore_admin", { player: player.name, blocks: state.deepValuableOresBrokenThisTick });
                     // Resetting here for this specific check, as per original logic flow.
                     // If the main reset is in periodic_checks, this might lead to double reset or different behavior.
                     // For now, replicating the immediate reset after detection from original logic.
@@ -121,7 +121,7 @@ world.afterEvents.entitySpawn.subscribe((eventData) => {
         if (entity.typeId === "minecraft:tnt" /* && spawnedByPlayerNotAdmin */) {
             // entity.triggerEvent("minecraft:explode"); // Or despawn, depending on desired outcome
             // console.warn(`[AntiGrief] Restricted entity ${entity.typeId} spawned.`);
-            // sendMessageToAdmins(...)
+            // sendMessageToAllAdmins(...)
         }
     }
 });

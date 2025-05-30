@@ -1,6 +1,6 @@
 import { world, EntityDamageCause } from "@minecraft/server";
 import configData from "../config.js";
-import { sendMessageToAdmins } from "../assets/util.js";
+import { sendMessageToAllAdmins } from "../assets/util.js";
 import { ModuleStatusManager } from "../classes/module.js";
 import { Vector3utils } from "../classes/vector3.js"; // Ensure this path is correct
 
@@ -28,7 +28,7 @@ world.afterEvents.entityHitEntity.subscribe((eventData) => {
             player.setDynamicProperty("reach_vl", reachVl);
 
             if (reachVl >= configData.reach_detection_threshold) {
-                sendMessageToAdmins(
+                sendMessageToAllAdmins(
                     "detection.reach_detected_admin", { player: player.name, distance: distance.toFixed(2), max_reach: maxReach }
                 );
                 if (configData.reach_punish) {
@@ -54,7 +54,7 @@ world.afterEvents.entityHurt.subscribe((eventData) => {
             let nofallVl = (player.getDynamicProperty("nofall_vl") || 0) + 1;
             player.setDynamicProperty("nofall_vl", nofallVl);
             if (nofallVl >= configData.nofall_detection_threshold) {
-                sendMessageToAdmins("detection.nofall_detected_admin", { player: player.name, fall_distance: fallDistance.toFixed(2) });
+                sendMessageToAllAdmins("detection.nofall_detected_admin", { player: player.name, fall_distance: fallDistance.toFixed(2) });
                 if (configData.nofall_punish) {
                     // Implement punishment
                 }
@@ -77,7 +77,7 @@ world.afterEvents.entityHurt.subscribe((eventData) => {
     // Self-Hit Detection (if applicable, for some types of aura)
     if (damageSource.damagingEntity && damageSource.damagingEntity.id === player.id && damageSource.cause === EntityDamageCause.entityAttack) {
         // Player somehow hit themselves with a melee attack
-        sendMessageToAdmins("detection.self_hit_detected_admin", { player: player.name });
+        sendMessageToAllAdmins("detection.self_hit_detected_admin", { player: player.name });
         // Add VL or punishment as configured
     }
 });
