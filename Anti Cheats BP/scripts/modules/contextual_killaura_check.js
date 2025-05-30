@@ -1,6 +1,6 @@
 import * as Minecraft from '@minecraft/server';
 import CONFIG from '../config.js';
-import { sendMessageToAdmins } from '../assets/util.js';
+import { sendMessageToAllAdmins } from '../assets/util.js'; // Changed to sendMessageToAllAdmins
 import { logDebug } from '../assets/logger.js';
 // Removed i18n import
 
@@ -101,7 +101,7 @@ export function initializeContextualKillauraCheck() {
             if (violations >= killauraConfig.violationThreshold) {
                 player.setDynamicProperty("ac:contextKillauraViolations", 0); 
 
-                sendMessageToAdmins("modules.contextualKillaura.notify.adminFlag", {
+                sendMessageToAllAdmins("modules.contextualKillaura.notify.adminFlag", { // Changed to sendMessageToAllAdmins
                     playerName: player.name,
                     violationType: violationType
                 });
