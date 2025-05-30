@@ -38,7 +38,7 @@ player.error.unmute.notMuted="%%playerName%%" is not muted
 player.error.unmute.failed=Failed to unmute player %%playerName%%
 player.notify.admin.banLogError=§6[§eAnti Cheats§6]§c There was an error creating a ban log for §4%%playerName%%§c Error: \n§4%%error%%
 player.error.mute.adminInstance=Parameter "adminPlayer" is not instanceof player
-player.error.invalidModuleReference="%%moduleName%%" isn't a safeguard module.
+player.error.invalidModuleReference="%%moduleName%%" isn't an Anti Cheats module.
 
 # Command Messages
 command.panel.noPermission=§cYou do not have permission to use this command.
