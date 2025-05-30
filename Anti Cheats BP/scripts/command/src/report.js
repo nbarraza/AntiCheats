@@ -1,4 +1,5 @@
-import { getPlayerByName, logDebug, sendMessageToAllAdmins } from '../../assets/util.js';
+import { getPlayerByName, sendMessageToAllAdmins } from '../../assets/util.js';
+import { logDebug } from '../../assets/logger.js'; // Moved logDebug to logger
 import {newCommand} from '../handle.js';
 // import * as config from "../../config.js"; // Removed unused import
 // import { world } from '@minecraft/server'; // Removed unused import
