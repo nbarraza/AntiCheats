@@ -9,8 +9,7 @@
 			"minecraft:display_name": {
 				"value": "§l§6Anti Cheats §eAdmin Panel§r"
 			
-			} // Removed comma here
-			,
+			},
 			"minecraft:foil": true,
 			"minecraft:render_offsets": {
 				"main_hand": {
@@ -29,3 +28,4 @@
 		}
 		
 	}
+}
