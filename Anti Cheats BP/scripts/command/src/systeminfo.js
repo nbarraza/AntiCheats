@@ -23,14 +23,14 @@ newCommand({
             const targetPlayer = getPlayerByName(targetPlayerName); // Already wrapped
             
             if (!targetPlayer) {
-                player.sendMessage(`§6[§eAnti Cheats§6]§f Player §e${targetPlayerName}§f was not found`); // SafeGuard -> Anti Cheats
+                player.sendMessage(`§6[§eAnti Cheats§6]§f Player §e${targetPlayerName}§f was not found`);
                 return;
             }
             
             const clientInfo = targetPlayer.clientSystemInfo; // API access
             if (!clientInfo) {
-                player.sendMessage(`§6[§eAnti Cheats§6]§c Could not retrieve client system info for §e${targetPlayer.name}.`); // SafeGuard -> Anti Cheats
-                logDebug(`[Anti Cheats ERROR][systeminfo] clientSystemInfo was null or undefined for ${targetPlayer.name}`); // SafeGuard -> Anti Cheats
+                player.sendMessage(`§6[§eAnti Cheats§6]§c Could not retrieve client system info for §e${targetPlayer.name}.`);
+                logDebug(`[Anti Cheats ERROR][systeminfo] clientSystemInfo was null or undefined for ${targetPlayer.name}`);
                 return;
             }
 
@@ -38,12 +38,12 @@ newCommand({
 
             player.sendMessage(`§eClient Info for §6${targetPlayer.name}§e: \n\nMax Render Distance: §6${maxRenderDistance}§e\nMemory: §6${Object.keys(MemoryTier)[memoryTier]}§e\nPlatform: §6${platformType}`); // API Call
         } catch (e) {
-            logDebug("[Anti Cheats ERROR][systeminfo]", e, e.stack); // SafeGuard -> Anti Cheats
+            logDebug("[Anti Cheats ERROR][systeminfo]", e, e.stack);
             if (data && data.player) {
                 try {
                     data.player.sendMessage("§cAn error occurred while trying to get system info. Please check the console.");
                 } catch (sendError) {
-                    logDebug("[Anti Cheats ERROR][systeminfo] Failed to send error message to command executor:", sendError, sendError.stack); // SafeGuard -> Anti Cheats
+                    logDebug("[Anti Cheats ERROR][systeminfo] Failed to send error message to command executor:", sendError, sendError.stack);
                 }
             }
         }

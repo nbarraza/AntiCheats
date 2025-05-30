@@ -26,7 +26,7 @@ newCommand({
 
             // Check if there are enough arguments
             if (args.length < 2) {
-                player.sendMessage("§6[§eAnti Cheats§6]§f Usage: !report <player name> <reason>"); // SafeGuard -> Anti Cheats
+                player.sendMessage("§6[§eAnti Cheats§6]§f Usage: !report <player name> <reason>");
                 return;
             }
 
@@ -41,7 +41,7 @@ newCommand({
                     }
                 }
                 if (closingQuoteIndex === -1) {
-                    player.sendMessage("§6[§eAnti Cheats§6]§f Invalid format! Closing quotation mark missing for player name."); // SafeGuard -> Anti Cheats
+                    player.sendMessage("§6[§eAnti Cheats§6]§f Invalid format! Closing quotation mark missing for player name.");
                     return;
                 }
                 playerNameArg = args.slice(1, closingQuoteIndex + 1).join(" ").replace(/["@]/g, "");
@@ -54,19 +54,19 @@ newCommand({
             const reportedPlayer = getPlayerByName(playerNameArg); // Already wrapped
 
             if (!reportedPlayer) {
-                player.sendMessage(`§6[§eAnti Cheats§6]§f Player §e${playerNameArg}§f was not found`); // SafeGuard -> Anti Cheats
+                player.sendMessage(`§6[§eAnti Cheats§6]§f Player §e${playerNameArg}§f was not found`);
                 return;
             }
             
             reportPlayerInternal(player, reportedPlayer, reasonArg);
 
         } catch (e) {
-            logDebug("[Anti Cheats ERROR][report]", e, e.stack); // SafeGuard -> Anti Cheats
+            logDebug("[Anti Cheats ERROR][report]", e, e.stack);
             if (data && data.player) {
                 try {
                     data.player.sendMessage("§cAn error occurred while trying to process your report. Please check the console.");
                 } catch (sendError) {
-                    logDebug("[Anti Cheats ERROR][report] Failed to send error message to command executor:", sendError, sendError.stack); // SafeGuard -> Anti Cheats
+                    logDebug("[Anti Cheats ERROR][report] Failed to send error message to command executor:", sendError, sendError.stack);
                 }
             }
         }
@@ -87,50 +87,50 @@ newCommand({
 export function reportPlayerInternal(player, reportedPlayer, reason) {
     try {
         if (reportedPlayer.name === player.name) {
-            player.sendMessage(`§6[§eAnti Cheats§6]§f Cannot execute this command on yourself!`); // SafeGuard -> Anti Cheats
+            player.sendMessage(`§6[§eAnti Cheats§6]§f Cannot execute this command on yourself!`);
             return;
         }
         
-        let reportedPlayerReportsProperty = reportedPlayer.getDynamicProperty("safeguard:reports"); // API Call
+        let reportedPlayerReportsProperty = reportedPlayer.getDynamicProperty("safeguard:reports"); // API Call - This dynamic property should not be changed
         if(reportedPlayerReportsProperty === undefined){
-            reportedPlayer.setDynamicProperty("safeguard:reports",""); // API Call
-            reportedPlayerReportsProperty = reportedPlayer.getDynamicProperty("safeguard:reports"); // API Call
+            reportedPlayer.setDynamicProperty("safeguard:reports",""); // API Call - This dynamic property should not be changed
+            reportedPlayerReportsProperty = reportedPlayer.getDynamicProperty("safeguard:reports"); // API Call - This dynamic property should not be changed
         }  
 
         const tempProperty = (reportedPlayerReportsProperty || "").split(","); // Ensure it's a string before split
         
         if(player.hasAdmin()){ // Already wrapped
             logDebug(tempProperty);
-            player.sendMessage(`§6[§eAnti Cheats§6]§f This player has been reported §e${tempProperty.filter(Boolean).length}§r times.`); // SafeGuard -> Anti Cheats // Filter Boolean to count actual reports
+            player.sendMessage(`§6[§eAnti Cheats§6]§f This player has been reported §e${tempProperty.filter(Boolean).length}§r times.`);
             return;
         }
 
         if(tempProperty.includes(player.id)) {
-            player.sendMessage(`§6[§eAnti Cheats§6]§f You have already reported this player!`); // SafeGuard -> Anti Cheats
+            player.sendMessage(`§6[§eAnti Cheats§6]§f You have already reported this player!`);
             return;
         }
         if(reportedPlayer.name === player.name) { // Redundant check, but safe
-            player.sendMessage(`§6[§eAnti Cheats§6]§f You cannot report yourself!`); // SafeGuard -> Anti Cheats
+            player.sendMessage(`§6[§eAnti Cheats§6]§f You cannot report yourself!`);
             return;
         }
         if(reportedPlayer.hasAdmin()){ // Already wrapped
-            player.sendMessage(`§6[§eAnti Cheats§6]§f You cannot report admins.`); // SafeGuard -> Anti Cheats
+            player.sendMessage(`§6[§eAnti Cheats§6]§f You cannot report admins.`);
             return;
         }
         
         tempProperty.push(player.id);
-        reportedPlayer.setDynamicProperty("safeguard:reports",tempProperty.filter(Boolean).toString()); // API Call, filter Boolean to prevent empty strings if initial property was empty
+        reportedPlayer.setDynamicProperty("safeguard:reports",tempProperty.filter(Boolean).toString()); // API Call - This dynamic property should not be changed
         
-        player.sendMessage(`§6[§eAnti Cheats§6]§f Sent your report to all online admins!`); // SafeGuard -> Anti Cheats // API Call
+        player.sendMessage(`§6[§eAnti Cheats§6]§f Sent your report to all online admins!`);
 
         sendMessageToAllAdmins("notify.report", { reporterName: player.name, reportedName: reportedPlayer.name, reason: reason });
     } catch (e) {
-        logDebug("[Anti Cheats ERROR][reportPlayerInternal]", e, e.stack); // SafeGuard -> Anti Cheats
+        logDebug("[Anti Cheats ERROR][reportPlayerInternal]", e, e.stack);
         if (player) { // player is the one who executed the command
             try {
                 player.sendMessage("§cAn error occurred while processing the report details. Please check the console.");
             } catch (sendError) {
-                logDebug("[Anti Cheats ERROR][reportPlayerInternal] Failed to send error message to player:", sendError, sendError.stack); // SafeGuard -> Anti Cheats
+                logDebug("[Anti Cheats ERROR][reportPlayerInternal] Failed to send error message to player:", sendError, sendError.stack);
             }
         }
     }

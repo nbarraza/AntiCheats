@@ -1,11 +1,8 @@
 import { world, system } from '@minecraft/server'; // Ensure system and world are imported
-// import * as Minecraft from '@minecraft/server'; // Unused Minecraft import
 // Local Script Imports
 import CONFIG from "./config.js"; // Assuming this is still CONFIG.default structure
-// import { i18n } from './assets/i18n.js'; // Unused i18n import
 import "./command/importer.js"; // Still needed for command registration?
 import "./slash_commands.js"; // Still needed for slash command registration?
-// import { ModuleStatusManager } from './classes/module.js'; // Unused ModuleStatusManager import
 
 import "./classes/player.js"; // Player prototype extensions
 import { Initialize } from './initialize.js';
