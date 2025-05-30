@@ -2,7 +2,7 @@ import { world, system } from "@minecraft/server"; // Ensure world and system ar
 import CONFIG from "../config.js";
 import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
 import { sendMessageToAdmins } from "../assets/util.js"; // Assuming 효율 is still needed, otherwise remove
-// import { ModuleStatusManager as ACModule } from "../classes/module.js"; // Removed unused ACModule
+import { ModuleStatusManager } from "../classes/module.js"; // Removed unused ACModule
 import { seedGlobalBanList } from "../assets/global_ban_list.js"; // Assuming this is used or will be used
 import { inMemoryPlayerActivityLogs, MAX_LOG_ENTRIES, initializePlayerState, removePlayerState } from "../systems/periodic_checks.js";
 
@@ -57,13 +57,13 @@ world.afterEvents.playerJoin.subscribe((eventData) => {
 
     // Dynamic property initialization for modules (example)
     // TODO: Revisit module dynamic property initialization. 
-    // The previous ACModule.getAllModules() returned objects with id, dynamicProperties, and defaultDynamicValue.
+    // The previous ModuleStatusManager.getAllModules() returned objects with id, dynamicProperties, and defaultDynamicValue.
     // The new ModuleStatusManager.getValidModules() returns an array of module names (strings).
     // A different approach is needed here if per-module dynamic properties need to be set on player join.
     // For now, commenting out to prevent errors.
-    // ACModule.getValidModules().forEach(moduleName => {
+    // ModuleStatusManager.getValidModules().forEach(moduleName => {
     //     // Example: if a module definition object could be retrieved by name:
-    //     // const moduleDefinition = ACModule.getModuleDefinition(moduleName); // This function doesn't exist
+    //     // const moduleDefinition = ModuleStatusManager.getModuleDefinition(moduleName); // This function doesn't exist
     //     // if (moduleDefinition && moduleDefinition.dynamicProperties && player.getDynamicProperty(moduleDefinition.id) === undefined) {
     //     //     player.setDynamicProperty(moduleDefinition.id, moduleDefinition.defaultDynamicValue);
     //     // }

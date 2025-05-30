@@ -18,12 +18,12 @@ newCommand({
         try {
             data.player.runCommand("function admin_cmds/vanish");
         } catch (e) {
-            logDebug("[Anti Cheats ERROR][vanish]", e, e.stack); // SafeGuard -> Anti Cheats
+            logDebug("[Anti Cheats ERROR][vanish]", e, e.stack);
             if (data && data.player) {
                 try {
                     data.player.sendMessage(i18n.getText("command.vanish.error", {}, data.player));
                 } catch (sendError) {
-                    logDebug("[Anti Cheats ERROR][vanish] Failed to send error message to command executor:", sendError, sendError.stack); // SafeGuard -> Anti Cheats
+                    logDebug("[Anti Cheats ERROR][vanish] Failed to send error message to command executor:", sendError, sendError.stack);
                 }
             }
         }
