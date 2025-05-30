@@ -1,0 +1,14 @@
+
+/app/Anti Cheats BP/scripts/ac_ui_components.js
+  182:42  error  '_e' is defined but never used  no-unused-vars
+  338:86  error  '_e' is defined but never used  no-unused-vars
+
+/app/Anti Cheats BP/scripts/index.js
+  60:13  error  '_playerError' is defined but never used  no-unused-vars
+  69:11  error  '_e' is defined but never used            no-unused-vars
+  84:14  error  '_e' is defined but never used            no-unused-vars
+
+/app/Anti Cheats BP/scripts/tests/ui.test.js
+  157:19  error  Parsing error: Unexpected token :
+
+✖ 6 problems (6 errors, 0 warnings)
