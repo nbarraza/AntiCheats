@@ -2,7 +2,7 @@ import { world } from "@minecraft/server";
 import CONFIG from "../config.js";
 import { ModuleStatusManager } from "../classes/module.js";
 import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
-import { sendMessageToAdmins, getPlayerRank } from "../assets/util.js";
+import { sendMessageToAllAdmins, getPlayerRank } from "../assets/util.js";
 import { commandHandler } from "../command/handle.js";
 import { inMemoryCommandLogs, MAX_LOG_ENTRIES } from "../systems/periodic_checks.js"; // This will be created later
 
@@ -28,7 +28,7 @@ function handleAntiSpam(player, _message) { // message -> _message
     if (playerSpamData.messages.length > messageLimit) {
         // Assuming i18n expects time_limit in seconds for the message
         const timeLimitInSeconds = timeLimit / 1000; 
-        sendMessageToAdmins(
+        sendMessageToAllAdmins(
             "system.anti_spam_triggered_admin_notification", { player: player.name, message_limit: messageLimit, time_limit: timeLimitInSeconds }
         );
         player.sendMessage(i18n.getText("system.anti_spam_triggered_player_notification", { message_limit: messageLimit, time_limit: timeLimitInSeconds }, player));
