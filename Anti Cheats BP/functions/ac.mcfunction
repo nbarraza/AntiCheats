@@ -7,7 +7,7 @@ scoreboard objectives add ac:setup_success dummy
 scoreboard players add @a ac:setup_success 0
 
 scoreboard players set @a[scores={ac:setup_success=0..}] ac:gametest_on 0
-scoreboard players set @a[scores={ac:setup_success=0,ac:gametest_on=0}] ac:setup_success 2
+scoreboard players set @a[scores={ac:setup_success=0},scores={ac:gametest_on=0}] ac:setup_success 2
 
 # Add necessary tags and disable command feedback
 tag @s add admin
