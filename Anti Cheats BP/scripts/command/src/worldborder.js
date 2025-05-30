@@ -1,4 +1,4 @@
-import { scoreboardAction, sendMessageToAllAdmins, logDebug } from '../../assets/util.js'; // Added logDebug
+import { sendMessageToAllAdmins, logDebug } from '../../assets/util.js'; // Added logDebug, removed scoreboardAction
 import config from '../../config.js';
 import { newCommand } from '../handle.js';
 import { i18n } from '../../assets/i18n.js'; // Added i18n

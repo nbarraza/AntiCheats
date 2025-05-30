@@ -5,7 +5,7 @@ import { logDebug } from '../assets/logger.js';
 // Removed i18n import
 
 const world = Minecraft.world;
-const system = Minecraft.system;
+// const system = Minecraft.system; // Unused variable
 
 // We might need to track player states if direct properties aren't available.
 // e.g., const playersUsingItems = new Set(); // player.id
@@ -53,7 +53,7 @@ export function initializeContextualKillauraCheck() {
      * @returns {void}
      */
     world.afterEvents.entityHitEntity.subscribe(event => {
-        const { damagingEntity, hitEntity } = event;
+        const { damagingEntity } = event; // Removed unused hitEntity
 
         if (!(damagingEntity instanceof Minecraft.Player)) {
             return;
