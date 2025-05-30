@@ -2,7 +2,7 @@ import * as Minecraft from '@minecraft/server';
 import { ActionFormData, MessageFormData, ModalFormData } from '@minecraft/server-ui';
 import { addPlayerToUnbanQueue, copyInv, invsee, millisecondTime, sendMessageToAllAdmins } from './assets/util.js'; // Removed getPlayerByName
 import { logDebug } from './assets/logger.js';
-import { ModuleStatusManager as ACModule } from './classes/module.js'; 
+import { ModuleStatusManager } from './classes/module.js';
 import CONFIG from "./config.js"; 
 
 const world = Minecraft.world;
@@ -179,7 +179,7 @@ export function banLogForm(player, previousFormCallback){
                                 let currentLogsArr;
                                 try {
                                     currentLogsArr = JSON.parse(currentLogsRaw);
-                                } catch (_e) { // e -> _e
+                                } catch (_e) {
                                     player.sendMessage("§cError processing existing ban logs for deletion.");
                                     banLogForm(player, previousFormCallback);
                                     return;
@@ -335,7 +335,7 @@ export function configEditorForm(player, previousFormCallback) {
                         let currentConfig = world.getDynamicProperty("ac:config");
                         let parsedConfig = {};
                         if (currentConfig && typeof currentConfig === 'string') {
-                            try { parsedConfig = JSON.parse(currentConfig); } catch (_e) { console.warn("Error parsing dynamic config, starting fresh."); } // e -> _e
+                            try { parsedConfig = JSON.parse(currentConfig); } catch (_e) { console.warn("Error parsing dynamic config, starting fresh."); }
                         } else { 
                             parsedConfig = JSON.parse(JSON.stringify(CONFIG)); 
                         }
@@ -385,10 +385,10 @@ export function moduleSettingsForm(player, previousFormCallback){
         let settingsform = new ModalFormData()
         .title("Anti Cheats Module Settings");
 
-        const validModules = ACModule.getValidModules(); 
+        const validModules = ModuleStatusManager.getValidModules();
         for (let i = 0; i < validModules.length; i++) {
                 const setting = validModules[i];
-                const isSettingEnabled = ACModule.getModuleStatus(setting); 
+                const isSettingEnabled = ModuleStatusManager.getModuleStatus(setting);
 
                 settingsform.toggle(setting, isSettingEnabled); 
         }
@@ -402,11 +402,11 @@ export function moduleSettingsForm(player, previousFormCallback){
 
                 for (let i = 0; i < validModules.length; i++) {
                         const setting = validModules[i];
-                        const isSettingEnabled = ACModule.getModuleStatus(setting);
+                        const isSettingEnabled = ModuleStatusManager.getModuleStatus(setting);
                         const shouldEnableSetting = formData.formValues[i];
 
                         if (isSettingEnabled !== shouldEnableSetting) {
-                                ACModule.toggleModule(setting); 
+                                ModuleStatusManager.toggleModule(setting);
                                 sendMessageToAllAdmins(`§6[§eAnti Cheats Notify§6]§f ${player.name}§f turned ${shouldEnableSetting ? "on" : "off"} §e${setting}§f!`,true);
                         }
                 }
