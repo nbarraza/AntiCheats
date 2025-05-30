@@ -1,7 +1,7 @@
 import { newCommand } from '../handle.js';
 import { getPlayerByName } from '../../assets/util.js';
 import { logDebug } from '../../assets/logger.js'; // Moved logDebug to logger.js
-import { ACModule } from '../../classes/module.js';
+import { ModuleStatusManager } from '../../classes/module.js';
 
 newCommand({
     name: "warnings",
@@ -35,11 +35,11 @@ newCommand({
             player.sendMessage(`§6[§eAnti Cheats§6]§f ${targetPlayer.name} warnings count:`);
             
             const warnings = targetPlayer.getWarnings(); 
-            const moduleKeys = ACModule.getValidModules(true);
+            const moduleKeys = ModuleStatusManager.getValidModules(true);
 
             player.sendMessage(`§6[§eAnti Cheats§6]§f Manual §eWarnings by Admins§f: §e${warnings["manual"] ?? 0}`)
             for(let i = 0; i < moduleKeys.length; i++){
-                player.sendMessage(`§6[§eAnti Cheats§6]§f Module §e${ACModule.Modules[ACModule.getModuleID(moduleKeys[i])]}§f: §e${warnings[ACModule.getModuleID(moduleKeys[i])] ?? 0}`);
+                player.sendMessage(`§6[§eAnti Cheats§6]§f Module §e${ModuleStatusManager.Modules[ModuleStatusManager.getModuleID(moduleKeys[i])]}§f: §e${warnings[ModuleStatusManager.getModuleID(moduleKeys[i])] ?? 0}`);
             }
         } catch (error) {
             logDebug("[Anti Cheats Command Error][warnings]", error, error.stack);

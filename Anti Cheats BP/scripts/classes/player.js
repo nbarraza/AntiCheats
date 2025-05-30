@@ -1,7 +1,7 @@
 import { Player, world, InputPermissionCategory } from "@minecraft/server";
 import { formatMilliseconds, generateBanLog, sendMessageToAllAdmins, getPlayerByName } from "../assets/util.js";
 import { logDebug } from '../assets/logger.js';
-import { ModuleStatusManager as ACModule } from "./module.js";
+import { ModuleStatusManager } from "./module.js";
 import { i18n } from '../assets/i18n.js';
 
 /** @property {number} initialClick - Timestamp of the initial click for CPS calculation. Primarily for internal use by anti-cheat modules. */
@@ -77,12 +77,12 @@ Player.prototype.clearWarnings = function(){
  */
 Player.prototype.setWarning = function(module){
 	try {
-		if (module !== "manual" && !ACModule.getValidModules().includes(module)) {
+		if (module !== "manual" && !ModuleStatusManager.getValidModules().includes(module)) {
 			logDebug(i18n.getText("player.error.invalidModuleForWarning", { module: module }));
 			throw ReferenceError(i18n.getText("player.error.invalidModuleReference", { moduleName: module }));
 		}
 		const warnings = this.getWarnings(); // Already has try-catch for parsing
-		const moduleID = module === "manual" ? module : ACModule.getModuleID(module);
+		const moduleID = module === "manual" ? module : ModuleStatusManager.getModuleID(module);
 
 		if(!warnings[moduleID]) warnings[moduleID] = 1;
 		else warnings[moduleID] += 1;
