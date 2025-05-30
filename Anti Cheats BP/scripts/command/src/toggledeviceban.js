@@ -68,12 +68,12 @@ newCommand({
             world.safeguardDeviceBan = bannedDevices; // Update the global variable
             world.setDynamicProperty("safeguard:deviceBan", JSON.stringify(world.safeguardDeviceBan)); // API Call
         } catch (e) {
-            logDebug("[Anti Cheats ERROR][toggledeviceban]", e, e.stack); // SafeGuard -> Anti Cheats
+            logDebug("[Anti Cheats ERROR][toggledeviceban]", e, e.stack);
             if (data && data.player) {
                 try {
                     data.player.sendMessage(i18n.getText("command.toggledeviceban.error", {}, data.player));
                 } catch (sendError) {
-                    logDebug("[Anti Cheats ERROR][toggledeviceban] Failed to send error message to command executor:", sendError, sendError.stack); // SafeGuard -> Anti Cheats
+                    logDebug("[Anti Cheats ERROR][toggledeviceban] Failed to send error message to command executor:", sendError, sendError.stack);
                 }
             }
         }

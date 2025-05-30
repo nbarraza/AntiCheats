@@ -21,12 +21,12 @@ newCommand({
             world.setDynamicProperty("ac:ownerPlayerName", ""); // API Call, changed to world and new key
             player.sendMessage(`§6[§eAnti Cheats§6]§f Your owner status was removed.`); // API Call, updated prefix for consistency
         } catch (e) {
-            logDebug("[AntiCheats ERROR][removeowner]", e, e.stack); // Updated prefix for consistency
+            logDebug("[Anti Cheats ERROR][removeowner]", e, e.stack); // Updated prefix for consistency
             if (data && data.player) {
                 try {
                     data.player.sendMessage("§cAn error occurred while trying to remove owner status. Please check the console.");
                 } catch (sendError) {
-                    logDebug("[Anti Cheats ERROR][removeowner] Failed to send error message to command executor:", sendError, sendError.stack); // SafeGuard -> Anti Cheats
+                    logDebug("[Anti Cheats ERROR][removeowner] Failed to send error message to command executor:", sendError, sendError.stack);
                 }
             }
         }
