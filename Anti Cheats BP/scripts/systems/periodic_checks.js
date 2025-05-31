@@ -101,6 +101,10 @@ system.runInterval(() => {
             }
 
             // Nuker VL decay/check
+            console.warn("[AntiCheats_Debug] typeof ModuleStatusManager: " + typeof ModuleStatusManager);
+            console.warn("[AntiCheats_Debug] typeof ModuleStatusManager.getModuleStatus: " + typeof ModuleStatusManager.getModuleStatus);
+            if (ModuleStatusManager && typeof ModuleStatusManager === 'object') { console.warn("[AntiCheats_Debug] ModuleStatusManager keys: " + Object.keys(ModuleStatusManager).join(", ")); }
+            if (ModuleStatusManager && ModuleStatusManager.constructor) { console.warn("[AntiCheats_Debug] ModuleStatusManager constructor name: " + ModuleStatusManager.constructor.name); }
             if (ModuleStatusManager.getModuleStatus(ModuleStatusManager.Modules.nukerCheck)) {
                 let nukerBreakVl = state.nukerVLBreak || 0; // Read from state
                 if (nukerBreakVl > CONFIG.world.nuker.maxBlocks) {
