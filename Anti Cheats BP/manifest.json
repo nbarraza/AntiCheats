@@ -38,15 +38,15 @@
   "dependencies": [
     {
       "module_name": "@minecraft/server",
-      "version": "3.0.0-alpha"
+      "version": "2.0.0-beta"
     },
     {
       "module_name": "@minecraft/server-gametest",
-      "version": "2.0.0-alpha"
+      "version": "1.0.0-beta"
     },
     {
       "module_name": "@minecraft/server-ui",
-      "version": "3.0.0-alpha"
+      "version": "2.0.0-beta"
     },
     {
       "uuid": "9dca0c93-f6ec-4701-a74c-a774600640a4",

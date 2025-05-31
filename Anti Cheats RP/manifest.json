@@ -2,9 +2,9 @@
   "format_version": 2,
   "header": {
     "name": "Anti Cheats RP",
-    "description": "Anti Cheats Resource Pack v1.0.0",
+    "description": "Anti Cheats Resource Pack V__VERSION_STRING__.",
     "uuid": "9dca0c93-f6ec-4701-a74c-a774600640a4",
-    "version": [1, 0, 0],
+    "version": "__VERSION_ARRAY__",
     "min_engine_version": [
       1,
       21,
