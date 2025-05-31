@@ -319,7 +319,7 @@ export function sendMessageToAllAdmins(translationKey, placeholders = {}, isANot
 	try {
 		const adminPlayers = world.getPlayers(entityQueryOptions); // Get players matching score options (if any)
 		for (const admin of adminPlayers) { // Iterate directly, no need for forEach with index
-			if(admin.hasAdmin()) { // Further verify admin status using hasAdmin()
+			if(typeof admin.hasAdmin === 'function' && admin.hasAdmin()) { // Further verify admin status using hasAdmin()
 				try {
 					admin.sendMessage(i18n.getText(translationKey, placeholders, admin));
 				} catch (e) {
