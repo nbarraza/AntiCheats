@@ -1,9 +1,7 @@
-import { getPlayerByName } from '../../assets/util.js'; // Removed formatMilliseconds, sendMessageToAllAdmins
+import { getPlayerByName } from '../../assets/util.js';
 import { logDebug } from '../../assets/logger.js';
 import { newCommand } from '../handle.js';
-// import CONFIG from "../../config.js"; // Removed CONFIG
 import { i18n } from '../../assets/i18n.js';
-// import { world } from '@minecraft/server'; // Removed world
 
 newCommand({
 	name: "mute",
