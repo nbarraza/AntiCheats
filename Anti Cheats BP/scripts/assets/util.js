@@ -81,7 +81,7 @@ export function generateBanLog(obj) {
 		try {
 			newLogs = JSON.parse(logsString);
 		} catch (error) {
-			console.error("Error parsing ban logs JSON:", error);
+			logDebug(`Error parsing ban logs JSON: ${error}`);
 			// Start with an empty array if parsing fails, to prevent data loss of new log
 		}
 	}
@@ -101,7 +101,7 @@ export function generateBanLog(obj) {
 	try {
 		world.setDynamicProperty("ac:banLogs", stringifiedLogs);
 	} catch (e) {
-		console.error("[Anti Cheats ERROR] Failed to set banLogs dynamic property:", e, e.stack);
+		logDebug(`[Anti Cheats ERROR] Failed to set banLogs dynamic property: ${e} ${e.stack}`);
 	}
 }
 
@@ -319,7 +319,7 @@ export function sendMessageToAllAdmins(translationKey, placeholders = {}, isANot
 	try {
 		const adminPlayers = world.getPlayers(entityQueryOptions); // Get players matching score options (if any)
 		for (const admin of adminPlayers) { // Iterate directly, no need for forEach with index
-			if(admin.hasAdmin()) { // Further verify admin status using hasAdmin()
+			if(typeof admin.hasAdmin === 'function' && admin.hasAdmin()) { // Further verify admin status using hasAdmin()
 				try {
 					admin.sendMessage(i18n.getText(translationKey, placeholders, admin));
 				} catch (e) {

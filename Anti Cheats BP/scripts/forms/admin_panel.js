@@ -1,5 +1,6 @@
 import { ActionFormData, MessageFormData } from '@minecraft/server-ui'; 
 import { world } from '@minecraft/server'; // Removed Player import
+import { logDebug } from '../assets/logger.js';
 import { 
     settingSelector, 
     playerSelectionForm, 
@@ -72,7 +73,7 @@ async function showReportDetails(player, reportObject, breadcrumbFunction) {
                             if (!Array.isArray(reportsArray)) reportsArray = [];
                         }
                     } catch (e) {
-                        console.warn(`[AdminPanel][showReportDetails] Error parsing reports for deletion: ${e}`);
+                        logDebug(`[AdminPanel][showReportDetails] Error parsing reports for deletion: ${e}`);
                         player.sendMessage("§cError processing reports. Deletion failed.");
                         breadcrumbFunction(player);
                         return;
@@ -99,13 +100,13 @@ async function showReportDetails(player, reportObject, breadcrumbFunction) {
             // If selection is 1 ("Close" for non-owner) or cancelled, do nothing, form closes.
         }
     } catch (e) {
-        console.warn(`[AdminPanel][showReportDetails] Error for ${player.name}: ${e} ${e.stack}`);
+        logDebug(`[AdminPanel][showReportDetails] Error for ${player.name}: ${e} ${e.stack}`);
         player.sendMessage("§cAn error occurred while displaying report details.");
         // Attempt to go back to the list view even on error to prevent getting stuck
         try {
             breadcrumbFunction(player);
         } catch (navError) {
-            console.warn(`[AdminPanel][showReportDetails] Error navigating back after another error: ${navError}`);
+            logDebug(`[AdminPanel][showReportDetails] Error navigating back after another error: ${navError}`);
         }
     }
 }
@@ -126,7 +127,7 @@ async function showReportListViewer(player) {
             if (!Array.isArray(reportsArray)) reportsArray = [];
         }
     } catch (e) {
-        console.warn(`[AdminPanel][showReportListViewer] Error parsing reports: ${e}`);
+        logDebug(`[AdminPanel][showReportListViewer] Error parsing reports: ${e}`);
         reportsArray = []; // Default to empty on error
     }
 
@@ -169,7 +170,7 @@ async function showReportListViewer(player) {
             showAdminPanel(player);
         }
     } catch (e) {
-        console.warn(`[AdminPanel][showReportListViewer] Error for ${player.name}: ${e} ${e.stack}`);
+        logDebug(`[AdminPanel][showReportListViewer] Error for ${player.name}: ${e} ${e.stack}`);
         player.sendMessage("§cAn error occurred while displaying reports.");
     }
 }
@@ -219,7 +220,7 @@ export async function showAdminPanel(player) {
             // }
         }
     } catch (e) {
-        console.warn(`[AdminPanel] Error for ${player.name}: ${e} ${e.stack}`);
+        logDebug(`[AdminPanel] Error for ${player.name}: ${e} ${e.stack}`);
         if (player && typeof player.sendMessage === 'function') {
             player.sendMessage("§cAn error occurred while trying to display the Admin Panel.");
         }
