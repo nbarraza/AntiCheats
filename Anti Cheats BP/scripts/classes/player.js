@@ -320,63 +320,63 @@ Player.prototype.ban = function(reason="No reason provided", unbanTime, permanen
  * }
  */
 Player.prototype.unban = function() {
-	function removeFromUnbanQueue(player) {
-		try {
-			const unbanInfo = {
-				isBanned: false,
-			};
-			const playerIndex = world.acUnbanQueue.indexOf(player.name);
-			if (playerIndex > -1) {
-				world.acUnbanQueue.splice(playerIndex, 1);
-				try {
-					world.setDynamicProperty("ac:unbanQueue", JSON.stringify(world.acUnbanQueue));
-				} catch (e) {
-					logDebug(`[Anti Cheats ERROR] Failed to set unbanQueue dynamic property for ${player.name}:`, e, e.stack);
-				}
-			}
-			try {
-				player.setDynamicProperty("ac:banInfo", JSON.stringify(unbanInfo));
-			} catch (e) {
-				logDebug(`[Anti Cheats ERROR] Failed to set banInfo dynamic property for ${player.name} during unban:`, e, e.stack);
-			}
-		} catch (e) {
-			logDebug(`[Anti Cheats ERROR] Error in removeFromUnbanQueue for ${player.name}:`, e, e.stack);
-		}
-	}
-	const banProperty = this.getDynamicProperty("ac:banInfo");
-	if (!banProperty) {
-		logDebug(`Player "${this.name}" is not banned (property missing), no unban action needed.`);
-		// Attempt to remove from unban queue just in case, and ensure ban info is cleared.
-		removeFromUnbanQueue(this); // Ensures banInfo is cleared and queue is updated
-		return true; // Considered successful as the state is now definitely "not banned".
-	}
+    /**
+     * Helper function to update the "ac:unbanQueue" dynamic property by removing a player.
+     * @param {string} playerName - The name of the player to remove from the queue.
+     */
+    function updateAndClearUnbanQueueForPlayer(playerName) {
+        try {
+            const unbanQueueJson = world.getDynamicProperty("ac:unbanQueue");
+            let unbanQueue = [];
 
-	try {
-		const banInfo = JSON.parse(banProperty);
+            if (typeof unbanQueueJson === 'string' && unbanQueueJson.length > 0) {
+                try {
+                    unbanQueue = JSON.parse(unbanQueueJson);
+                    if (!Array.isArray(unbanQueue)) {
+                        logDebug(`[Anti Cheats] "ac:unbanQueue" was not an array. Initializing as empty.`);
+                        unbanQueue = [];
+                    }
+                } catch (e) {
+                    logDebug(`[Anti Cheats ERROR] Failed to parse "ac:unbanQueue" JSON: ${e}. Initializing as empty array.`);
+                    unbanQueue = [];
+                }
+            }
 
-		if (typeof banInfo !== 'object' || banInfo === null || typeof banInfo.isBanned === 'undefined') {
-			logDebug(`[Anti Cheats] Invalid or malformed banInfo JSON for player ${this.name} during unban. Property: ${banProperty}. Clearing ban state.`);
-			removeFromUnbanQueue(this); // Attempt to clear queue and set clean ban state
-			return true; 
-		}
+            const playerIndex = unbanQueue.indexOf(playerName);
+            if (playerIndex > -1) {
+                unbanQueue.splice(playerIndex, 1);
+                try {
+                    world.setDynamicProperty("ac:unbanQueue", JSON.stringify(unbanQueue));
+                    logDebug(`[Anti Cheats] Player ${playerName} removed from unban queue.`);
+                } catch (e) {
+                    logDebug(`[Anti Cheats ERROR] Failed to set "ac:unbanQueue" dynamic property for ${playerName}: ${e.stack}`);
+                }
+            } else {
+                logDebug(`[Anti Cheats] Player ${playerName} not found in unban queue.`);
+            }
+        } catch (e) {
+            logDebug(`[Anti Cheats ERROR] Error in updateAndClearUnbanQueueForPlayer for ${playerName}: ${e.stack}`);
+        }
+    }
 
-		if (!banInfo.isBanned) {
-			logDebug(`Player "${this.name}" is not marked as banned in banInfo (.isBanned=${banInfo.isBanned}). Ensuring clean state.`);
-			// If they are in unban queue but record says not banned, still attempt to clean queue and record.
-			removeFromUnbanQueue(this);
-			return true; // Return true as an unban operation was effectively performed or corrected.
-		}
-		
-		// Player is confirmed banned, proceed with normal unban.
-		removeFromUnbanQueue(this);
-		return true;
+    try {
+        // Directly attempt to set the player as unbanned.
+        this.setDynamicProperty("ac:banInfo", JSON.stringify({ isBanned: false }));
+        logDebug(`Player "${this.name}" banInfo set to {isBanned: false}.`);
+    } catch (e) {
+        logDebug(`[Anti Cheats ERROR] Failed to set "ac:banInfo" to unbanned for player ${this.name}: ${e.stack}`);
+    }
 
-	} catch (error) {
-		logDebug(i18n.getText("player.error.unban.parsingFailed", { playerName: this.name }), error, `Raw property: ${banProperty}`);
-		// If parsing fails, it's unclear if the player was banned but err on the side of unbanning.
-		removeFromUnbanQueue(this); // Force clear queue and set clean ban state
-		return true; // Return true as a corrective unban action was taken.
-	}
+    // Always attempt to remove from the unban queue.
+    updateAndClearUnbanQueueForPlayer(this.name);
+
+    // The original logging for "not banned" or "parsing failed" can be kept if they provide useful context,
+    // but the primary actions (setting banInfo and clearing queue) are now performed more directly.
+    // For simplicity in this refactor, we'll rely on the direct actions above.
+    // If more detailed logging of previous state is needed, it can be re-added here by inspecting `banProperty`
+    // before setting it.
+
+    return true; // Signify the unban process (including corrective actions) has been attempted/completed.
 };
 
 /**

@@ -5,6 +5,7 @@ import { sendMessageToAllAdmins } from "../assets/util.js"; // Assuming 효율 i
 import { ModuleStatusManager } from "../classes/module.js"; // Removed unused ACModule
 import { globalBanList } from "../assets/global_ban_list.js"; // Assuming this is used or will be used
 import { inMemoryPlayerActivityLogs, MAX_LOG_ENTRIES, initializePlayerState, removePlayerState } from "../systems/periodic_checks.js";
+import { logDebug } from '../assets/logger.js';
 
 const gamertagRegex = /^[a-zA-Z0-9_ ]{3,16}$/; // Max length 16 for Xbox, 3-24 generally
 
@@ -23,7 +24,7 @@ function addPlayerActivityLog(player, activity) {
 // Player Join Event
 world.afterEvents.playerJoin.subscribe((eventData) => {
     if (!eventData.player) {
-        console.warn("[Anti Cheats ERROR] playerJoin event fired but eventData.player is undefined. Cannot process join for this player.");
+        logDebug("[Anti Cheats ERROR] playerJoin event fired but eventData.player is undefined. Cannot process join for this player.");
         return;
     }
     const player = eventData.player;
@@ -59,19 +60,6 @@ world.afterEvents.playerJoin.subscribe((eventData) => {
         sendMessageToAllAdmins("system.admin_join_notification", { player: player.name }, true); // true to exclude self
     }
 
-    // Dynamic property initialization for modules (example)
-    // TODO: Revisit module dynamic property initialization. 
-    // The previous ModuleStatusManager.getAllModules() returned objects with id, dynamicProperties, and defaultDynamicValue.
-    // The new ModuleStatusManager.getValidModules() returns an array of module names (strings).
-    // A different approach is needed here if per-module dynamic properties need to be set on player join.
-    // For now, commenting out to prevent errors.
-    // ModuleStatusManager.getValidModules().forEach(moduleName => {
-    //     // Example: if a module definition object could be retrieved by name:
-    //     // const moduleDefinition = ModuleStatusManager.getModuleDefinition(moduleName); // This function doesn't exist
-    //     // if (moduleDefinition && moduleDefinition.dynamicProperties && player.getDynamicProperty(moduleDefinition.id) === undefined) {
-    //     //     player.setDynamicProperty(moduleDefinition.id, moduleDefinition.defaultDynamicValue);
-    //     // }
-    // });
 });
 
 // Player Leave Event
