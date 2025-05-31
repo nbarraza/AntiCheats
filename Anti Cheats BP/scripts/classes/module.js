@@ -72,6 +72,10 @@ class ModuleStatusManagerInternal { // Renamed from ACModuleInternal
     
         return world.getDynamicProperty(`ac:${this.getModuleID(module)}`) ?? false;
     }
+
+    isActive(moduleName) {
+        return this.getModuleStatus(moduleName);
+    }
     /**
      * Toggles the status of a given module (enabled to disabled, or vice-versa).
      * Persists the change in a world dynamic property.
