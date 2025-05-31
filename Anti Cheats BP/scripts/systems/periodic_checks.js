@@ -133,33 +133,33 @@ if (CONFIG.world.nightVisionDetection.enableNightVisionCheck) {
 
 // --- Log Saving Interval ---
 // Removed if (configData.enable_log_saving) condition
-// system.runInterval(() => {
-//     // if (Array.isArray(inMemoryCommandLogs) && inMemoryCommandLogs.length > 0) {
-//     //     saveLogToFile(LOG_FILE_PREFIX.COMMAND, inMemoryCommandLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.command}`).join("\n"));
-//     //     inMemoryCommandLogs = [];
-//     // } else if (!Array.isArray(inMemoryCommandLogs) && inMemoryCommandLogs) {
-//     //     logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: inMemoryCommandLogs is not an array. Type: ${typeof inMemoryCommandLogs}. Attempting to log value: ${String(inMemoryCommandLogs)}. Resetting.`);
-//     //     inMemoryCommandLogs = [];
-//     // }
-//     // if (Array.isArray(inMemoryPlayerActivityLogs) && inMemoryPlayerActivityLogs.length > 0) {
-//     //     saveLogToFile(LOG_FILE_PREFIX.ACTIVITY, inMemoryPlayerActivityLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.activity}`).join("\n"));
-//     //     inMemoryPlayerActivityLogs = [];
-//     // } else if (!Array.isArray(inMemoryPlayerActivityLogs) && inMemoryPlayerActivityLogs) {
-//     //     logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: inMemoryPlayerActivityLogs is not an array. Type: ${typeof inMemoryPlayerActivityLogs}. Attempting to log value: ${String(inMemoryPlayerActivityLogs)}. Resetting.`);
-//     //     inMemoryPlayerActivityLogs = [];
-//     // }
-// }, 1200 /* TODO: Revisit log_save_interval_ticks, was configData.log_save_interval_ticks */);
+system.runInterval(() => {
+    if (Array.isArray(inMemoryCommandLogs) && inMemoryCommandLogs.length > 0) {
+        saveLogToFile(LOG_FILE_PREFIX.COMMAND, inMemoryCommandLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.command}`).join("\n"));
+        inMemoryCommandLogs = [];
+    } else if (!Array.isArray(inMemoryCommandLogs) && inMemoryCommandLogs) {
+        logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: inMemoryCommandLogs is not an array. Type: ${typeof inMemoryCommandLogs}. Attempting to log value: ${String(inMemoryCommandLogs)}. Resetting.`);
+        inMemoryCommandLogs = [];
+    }
+    if (Array.isArray(inMemoryPlayerActivityLogs) && inMemoryPlayerActivityLogs.length > 0) {
+        saveLogToFile(LOG_FILE_PREFIX.ACTIVITY, inMemoryPlayerActivityLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.activity}`).join("\n"));
+        inMemoryPlayerActivityLogs = [];
+    } else if (!Array.isArray(inMemoryPlayerActivityLogs) && inMemoryPlayerActivityLogs) {
+        logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: inMemoryPlayerActivityLogs is not an array. Type: ${typeof inMemoryPlayerActivityLogs}. Attempting to log value: ${String(inMemoryPlayerActivityLogs)}. Resetting.`);
+        inMemoryPlayerActivityLogs = [];
+    }
+}, 1200 /* TODO: Revisit log_save_interval_ticks, was configData.log_save_interval_ticks */);
 
 
 // --- Vanish Reminder Interval ---
 // Removed if (ModuleStatusManager.getModuleStatus("vanish")) condition
-// system.runInterval(() => {
-//     for (const player of world.getAllPlayers()) {
-//         if (player.hasTag("vanished") && typeof player.hasAdmin === 'function' && player.hasAdmin()) {
-//             player.onScreenDisplay.setActionBar(i18n.getText("system.vanish_reminder"));
-//         }
-//     }
-// }, 6000 /* TODO: Revisit vanish_reminder_interval_ticks, was configData.vanish_reminder_interval_ticks */);
+system.runInterval(() => {
+    for (const player of world.getAllPlayers()) {
+        if (player.hasTag("vanished") && typeof player.hasAdmin === 'function' && player.hasAdmin()) {
+            player.onScreenDisplay.setActionBar(i18n.getText("system.vanish_reminder"));
+        }
+    }
+}, 6000 /* TODO: Revisit vanish_reminder_interval_ticks, was configData.vanish_reminder_interval_ticks */);
 
 
 // No explicit exports needed for the intervals themselves as they are self-running.
