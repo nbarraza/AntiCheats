@@ -1,5 +1,4 @@
-import { ItemStack, world, EnchantmentTypes } from '@minecraft/server'; // Removed Block
-// import { logDebug } from './util'; // Removed logDebug import
+import { ItemStack, world, EnchantmentTypes } from '@minecraft/server';
 
 /**
  * Gives a player a full set of enchanted iron armor and tools.

@@ -1,8 +1,9 @@
 import { world, system } from '@minecraft/server'; // Ensure system and world are imported
 // Local Script Imports
-import CONFIG from "./config.js"; // Assuming this is still CONFIG.default structure
-import "./command/importer.js"; // Still needed for command registration?
-import "./slash_commands.js"; // Still needed for slash command registration?
+import CONFIG from "./config.js"; // CONFIG is the default export from config.js
+import "./command/importer.js"; // Essential for registering chat commands (e.g., "!ban").
+import "./slash_commands.js"; // Essential for registering slash commands (e.g., "/ac:ban").
+import { logDebug } from './assets/logger.js'; // Added logDebug import
 
 import "./classes/player.js"; // Player prototype extensions
 import { Initialize } from './initialize.js';
@@ -46,30 +47,21 @@ system.run(() => { // Final initialization run
 	try {
 		if(!world.acInitialized) Initialize(); // Ensure main initialization logic is called
 		
-		// Cache initial gamemodes and ensure state is initialized for all currently online players
-		// Note: player.currentGamemode is also set in playerSpawn event for players joining later.
+		// Ensure state is initialized for all currently online players
 		for (const player of world.getPlayers()) { // Using world.getPlayers() as it's already in use here
 			try {
-				// Ensure player prototype extensions have loaded if they set player.currentGamemode
-				// If player.js directly manipulates GameMode, this is fine.
-				// Otherwise, explicitly set it:
-				// player.setDynamicProperty("currentGamemode", player.getGameMode()); // Example if not using prototype
-                if (player.getGameMode) { // Check if method exists
-                    // Assuming player.js extension adds currentGamemode or similar handling
-                     player.currentGamemode = player.getGameMode();
-                }
-
                 // Ensure state is initialized for all players who might have been present before script load
                 if (!playerInternalStates.has(player.id)) {
                     try {
-                        console.warn(`[Anti Cheats Index] Initializing missing state for player ${player.name} (${player.id}) on script load.`);
+                        logDebug(`[Anti Cheats Index] Initializing missing state for player ${player.name} (${player.id}) on script load.`);
                         initializePlayerState(player.id, player.location, system.currentTick);
                     } catch (e) {
-                        console.warn(`[Anti Cheats Index] Error initializing state for player ${player.name} (${player.id}) on script load: ${e}`);
+                        logDebug(`[Anti Cheats Index] Error initializing state for player ${player.name} (${player.id}) on script load: ${e} Stack: ${e?.stack}`);
                     }
                 }
 			} catch (_playerError) { // playerError -> _playerError
-			    // Intentionally empty - errors for individual player setup shouldn't stop others
+			    // Errors for individual player setup shouldn't stop others, but log them.
+                logDebug(`[Anti Cheats Index] Error during initial setup for player: ${_playerError} Stack: ${_playerError?.stack}`);
 			}
 		}
 		
@@ -78,7 +70,8 @@ system.run(() => { // Final initialization run
 
 
 	} catch (_e) { // e -> _e
-	    // Intentionally empty - main initialization errors are logged by Initialize() or other sub-initializers
+	    // Log main initialization errors. Initialize() or sub-initializers might also log specifics.
+        logDebug(`[Anti Cheats Index] Error during final initialization: ${_e} Stack: ${_e?.stack}`);
 	}
 });
 
@@ -87,12 +80,13 @@ system.run(() => { // Final initialization run
 system.run(async () => {
     try {
         const currentVersion = world.getDynamicProperty("ac:version");
-        if (currentVersion !== CONFIG.version) { // Assuming config is now CONFIG.default -> CONFIG
+        if (currentVersion !== CONFIG.version) {
             world.setDynamicProperty("ac:version", CONFIG.version);
             // Potentially send a message to admins about the update if it's a significant version change
             // This could also be part of Initialize() or a dedicated update/migration script.
         }
     } catch (_e) { // e -> _e
-        // Intentionally empty - version check failure is not critical
+        // Version check failure is not critical but log it.
+        logDebug(`[Anti Cheats Index] Error during version check: ${_e} Stack: ${_e?.stack}`);
     }
 });

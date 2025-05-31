@@ -2,8 +2,6 @@ import { Player } from "@minecraft/server";
 import { newCommand } from "../handle.js";
 import { showPublicInfoPanel } from "../../assets/ui.js"; 
 import { logDebug } from "../../assets/logger.js"; // Changed path from util.js to logger.js
-// i18n import will be added later when we confirm file stability
-// import { i18n } from "../../assets/i18n.js"; 
 
 newCommand({
     name: "ui",
