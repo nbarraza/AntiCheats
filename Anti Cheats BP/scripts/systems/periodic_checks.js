@@ -60,13 +60,13 @@ system.runInterval(() => {
 
         let state = getPlayerState(player.id);
         if (!state) {
-            console.warn(`[AntiCheats_PeriodicChecks] No state found for player ${player.name} (${player.id}). Attempting to initialize state now.`);
+            logDebug(`[AntiCheats_PeriodicChecks] No state found for player ${player.name} (${player.id}). Attempting to initialize state now.`);
             // Ensure initializePlayerState and system are available in this scope
             // (initializePlayerState is exported by this file, system is imported from @minecraft/server)
             initializePlayerState(player.id, player.location, system.currentTick);
             state = getPlayerState(player.id); // Attempt to retrieve the state again
             if (!state) {
-                console.error(`[AntiCheats_PeriodicChecks] CRITICAL: Failed to initialize state for player ${player.name} (${player.id}) on demand. Skipping tick.`);
+                logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: Failed to initialize state for player ${player.name} (${player.id}) on demand. Skipping tick.`);
                 continue;
             }
         }
@@ -134,13 +134,19 @@ if (CONFIG.world.nightVisionDetection.enableNightVisionCheck) {
 // --- Log Saving Interval ---
 // Removed if (configData.enable_log_saving) condition
 system.runInterval(() => {
-    if (inMemoryCommandLogs.length > 0) {
+    if (Array.isArray(inMemoryCommandLogs) && inMemoryCommandLogs.length > 0) {
         saveLogToFile(LOG_FILE_PREFIX.COMMAND, inMemoryCommandLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.command}`).join("\n"));
         inMemoryCommandLogs = []; // Clear after saving
+    } else if (!Array.isArray(inMemoryCommandLogs) && inMemoryCommandLogs) {
+        logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: inMemoryCommandLogs is not an array. Type: ${typeof inMemoryCommandLogs}. Attempting to log value: ${String(inMemoryCommandLogs)}. Resetting.`);
+        inMemoryCommandLogs = []; // Reset to an empty array
     }
-    if (inMemoryPlayerActivityLogs.length > 0) {
+    if (Array.isArray(inMemoryPlayerActivityLogs) && inMemoryPlayerActivityLogs.length > 0) {
         saveLogToFile(LOG_FILE_PREFIX.ACTIVITY, inMemoryPlayerActivityLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.activity}`).join("\n"));
         inMemoryPlayerActivityLogs = []; // Clear after saving
+    } else if (!Array.isArray(inMemoryPlayerActivityLogs) && inMemoryPlayerActivityLogs) {
+        logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: inMemoryPlayerActivityLogs is not an array. Type: ${typeof inMemoryPlayerActivityLogs}. Attempting to log value: ${String(inMemoryPlayerActivityLogs)}. Resetting.`);
+        inMemoryPlayerActivityLogs = []; // Reset to an empty array
     }
 }, 1200 /* TODO: Revisit log_save_interval_ticks, was configData.log_save_interval_ticks */);
 
