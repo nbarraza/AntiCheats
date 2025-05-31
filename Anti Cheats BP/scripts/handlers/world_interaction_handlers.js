@@ -37,7 +37,7 @@ world.beforeEvents.itemUse.subscribe((eventData) => {
     if (ModuleStatusManager.isActive("antigrief") && configData.restricted_items_antigrief.includes(item.typeId)) {
         if (!player.hasAdmin()) { // Allow admins to use restricted items
             eventData.cancel = true;
-            player.sendMessage(i18n("system.antigrief_item_restriction", { item: item.typeId }));
+            player.sendMessage(i18n.getText("system.antigrief_item_restriction", { item: item.typeId }, player));
             sendMessageToAllAdmins("system.antigrief_item_attempt_admin", { player: player.name, item: item.typeId });
         }
     }
