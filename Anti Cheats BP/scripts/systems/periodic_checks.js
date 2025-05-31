@@ -101,8 +101,11 @@ system.runInterval(() => {
             }
 
             // Nuker VL decay/check
-            const getStatusFunc = ModuleStatusManager.getModuleStatus;
-            if (getStatusFunc.call(ModuleStatusManager, ModuleStatusManager.Modules.nukerCheck)) {
+            console.warn("[AntiCheats_Debug] typeof ModuleStatusManager: " + typeof ModuleStatusManager);
+            console.warn("[AntiCheats_Debug] typeof ModuleStatusManager.getModuleStatus: " + typeof ModuleStatusManager.getModuleStatus);
+            if (ModuleStatusManager && typeof ModuleStatusManager === 'object') { console.warn("[AntiCheats_Debug] ModuleStatusManager keys: " + Object.keys(ModuleStatusManager).join(", ")); }
+            if (ModuleStatusManager && ModuleStatusManager.constructor) { console.warn("[AntiCheats_Debug] ModuleStatusManager constructor name: " + ModuleStatusManager.constructor.name); }
+            if (ModuleStatusManager.getModuleStatus(ModuleStatusManager.Modules.nukerCheck)) {
                 let nukerBreakVl = state.nukerVLBreak || 0; // Read from state
                 if (nukerBreakVl > CONFIG.world.nuker.maxBlocks) {
                      sendMessageToAllAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
