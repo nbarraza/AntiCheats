@@ -4,9 +4,6 @@ import CONFIG from './config.js';
 import { globalBanList } from './assets/global_ban_list.js'; // Added import
 // Removed i18n import
 
-// PACKAGED_LANGUAGE_DATA object removed from here
-
-// Removed logDebug: "[Anti Cheats] Setting up language dynamic properties..."
 let inMemoryGeneralLogs = [];
 const MAX_GENERAL_LOG_ENTRIES = 100; 
 
@@ -53,7 +50,6 @@ export function Initialize(){
             if (world.scoreboard.getObjective(obj) == undefined) {
                 try {
                     world.scoreboard.addObjective(obj, obj); // Use obj as display name too, or customize
-                    // Removed logDebug: Created scoreboard objective
                 } catch (e) {
                     logDebug(`[Anti Cheats] Failed to create scoreboard objective ${obj}:`, e);
                 }
@@ -70,7 +66,6 @@ export function Initialize(){
                 world.gameRules.sendCommandFeedback = false;
                 world.gameRules.commandBlockOutput = false;
                 world.setDynamicProperty("ac:gamerulesSet", true);
-                // Removed logDebug: Initialized gamerules
             } catch (e) {
                 logDebug("[Anti Cheats] Failed to initialize gamerules:", e);
             }
@@ -103,7 +98,6 @@ export function Initialize(){
             logDebug("[Anti Cheats] Error parsing unbanQueue JSON, defaulting to empty array:", error);
             world.acUnbanQueue = [];
         }
-        // Removed logDebug: Unban Queue content
 
         /**
          * @description Initializes the device ban list (`world.acDeviceBan`) by parsing the
@@ -116,7 +110,6 @@ export function Initialize(){
             logDebug("[Anti Cheats] Error parsing deviceBan JSON, defaulting to empty array:", error);
             world.acDeviceBan = [];
         }
-        // Removed logDebug: Device Ban List content
 
         /**
          * @description Checks the addon version stored in "ac:version" dynamic property.
@@ -198,7 +191,6 @@ export function Initialize(){
                         CONFIG[i] = editedConfig[i];
                     }
                 }
-                // Removed logDebug: Loaded config from dynamic properties.
             } catch (error) {
                 logDebug(`[Anti Cheats] Error parsing editedConfig JSON from dynamic property "ac:config":`, error);
                 // Proceed with default config if parsing fails
@@ -235,22 +227,19 @@ export function Initialize(){
         }
         world.dynamicGbanListArray = loadedGbanList; // Store the array
         world.dynamicGbanNameSet = new Set(loadedGbanList.map(entry => (typeof entry === 'string' ? entry : entry.name)));
-        // Removed logDebug: Dynamic Global Ban List initialized
 
         // New Owner Designation Logic
         try {
             const existingOwner = world.getDynamicProperty("ac:ownerPlayerName");
             if (existingOwner !== undefined && typeof existingOwner === 'string' && existingOwner.trim() !== '') {
-                // Removed logDebug: Existing Owner Found
+                // Owner already exists
             } else {
-                // Removed logDebug: No existing owner found
                 const configOwnerName = CONFIG.other.ownerPlayerNameManual;
                 if (typeof configOwnerName === 'string' && configOwnerName.trim() !== '') {
                     world.setDynamicProperty("ac:ownerPlayerName", configOwnerName);
-                    // Removed logDebug: Owner designated from config.js
                     // Consider adding a world.sendMessage or similar if you want to announce this.
                 } else {
-                    // Removed logDebug: No owner manually set in config.js
+                    // No owner set in config
                 }
             }
         } catch (e) {
@@ -260,7 +249,6 @@ export function Initialize(){
         // Mark script setup as complete using both a dynamic property and a runtime flag.
         world.setDynamicProperty("ac:scriptSetupComplete", true);
         world.acInitialized = true; // General initialization flag for runtime checks.
-        // Removed logDebug: Initialized and script setup marked as complete.
         
 
         /**

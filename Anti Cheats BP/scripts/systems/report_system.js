@@ -1,6 +1,6 @@
 import { world } from '@minecraft/server'; // Removed Player import
 // import * as config from '../config.js'; // If maxReports becomes configurable
-// import { sendMessageToAdmins } from '../assets/util.js'; // If a utility function is preferred for admin notifications
+// import { sendMessageToAllAdmins } from '../assets/util.js'; // If a utility function is preferred for admin notifications
 
 /**
  * Submits a new player report and stores it in world dynamic properties.
@@ -64,8 +64,8 @@ export async function submitReport(reporterPlayer, reportedPlayerNameStr, reason
 
         // Admin Notification
         const adminMessage = `§7[Report] New report by ${reporterPlayer.name} against ${reportedPlayerNameStr}. Reason: ${reasonStr.substring(0, 100)}${reasonStr.length > 100 ? '...' : ''}`;
-        // If sendMessageToAdmins utility exists and is imported:
-        // sendMessageToAdmins(adminMessage, false); // false if it means don't exclude reporter if they are admin
+        // If sendMessageToAllAdmins utility exists and is imported:
+        // sendMessageToAllAdmins(adminMessage, false); // false if it means don't exclude reporter if they are admin
         // Otherwise, manual iteration:
         for (const p of world.getAllPlayers()) {
             if (p.hasAdmin()) { // Assuming player.hasAdmin() is defined (from previous tasks)

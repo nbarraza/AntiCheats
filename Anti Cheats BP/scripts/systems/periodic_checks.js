@@ -1,7 +1,7 @@
 import { world, system, EffectType } from "@minecraft/server"; // Removed Player, EntityDamageCause, GameMode
 import CONFIG from "../config.js";
 import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
-import { sendMessageToAdmins, saveLogToFile, LOG_FILE_PREFIX } from "../assets/util.js";
+import { sendMessageToAllAdmins, saveLogToFile, LOG_FILE_PREFIX } from "../assets/util.js";
 import { logDebug } from "../assets/logger.js"; // Assuming logDebug is in util.js or assets/util.js
 
 // Define the playerInternalStates Map
@@ -95,7 +95,7 @@ system.runInterval(() => {
             if (ModuleStatusManager.getModuleStatus(ModuleStatusManager.Modules.velocityCheck) && movementSpeed > maxSpeed && !player.hasEffect(EffectType.get("speed")) && !player.isFlying) {
                 state.speedVL = (state.speedVL || 0) + 1;
                 if (state.speedVL >= CONFIG.movement.speed.speedViolationThreshold) {
-                    sendMessageToAdmins("detection.speed_detected_admin", { player: player.name, speed: movementSpeed.toFixed(2), max_speed: maxSpeed, vl: state.speedVL });
+                    sendMessageToAllAdmins("detection.speed_detected_admin", { player: player.name, speed: movementSpeed.toFixed(2), max_speed: maxSpeed, vl: state.speedVL });
                     // Removed speed_punish block
                     state.speedVL = 0;
                 }
@@ -107,7 +107,7 @@ system.runInterval(() => {
                 // More sophisticated checks: e.g., vertical speed, obstacles, gliding
                 state.flyVL = (state.flyVL || 0) + 1;
                 if (state.flyVL >= CONFIG.movement.fly.flyViolationThreshold) {
-                    sendMessageToAdmins("detection.fly_detected_admin", { player: player.name, vl: state.flyVL });
+                    sendMessageToAllAdmins("detection.fly_detected_admin", { player: player.name, vl: state.flyVL });
                     // Removed fly_punish block
                     state.flyVL = 0;
                 }
@@ -120,7 +120,7 @@ system.runInterval(() => {
             if (ModuleStatusManager.getModuleStatus(ModuleStatusManager.Modules.nukerCheck)) {
                 let nukerBreakVl = state.nukerVLBreak || 0; // Read from state
                 if (nukerBreakVl > CONFIG.world.nuker.maxBlocks) {
-                     sendMessageToAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
+                     sendMessageToAllAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
                      // Removed nuker_punish block
                 }
                 state.nukerVLBreak = 0; // Reset in state
@@ -167,7 +167,7 @@ system.runInterval(() => {
 system.runInterval(() => {
     for (const player of world.getAllPlayers()) {
         if (player.hasTag("vanished") && player.hasAdmin()) {
-            player.onScreenDisplay.setActionBar(i18n("system.vanish_reminder"));
+            player.onScreenDisplay.setActionBar(i18n.getText("system.vanish_reminder"));
         }
     }
 }, 6000 /* TODO: Revisit vanish_reminder_interval_ticks, was configData.vanish_reminder_interval_ticks */);
