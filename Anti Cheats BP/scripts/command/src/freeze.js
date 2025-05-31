@@ -1,6 +1,6 @@
 import { getPlayerByName, sendMessageToAllAdmins } from "../../assets/util.js";
 import { logDebug } from "../../assets/logger.js"; // Added logDebug
-import { newCommand } from "../handle";
+import { newCommand } from "../handle.js";
 import { i18n } from '../../assets/i18n.js'; // Added i18n
 
 newCommand({

@@ -81,7 +81,7 @@ export function generateBanLog(obj) {
 		try {
 			newLogs = JSON.parse(logsString);
 		} catch (error) {
-			console.error("Error parsing ban logs JSON:", error);
+			logDebug(`Error parsing ban logs JSON: ${error}`);
 			// Start with an empty array if parsing fails, to prevent data loss of new log
 		}
 	}
@@ -101,7 +101,7 @@ export function generateBanLog(obj) {
 	try {
 		world.setDynamicProperty("ac:banLogs", stringifiedLogs);
 	} catch (e) {
-		console.error("[Anti Cheats ERROR] Failed to set banLogs dynamic property:", e, e.stack);
+		logDebug(`[Anti Cheats ERROR] Failed to set banLogs dynamic property: ${e} ${e.stack}`);
 	}
 }
 

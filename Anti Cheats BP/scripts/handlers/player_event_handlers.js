@@ -59,19 +59,6 @@ world.afterEvents.playerJoin.subscribe((eventData) => {
         sendMessageToAllAdmins("system.admin_join_notification", { player: player.name }, true); // true to exclude self
     }
 
-    // Dynamic property initialization for modules (example)
-    // TODO: Revisit module dynamic property initialization. 
-    // The previous ModuleStatusManager.getAllModules() returned objects with id, dynamicProperties, and defaultDynamicValue.
-    // The new ModuleStatusManager.getValidModules() returns an array of module names (strings).
-    // A different approach is needed here if per-module dynamic properties need to be set on player join.
-    // For now, commenting out to prevent errors.
-    // ModuleStatusManager.getValidModules().forEach(moduleName => {
-    //     // Example: if a module definition object could be retrieved by name:
-    //     // const moduleDefinition = ModuleStatusManager.getModuleDefinition(moduleName); // This function doesn't exist
-    //     // if (moduleDefinition && moduleDefinition.dynamicProperties && player.getDynamicProperty(moduleDefinition.id) === undefined) {
-    //     //     player.setDynamicProperty(moduleDefinition.id, moduleDefinition.defaultDynamicValue);
-    //     // }
-    // });
 });
 
 // Player Leave Event
