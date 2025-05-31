@@ -2,7 +2,6 @@ import * as Minecraft from '@minecraft/server';
 import { logDebug } from './assets/logger.js';
 import CONFIG from './config.js';
 import { globalBanList } from './assets/global_ban_list.js'; // Added import
-// Removed i18n import
 
 let inMemoryGeneralLogs = [];
 const MAX_GENERAL_LOG_ENTRIES = 100; 

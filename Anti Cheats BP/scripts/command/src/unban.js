@@ -1,7 +1,7 @@
-import { addPlayerToUnbanQueue } from '../../assets/util.js'; // Removed getPlayerByName
+import { addPlayerToUnbanQueue } from '../../assets/util.js';
 import { newCommand } from '../handle.js';
 import { i18n } from '../../assets/i18n.js';
-import { logDebug } from '../../assets/logger.js'; // Added import for logDebug
+import { logDebug } from '../../assets/logger.js';
 
 newCommand({
     name:"unban",
