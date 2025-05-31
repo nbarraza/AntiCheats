@@ -105,12 +105,27 @@ system.runInterval(() => {
             console.warn("[AntiCheats_Debug] typeof ModuleStatusManager.getModuleStatus: " + typeof ModuleStatusManager.getModuleStatus);
             if (ModuleStatusManager && typeof ModuleStatusManager === 'object') { console.warn("[AntiCheats_Debug] ModuleStatusManager keys: " + Object.keys(ModuleStatusManager).join(", ")); }
             if (ModuleStatusManager && ModuleStatusManager.constructor) { console.warn("[AntiCheats_Debug] ModuleStatusManager constructor name: " + ModuleStatusManager.constructor.name); }
-            if (ModuleStatusManager.getModuleStatus(ModuleStatusManager.Modules.nukerCheck)) {
-                let nukerBreakVl = state.nukerVLBreak || 0; // Read from state
-                if (nukerBreakVl > CONFIG.world.nuker.maxBlocks) {
-                     sendMessageToAllAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
+
+            const localModuleManager = ModuleStatusManager;
+            const getStatusMethod = localModuleManager.getModuleStatus;
+            const nukerModuleKey = localModuleManager.Modules.nukerCheck;
+
+            console.warn("[AntiCheats_Debug_PreCall] typeof getStatusMethod: " + typeof getStatusMethod);
+
+            if (typeof getStatusMethod === 'function') {
+                // player variable is from the loop: for (const player of world.getAllPlayers())
+                // state variable is also from within that loop context
+                // CONFIG should be imported at the top of the file
+                // sendMessageToAllAdmins should be imported at the top of the file
+                if (getStatusMethod.call(localModuleManager, nukerModuleKey)) {
+                    let nukerBreakVl = state.nukerVLBreak || 0;
+                    if (nukerBreakVl > CONFIG.world.nuker.maxBlocks) {
+                         sendMessageToAllAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
+                    }
+                    state.nukerVLBreak = 0; // Reset in state
                 }
-                state.nukerVLBreak = 0; // Reset in state
+            } else {
+                console.warn("[AntiCheats_Debug_PreCall_FAILED] getStatusMethod was NOT a function. Type: " + typeof getStatusMethod + ". Module: " + nukerModuleKey);
             }
         }
 
