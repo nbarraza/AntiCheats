@@ -68,7 +68,7 @@ export function initializeContextualKillauraCheck() {
             // A common workaround is to check if the player has the 'sleeping' state (e.g., player.matches({ state: "sleeping" }))
             // or if they are physically in a bed via location checks + block type, or if they have a specific vanilla tag.
             // Let's assume a hypothetical tag or state for now, or this check might be difficult.
-            // For example, if a system elsewhere adds a "safeguard:is_sleeping" tag:
+            // For example, if a system elsewhere adds a "ac:is_sleeping" tag:
             if (player.hasTag("ac:is_sleeping")) { // Placeholder for actual sleep detection
                 violationType = "AttackingWhileSleeping";
             }

@@ -1,8 +1,9 @@
 import { Player, world, InputPermissionCategory } from "@minecraft/server";
 import { formatMilliseconds, generateBanLog, sendMessageToAllAdmins, getPlayerByName } from "../assets/util.js";
 import { logDebug } from '../assets/logger.js';
-import { ModuleStatusManager as ACModule } from "./module.js";
+import { ModuleStatusManager } from "./module.js";
 import { i18n } from '../assets/i18n.js';
+import CONFIG from '../config.js'; // Added CONFIG import
 
 /** @property {number} initialClick - Timestamp of the initial click for CPS calculation. Primarily for internal use by anti-cheat modules. */
 Player.prototype.initialClick = 0;
@@ -22,6 +23,31 @@ Player.prototype.registerValidCoords = true;
 Player.prototype.isMuted = false;
 /** @property {number} tridentLastUse - Timestamp of the last trident use with riptide. Used to prevent false flags in movement checks. */
 Player.prototype.tridentLastUse = 0;
+
+/**
+ * Retrieves the rank ID for the player.
+ * Iterates through ranks defined in CONFIG.ranks and checks for corresponding tags.
+ * If the player is an owner (via isOwner()), it returns "owner".
+ * Falls back to CONFIG.defaultRank if no specific rank tag is found.
+ * @memberof Player.prototype
+ * @returns {string} The rank ID (e.g., "owner", "admin", "member").
+ */
+Player.prototype.getRank = function() {
+    if (this.isOwner()) {
+        return "owner"; // Owner status is primary
+    }
+    // Iterate through defined ranks (excluding owner, already checked)
+    for (const rankId in CONFIG.ranks) {
+        if (rankId === "owner") continue; // Skip owner, handled by isOwner()
+        if (Object.prototype.hasOwnProperty.call(CONFIG.ranks, rankId)) {
+            // Assuming rank IDs are directly used as tags
+            if (this.hasTag(rankId)) {
+                return rankId;
+            }
+        }
+    }
+    return CONFIG.defaultRank; // Fallback to default rank
+};
 
 /**
  * Retrieves the warning history for the player.
@@ -77,12 +103,12 @@ Player.prototype.clearWarnings = function(){
  */
 Player.prototype.setWarning = function(module){
 	try {
-		if (module !== "manual" && !ACModule.getValidModules().includes(module)) {
+		if (module !== "manual" && !ModuleStatusManager.getValidModules().includes(module)) {
 			logDebug(i18n.getText("player.error.invalidModuleForWarning", { module: module }));
 			throw ReferenceError(i18n.getText("player.error.invalidModuleReference", { moduleName: module }));
 		}
 		const warnings = this.getWarnings(); // Already has try-catch for parsing
-		const moduleID = module === "manual" ? module : ACModule.getModuleID(module);
+		const moduleID = module === "manual" ? module : ModuleStatusManager.getModuleID(module);
 
 		if(!warnings[moduleID]) warnings[moduleID] = 1;
 		else warnings[moduleID] += 1;

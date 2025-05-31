@@ -37,13 +37,13 @@ ${i18n.getText("command.help.availableCommandsHeader", {}, player)}
             
             player.sendMessage(helpMessage); // API Call
         } catch (e) {
-            logDebug("[SafeGuard ERROR] Error in help command:", e, e.stack);
+            logDebug("[Anti Cheats ERROR] Error in help command:", e, e.stack);
             // Attempt to notify the player if possible
             if (data && data.player) {
                 try {
                     data.player.sendMessage(i18n.getText("command.help.error", {}, data.player));
                 } catch (sendError) {
-                    logDebug("[SafeGuard ERROR] Failed to send error message to command executor in help:", sendError, sendError.stack);
+                    logDebug("[Anti Cheats ERROR] Failed to send error message to command executor in help:", sendError, sendError.stack);
                 }
             }
         }

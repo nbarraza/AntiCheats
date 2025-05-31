@@ -62,7 +62,7 @@ newCommand({
 				player.sendMessage(i18n.getText("command.mute.notFound", { playerName: playerName }, player));
 				return;
 			}
-			// if (muteTarget.name === player.name) return player.sendMessage(`§6[§eSafeGuard§6]§f Cannot execute this command on yourself!`);
+			// if (muteTarget.name === player.name) return player.sendMessage(`§6[§eAnti Cheats§6]§f Cannot execute this command on yourself!`);
 
 			// Parse and convert the time duration
 			if (duration.toLowerCase() === "permanent" || duration.length < 1) {
@@ -104,12 +104,12 @@ newCommand({
 			// Execute the mute action
 			muteTarget.mute(player,reason,timeInMs); // mute is wrapped
 		} catch (e) {
-			logDebug("[Anti Cheats ERROR] Error in mute command:", e, e.stack); // Changed SafeGuard to Anti Cheats
+			logDebug("[Anti Cheats ERROR] Error in mute command:", e, e.stack);
             if (data && data.player) {
                 try {
                     data.player.sendMessage(i18n.getText("command.mute.error", {}, data.player));
                 } catch (sendError) {
-                    logDebug("[Anti Cheats ERROR] Failed to send error message to command executor in mute:", sendError, sendError.stack); // Changed SafeGuard to Anti Cheats
+                    logDebug("[Anti Cheats ERROR] Failed to send error message to command executor in mute:", sendError, sendError.stack);
                 }
             }
 		}

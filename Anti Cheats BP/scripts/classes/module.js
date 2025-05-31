@@ -1,5 +1,4 @@
 import {world} from "@minecraft/server";
-// import { logDebug } from "../assets/util.js";
 
 
 /**
@@ -45,7 +44,7 @@ class ModuleStatusManagerInternal { // Renamed from ACModuleInternal
      * @throws {ReferenceError} - If the provided `module` name is not a valid or recognized module.
      */
     getModuleID(module){
-        if(!this.getValidModules().includes(module)) throw ReferenceError(`"${module}" is not a valid SafeGuard module.`);
+        if(!this.getValidModules().includes(module)) throw ReferenceError(`"${module}" is not a valid Anti Cheats module.`);
         const moduleEntries = Object.entries(this.Modules);
         
         for(const [key,value] of moduleEntries){
@@ -69,7 +68,7 @@ class ModuleStatusManagerInternal { // Renamed from ACModuleInternal
      * @throws {ReferenceError} - If the provided `module` name is not valid.
      */
     getModuleStatus(module){
-        if(!this.getValidModules().includes(module)) throw ReferenceError(`"${module}" is not a valid SafeGuard module.`);
+        if(!this.getValidModules().includes(module)) throw ReferenceError(`"${module}" is not a valid Anti Cheats module.`);
     
         return world.getDynamicProperty(`ac:${this.getModuleID(module)}`) ?? false;
     }
@@ -81,7 +80,7 @@ class ModuleStatusManagerInternal { // Renamed from ACModuleInternal
      * @throws {ReferenceError} - If the provided `module` name is not valid.
      */
     toggleModule(module){
-        if(!this.getValidModules().includes(module)) throw ReferenceError(`"${module}" is not a valid SafeGuard module.`);
+        if(!this.getValidModules().includes(module)) throw ReferenceError(`"${module}" is not a valid Anti Cheats module.`);
     
         const moduleID = this.getModuleID(module);
         const currentModuleState = world.getDynamicProperty(`ac:${moduleID}`) ?? false;
@@ -116,4 +115,3 @@ class ModuleStatusManagerInternal { // Renamed from ACModuleInternal
  * @type {ModuleStatusManagerInternal}
  */
 export const ModuleStatusManager = new ModuleStatusManagerInternal(); // Renamed from ACModule
-export const ACModule = ModuleStatusManager;
