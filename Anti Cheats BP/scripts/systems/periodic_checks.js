@@ -101,7 +101,8 @@ system.runInterval(() => {
             }
 
             // Nuker VL decay/check
-            if (ModuleStatusManager["getModuleStatus"](ModuleStatusManager.Modules.nukerCheck)) {
+            const getStatusFunc = ModuleStatusManager.getModuleStatus;
+            if (getStatusFunc.call(ModuleStatusManager, ModuleStatusManager.Modules.nukerCheck)) {
                 let nukerBreakVl = state.nukerVLBreak || 0; // Read from state
                 if (nukerBreakVl > CONFIG.world.nuker.maxBlocks) {
                      sendMessageToAllAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
