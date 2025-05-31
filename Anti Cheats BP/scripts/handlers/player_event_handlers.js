@@ -22,6 +22,10 @@ function addPlayerActivityLog(player, activity) {
 
 // Player Join Event
 world.afterEvents.playerJoin.subscribe((eventData) => {
+    if (!eventData.player) {
+        console.warn("[Anti Cheats ERROR] playerJoin event fired but eventData.player is undefined. Cannot process join for this player.");
+        return;
+    }
     const player = eventData.player;
     const playerId = player.id;
     const initialLocation = player.location;

@@ -167,7 +167,7 @@ system.runInterval(() => {
 system.runInterval(() => {
     for (const player of world.getAllPlayers()) {
         if (player.hasTag("vanished") && player.hasAdmin()) {
-            player.onScreenDisplay.setActionBar(i18n("system.vanish_reminder"));
+            player.onScreenDisplay.setActionBar(i18n.getText("system.vanish_reminder"));
         }
     }
 }, 6000 /* TODO: Revisit vanish_reminder_interval_ticks, was configData.vanish_reminder_interval_ticks */);

@@ -15,6 +15,7 @@ import "./handlers/player_event_handlers.js";
 import "./handlers/combat_event_handlers.js";
 import "./handlers/world_interaction_handlers.js";
 import "./systems/periodic_checks.js";
+import { playerInternalStates, initializePlayerState } from './systems/periodic_checks.js';
 
 
 // --- Global Variables and Constants ---
@@ -45,9 +46,9 @@ system.run(() => { // Final initialization run
 	try {
 		if(!world.acInitialized) Initialize(); // Ensure main initialization logic is called
 		
-		// Cache initial gamemodes for all currently online players
+		// Cache initial gamemodes and ensure state is initialized for all currently online players
 		// Note: player.currentGamemode is also set in playerSpawn event for players joining later.
-		for (const player of world.getPlayers()) {
+		for (const player of world.getPlayers()) { // Using world.getPlayers() as it's already in use here
 			try {
 				// Ensure player prototype extensions have loaded if they set player.currentGamemode
 				// If player.js directly manipulates GameMode, this is fine.
@@ -56,6 +57,16 @@ system.run(() => { // Final initialization run
                 if (player.getGameMode) { // Check if method exists
                     // Assuming player.js extension adds currentGamemode or similar handling
                      player.currentGamemode = player.getGameMode();
+                }
+
+                // Ensure state is initialized for all players who might have been present before script load
+                if (!playerInternalStates.has(player.id)) {
+                    try {
+                        console.warn(`[Anti Cheats Index] Initializing missing state for player ${player.name} (${player.id}) on script load.`);
+                        initializePlayerState(player.id, player.location, system.currentTick);
+                    } catch (e) {
+                        console.warn(`[Anti Cheats Index] Error initializing state for player ${player.name} (${player.id}) on script load: ${e}`);
+                    }
                 }
 			} catch (_playerError) { // playerError -> _playerError
 			    // Intentionally empty - errors for individual player setup shouldn't stop others
