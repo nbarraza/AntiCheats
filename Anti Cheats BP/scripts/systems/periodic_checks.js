@@ -131,6 +131,7 @@ if (CONFIG.world.nightVisionDetection.enableNightVisionCheck) {
     }, CONFIG.world.nightVisionDetection.checkIntervalTicks);
 }
 
+/*
 // --- Log Saving Interval ---
 // Removed if (configData.enable_log_saving) condition
 system.runInterval(() => {
@@ -149,6 +150,7 @@ system.runInterval(() => {
     //     inMemoryPlayerActivityLogs = [];
     // }
 }, 1200 /* TODO: Revisit log_save_interval_ticks, was configData.log_save_interval_ticks */);
+*/
 
 
 // --- Vanish Reminder Interval ---

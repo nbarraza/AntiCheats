@@ -125,16 +125,19 @@ world.afterEvents.entitySpawn.subscribe((eventData) => {
     const entity = eventData.entity;
 
     // Anti-Grief: Prevent spawning of certain entities if module is active
-    if (ModuleStatusManager.isActive("antigrief") && configData.restricted_entities_antigrief.includes(entity.typeId)) {
-        // Check if spawned by a player and if that player is not an admin
-        // This requires knowing the spawner. If the entity is spawned by an explosion (e.g. TNT spawns items),
-        // or by a player directly (e.g. spawn egg), the logic would differ.
-        // For now, let's assume a general restriction. More specific checks (like who spawned it) are complex.
-        // A placeholder for more advanced logic:
-        if (entity.typeId === "minecraft:tnt" /* && spawnedByPlayerNotAdmin */) {
-            // entity.triggerEvent("minecraft:explode"); // Or despawn, depending on desired outcome
-            // console.warn(`[AntiGrief] Restricted entity ${entity.typeId} spawned.`);
-            // sendMessageToAllAdmins(...)
+    if (ModuleStatusManager.isActive("antigrief")) {
+        const restrictedEntities = configData?.restricted_entities_antigrief;
+        if (Array.isArray(restrictedEntities) && restrictedEntities.includes(entity.typeId)) {
+            // Check if spawned by a player and if that player is not an admin
+            // This requires knowing the spawner. If the entity is spawned by an explosion (e.g. TNT spawns items),
+            // or by a player directly (e.g. spawn egg), the logic would differ.
+            // For now, let's assume a general restriction. More specific checks (like who spawned it) are complex.
+            // A placeholder for more advanced logic:
+            if (entity.typeId === "minecraft:tnt" /* && spawnedByPlayerNotAdmin */) {
+                // entity.triggerEvent("minecraft:explode"); // Or despawn, depending on desired outcome
+                // console.warn(`[AntiGrief] Restricted entity ${entity.typeId} spawned.`);
+                // sendMessageToAllAdmins(...)
+            }
         }
     }
 });
