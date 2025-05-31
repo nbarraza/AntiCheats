@@ -5,6 +5,7 @@ import { sendMessageToAllAdmins } from "../assets/util.js";
 import { ModuleStatusManager } from "../classes/module.js";
 import { showAdminPanel } from "../forms/admin_panel.js"; // Ensure this path is correct
 import { getPlayerState } from '../systems/periodic_checks.js'; // Import for player state
+import { logDebug } from '../assets/logger.js';
 
 // Item Use Event (After) - Primarily for specific item actions like Trident or Admin Panel
 world.afterEvents.itemUse.subscribe((eventData) => {
@@ -52,7 +53,7 @@ world.afterEvents.playerBreakBlock.subscribe((eventData) => {
 
     const state = getPlayerState(player.id);
     if (!state) {
-        console.warn(`[AntiCheats_WorldInteraction] No state found for player ${player.name} (${player.id}) in playerBreakBlock. Nuker check might be affected.`);
+        logDebug(`[AntiCheats_WorldInteraction] No state found for player ${player.name} (${player.id}) in playerBreakBlock. Nuker check might be affected.`);
         // Depending on the desired behavior, you might return or proceed.
         // If proceeding, subsequent nuker checks relying on 'state' will effectively be skipped or might error.
     }
@@ -89,7 +90,19 @@ world.afterEvents.playerBreakBlock.subscribe((eventData) => {
                 if (state.deepValuableOresBrokenThisTick > nukerConfig.max_deep_ore_blocks) {
                     const items = dimension.getEntities({ location: eventData.block.location, maxDistance: 2, type: "minecraft:item" });
                     for (const item of items) item.kill();
-                    dimension.getBlock(eventData.block.location)?.setPermutation(blockPermutation); // Restore the block
+                    // New logic for restoring block:
+                    const blockLocationToRestore = eventData.block.location;
+                    const currentBlockAtLocation = dimension.getBlock(blockLocationToRestore);
+
+                    if (currentBlockAtLocation) {
+                        if (blockPermutation && typeof blockPermutation.matches === 'function') {
+                            currentBlockAtLocation.setPermutation(blockPermutation);
+                        } else {
+                            logDebug(`[AntiCheats_WorldInteraction] Failed to restore block at location ${JSON.stringify(blockLocationToRestore)} due to invalid/missing brokenBlockPermutation.`);
+                        }
+                    } else {
+                        logDebug(`[AntiCheats_WorldInteraction] Failed to retrieve block at location ${JSON.stringify(blockLocationToRestore)} for restoration.`);
+                    }
 
                     if (autoModOn && configData.nuker_punish_automod) { // Assuming a config for automod punishment
                         player.runCommandAsync("gamemode adventure @s"); // Ensure commands are run async
