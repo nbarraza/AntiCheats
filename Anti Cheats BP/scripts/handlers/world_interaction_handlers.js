@@ -13,7 +13,7 @@ world.afterEvents.itemUse.subscribe((eventData) => {
     const item = eventData.itemStack;
 
     // Trident High Damage / Fly Check (Module based)
-    if (item.typeId === "minecraft:trident" && ModuleStatusManager.isActive("trident")) {
+    if (item.typeId === "minecraft:trident" && ModuleStatusManager.isActive(ModuleStatusManager.Modules.tridentCheck)) {
         // Logic for trident high damage/fly would be here or called from here.
         // This might involve checking player velocity changes, if they are Riptide enchanted, etc.
         // Example: player.setDynamicProperty("last_used_trident_time", world.currentTick);
@@ -125,7 +125,7 @@ world.afterEvents.entitySpawn.subscribe((eventData) => {
     const entity = eventData.entity;
 
     // Anti-Grief: Prevent spawning of certain entities if module is active
-    if (ModuleStatusManager.isActive("antigrief")) {
+    if (ModuleStatusManager.isActive(ModuleStatusManager.Modules.antiGrief)) {
         const restrictedEntities = configData?.restricted_entities_antigrief;
         if (Array.isArray(restrictedEntities) && restrictedEntities.includes(entity.typeId)) {
             // Check if spawned by a player and if that player is not an admin
