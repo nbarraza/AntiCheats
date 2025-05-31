@@ -2,10 +2,8 @@ import * as Minecraft from '@minecraft/server';
 import CONFIG from '../config.js';
 import { sendMessageToAllAdmins } from '../assets/util.js'; // Changed to sendMessageToAllAdmins
 import { logDebug } from '../assets/logger.js';
-// Removed i18n import
 
 const world = Minecraft.world;
-// const system = Minecraft.system; // Unused variable
 
 // We might need to track player states if direct properties aren't available.
 // e.g., const playersUsingItems = new Set(); // player.id

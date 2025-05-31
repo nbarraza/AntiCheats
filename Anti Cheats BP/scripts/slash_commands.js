@@ -204,7 +204,7 @@ const commandDefinitions = [
     {
         name: "ac:setrank",
         baseName: "setrank",
-        description: "<playerName> <rankId> - Sets a player's rank.",
+        description: "Sets a target player's rank within the Anti Cheats system (e.g., owner, admin, member).",
         permissionLevel: Minecraft.CommandPermissionLevel.Admin,
         mandatoryParameters: [
             { name: "targetPlayerName", type: Minecraft.CustomCommandParamType.Player, description: "Player to set rank for." },
