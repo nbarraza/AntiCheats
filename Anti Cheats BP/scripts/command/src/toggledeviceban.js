@@ -10,7 +10,7 @@ newCommand({
      * Executes the toggledeviceban command.
      * Allows an admin to ban or unban specific device types (Desktop, Console, Mobile) from joining the server,
      * or to view the list of currently banned device types.
-     * Device bans are stored in `world.safeguardDeviceBan` and persisted via the "safeguard:deviceBan" dynamic property.
+     * Device bans are stored in `world.safeguardDeviceBan` and persisted via the "ac:deviceBan" dynamic property.
      *
      * @param {object} data - The data object provided by the command handler.
      * @param {Minecraft.Player} data.player - The player who executed the command.
@@ -66,14 +66,14 @@ newCommand({
             }
             
             world.safeguardDeviceBan = bannedDevices; // Update the global variable
-            world.setDynamicProperty("safeguard:deviceBan", JSON.stringify(world.safeguardDeviceBan)); // API Call
+            world.setDynamicProperty("ac:deviceBan", JSON.stringify(world.safeguardDeviceBan)); // API Call
         } catch (e) {
-            logDebug("[Anti Cheats ERROR][toggledeviceban]", e, e.stack); // SafeGuard -> Anti Cheats
+            logDebug("[Anti Cheats ERROR][toggledeviceban]", e, e.stack);
             if (data && data.player) {
                 try {
                     data.player.sendMessage(i18n.getText("command.toggledeviceban.error", {}, data.player));
                 } catch (sendError) {
-                    logDebug("[Anti Cheats ERROR][toggledeviceban] Failed to send error message to command executor:", sendError, sendError.stack); // SafeGuard -> Anti Cheats
+                    logDebug("[Anti Cheats ERROR][toggledeviceban] Failed to send error message to command executor:", sendError, sendError.stack);
                 }
             }
         }

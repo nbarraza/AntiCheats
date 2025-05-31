@@ -42,7 +42,7 @@ player.error.unmute.notMuted="%%playerName%%" is not muted
 player.error.unmute.failed=Failed to unmute player %%playerName%%
 player.notify.admin.banLogError=\u00a76[\u00a7eAnti Cheats\u00a76]\u00a7c There was an error creating a ban log for \u00a74%%playerName%%\u00a7c Error: \\n\u00a74%%error%%
 player.error.mute.adminInstance=Parameter "adminPlayer" is not instanceof player
-player.error.invalidModuleReference="%%moduleName%%" isn't a safeguard module.
+player.error.invalidModuleReference="%%moduleName%%" isn't an Anti Cheats module.
 
 # Command Messages
 command.panel.noPermission=\u00a7cYou do not have permission to use this command.
@@ -166,3 +166,5 @@ player.error.ban.paramTypePermanent=Parámetro "permanent" es de tipo "%%type%%"
 player.error.ban.paramTypeTime=Parámetro "time" es de tipo "%%type%%", debería ser numérico
 `
 };
+
+[end of Anti Cheats BP/scripts/assets/language_data.js]

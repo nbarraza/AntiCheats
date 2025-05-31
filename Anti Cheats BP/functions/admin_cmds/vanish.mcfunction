@@ -2,7 +2,6 @@ scoreboard players add @s[tag=admin] ac:vanish 1
 scoreboard players set @s[tag=admin,scores={ac:vanish=2..}] ac:vanish 0
 effect @s[tag=admin,scores={ac:vanish=0}] invisibility 0 0
 effect @s[tag=admin,scores={ac:vanish=0}] night_vision 0 0
-# playanimation @a[scores={ac:vanish=0},tag=admin] animation.creeper.swelling I 1 # Potentially problematic animation/selector
 effect @s[tag=admin,scores={ac:vanish=1}] invisibility 99999 0 true
 effect @s[tag=admin,scores={ac:vanish=1}] night_vision 99999 10 true
 tellraw @s[tag=admin,scores={ac:vanish=1}] {"rawtext":[{"text":"§6[§eAnti Cheats§6]§r §7Poof! You vanished!§r"}]}
