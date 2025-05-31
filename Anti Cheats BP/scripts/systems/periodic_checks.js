@@ -153,13 +153,13 @@ if (CONFIG.world.nightVisionDetection.enableNightVisionCheck) {
 
 // --- Vanish Reminder Interval ---
 // Removed if (ModuleStatusManager.getModuleStatus("vanish")) condition
-system.runInterval(() => {
-    for (const player of world.getAllPlayers()) {
-        if (player.hasTag("vanished") && typeof player.hasAdmin === 'function' && player.hasAdmin()) {
-            player.onScreenDisplay.setActionBar(i18n.getText("system.vanish_reminder"));
-        }
-    }
-}, 6000 /* TODO: Revisit vanish_reminder_interval_ticks, was configData.vanish_reminder_interval_ticks */);
+// system.runInterval(() => {
+//     for (const player of world.getAllPlayers()) {
+//         if (player.hasTag("vanished") && typeof player.hasAdmin === 'function' && player.hasAdmin()) {
+//             player.onScreenDisplay.setActionBar(i18n.getText("system.vanish_reminder"));
+//         }
+//     }
+// }, 6000 /* TODO: Revisit vanish_reminder_interval_ticks, was configData.vanish_reminder_interval_ticks */);
 
 
 // No explicit exports needed for the intervals themselves as they are self-running.
