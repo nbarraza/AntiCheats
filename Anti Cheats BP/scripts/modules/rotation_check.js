@@ -2,7 +2,6 @@ import * as Minecraft from '@minecraft/server';
 import * as config from '../config.js';
 import { sendMessageToAllAdmins } from '../assets/util.js';
 import { logDebug } from '../assets/logger.js'; // Moved logDebug to logger.js
-// Removed i18n import
 
 const world = Minecraft.world;
 const system = Minecraft.system;
@@ -64,13 +63,6 @@ export function initializeRotationCheck() {
                     yawDelta = 360 - yawDelta;
                 }
 
-                // const timeDiffSeconds = (currentTime - lastData.lastCheckTime) / 1000;
-                // if (timeDiffSeconds > 0) { // Avoid division by zero if interval is very fast
-                //    const yawSpeed = yawDelta / timeDiffSeconds; // Degrees per second
-                //    if (yawSpeed > rotationConfig.maxYawSpeed) {
-                //        handleViolation(player, "Yaw Speed", yawSpeed.toFixed(2));
-                //    }
-                // }
                 // Using maxYawDeltaPerTick is simpler if the interval is consistent (every tick)
                  if (yawDelta > rotationConfig.maxYawDeltaPerTick) {
                      handleViolation(player, "Yaw Delta", yawDelta.toFixed(2) + " per tick");

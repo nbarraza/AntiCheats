@@ -1,6 +1,6 @@
 import * as Minecraft from '@minecraft/server';
 import { ActionFormData, MessageFormData, ModalFormData } from '@minecraft/server-ui';
-import { addPlayerToUnbanQueue, copyInv, invsee, millisecondTime, sendMessageToAllAdmins } from './assets/util.js'; // Removed getPlayerByName
+import { addPlayerToUnbanQueue, copyInv, invsee, millisecondTime, sendMessageToAllAdmins } from './assets/util.js';
 import { logDebug } from './assets/logger.js';
 import { ModuleStatusManager } from './classes/module.js';
 import CONFIG from "./config.js"; 
@@ -252,7 +252,7 @@ export function configDebugForm(player, previousFormCallback){
                 }
                 switch (formData.selection) {
                         case 0:
-                                console.warn(JSON.stringify(CONFIG)); 
+                                logDebug(JSON.stringify(CONFIG));
                                 player.sendMessage(`§6[§eAnti Cheats§6]§f The config was exported to the console`);
                                 configDebugForm(player, previousFormCallback); // Re-show form
                                 break;
@@ -335,7 +335,7 @@ export function configEditorForm(player, previousFormCallback) {
                         let currentConfig = world.getDynamicProperty("ac:config");
                         let parsedConfig = {};
                         if (currentConfig && typeof currentConfig === 'string') {
-                            try { parsedConfig = JSON.parse(currentConfig); } catch (_e) { console.warn("Error parsing dynamic config, starting fresh."); }
+                            try { parsedConfig = JSON.parse(currentConfig); } catch (_e) { logDebug("Error parsing dynamic config, starting fresh."); }
                         } else { 
                             parsedConfig = JSON.parse(JSON.stringify(CONFIG)); 
                         }

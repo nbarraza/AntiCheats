@@ -1,6 +1,5 @@
-import { world } from '@minecraft/server'; // Removed Player import
-// import * as config from '../config.js'; // If maxReports becomes configurable
-// import { sendMessageToAllAdmins } from '../assets/util.js'; // If a utility function is preferred for admin notifications
+import { world } from '@minecraft/server';
+import { logDebug } from '../assets/logger.js'; // Added logDebug import
 
 /**
  * Submits a new player report and stores it in world dynamic properties.
@@ -23,11 +22,11 @@ export async function submitReport(reporterPlayer, reportedPlayerNameStr, reason
             try {
                 reportsArray = JSON.parse(reportsJson);
                 if (!Array.isArray(reportsArray)) {
-                    console.warn("[ReportSystem] 'ac:playerReports' dynamic property was not a valid array. Initializing as empty.");
+                    logDebug("[ReportSystem] 'ac:playerReports' dynamic property was not a valid array. Initializing as empty.");
                     reportsArray = [];
                 }
             } catch (e) {
-                console.warn(`[ReportSystem] Failed to parse 'ac:playerReports' JSON: ${e}. Initializing as empty array.`);
+                logDebug(`[ReportSystem] Failed to parse 'ac:playerReports' JSON: ${e}. Initializing as empty array.`);
                 reportsArray = [];
             }
         }
@@ -75,7 +74,7 @@ export async function submitReport(reporterPlayer, reportedPlayerNameStr, reason
         
         return true;
     } catch (error) {
-        console.error(`[ReportSystem] Failed to submit report: ${error} ${error.stack}`);
+        logDebug(`[ReportSystem] Failed to submit report: ${error} ${error.stack}`);
         return false;
     }
 }

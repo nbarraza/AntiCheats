@@ -1,4 +1,4 @@
-import { world, system, EffectType } from "@minecraft/server"; // Removed Player, EntityDamageCause, GameMode
+import { world, system, EffectType } from "@minecraft/server";
 import CONFIG from "../config.js";
 import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
 import { sendMessageToAllAdmins, saveLogToFile, LOG_FILE_PREFIX } from "../assets/util.js";
@@ -58,33 +58,19 @@ system.runInterval(() => {
         const playerVelocity = player.getVelocity();
         const isPlayerOnGround = player.isOnGround;
 
-        const state = getPlayerState(player.id);
+        let state = getPlayerState(player.id);
         if (!state) {
-            // This case should ideally not happen if join/leave events are correctly handled.
-            // If it does, it might mean a player existed before the script fully initialized their state
-            // or an issue with leave event. For safety, log and skip this player for this tick.
-            console.warn(`[AntiCheats_PeriodicChecks] No state found for player ${player.name} (${player.id}). Skipping tick.`);
-            continue; 
+            logDebug(`[AntiCheats_PeriodicChecks] No state found for player ${player.name} (${player.id}). Attempting to initialize state now.`);
+            // Ensure initializePlayerState and system are available in this scope
+            // (initializePlayerState is exported by this file, system is imported from @minecraft/server)
+            initializePlayerState(player.id, player.location, system.currentTick);
+            state = getPlayerState(player.id); // Attempt to retrieve the state again
+            if (!state) {
+                logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: Failed to initialize state for player ${player.name} (${player.id}) on demand. Skipping tick.`);
+                continue;
+            }
         }
         state.deepValuableOresBrokenThisTick = 0; // Add this line to reset before any other logic uses it for the current tick
-        // const lastTickPos = state.lastLocation; // Unused variable: lastTickPos
-
-        // Update fall distance for NoFall
-        // TODO: Was ModuleStatusManager.getModuleStatus("nofall") - module "nofall" not defined. Removed check.
-        // if (ModuleStatusManager.getModuleStatus("nofall")) {
-        //     let currentFallDistance = state.fallDistanceCustom;
-        //     if (!isPlayerOnGround && player.location.y < state.lastPositionY) {
-        //         state.fallDistanceCustom = currentFallDistance + (state.lastPositionY - player.location.y);
-        //     } else if (isPlayerOnGround) {
-        //         // If player is on ground, fall distance is typically reset by the entityHurt event
-        //         // after damage calculation, or here if no damage (e.g. creative mode flight landing)
-        //         // For now, we only accumulate. Resetting logic is primarily in entityHurt or when changing to fly modes.
-        //         // If a more immediate reset on landing is needed here (outside of damage):
-        //         // state.fallDistanceCustom = 0; // Uncomment if reset is desired here always on ground
-        //     }
-        //     state.lastPositionY = player.location.y;
-        // }
-
 
         // --- 10-Tick Interval Checks (Speed, Fly) ---
         if (currentTickCounter % 10 === 0) {
@@ -96,7 +82,6 @@ system.runInterval(() => {
                 state.speedVL = (state.speedVL || 0) + 1;
                 if (state.speedVL >= CONFIG.movement.speed.speedViolationThreshold) {
                     sendMessageToAllAdmins("detection.speed_detected_admin", { player: player.name, speed: movementSpeed.toFixed(2), max_speed: maxSpeed, vl: state.speedVL });
-                    // Removed speed_punish block
                     state.speedVL = 0;
                 }
             }
@@ -108,7 +93,6 @@ system.runInterval(() => {
                 state.flyVL = (state.flyVL || 0) + 1;
                 if (state.flyVL >= CONFIG.movement.fly.flyViolationThreshold) {
                     sendMessageToAllAdmins("detection.fly_detected_admin", { player: player.name, vl: state.flyVL });
-                    // Removed fly_punish block
                     state.flyVL = 0;
                 }
             } else if (isPlayerOnGround) {
@@ -121,7 +105,6 @@ system.runInterval(() => {
                 let nukerBreakVl = state.nukerVLBreak || 0; // Read from state
                 if (nukerBreakVl > CONFIG.world.nuker.maxBlocks) {
                      sendMessageToAllAdmins("detection.nuker_detected_admin", { player: player.name, blocks: nukerBreakVl });
-                     // Removed nuker_punish block
                 }
                 state.nukerVLBreak = 0; // Reset in state
             }
@@ -150,23 +133,29 @@ if (CONFIG.world.nightVisionDetection.enableNightVisionCheck) {
 
 // --- Log Saving Interval ---
 // Removed if (configData.enable_log_saving) condition
-system.runInterval(() => {
-    if (inMemoryCommandLogs.length > 0) {
-        saveLogToFile(LOG_FILE_PREFIX.COMMAND, inMemoryCommandLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.command}`).join("\n"));
-        inMemoryCommandLogs = []; // Clear after saving
-    }
-    if (inMemoryPlayerActivityLogs.length > 0) {
-        saveLogToFile(LOG_FILE_PREFIX.ACTIVITY, inMemoryPlayerActivityLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.activity}`).join("\n"));
-        inMemoryPlayerActivityLogs = []; // Clear after saving
-    }
-}, 1200 /* TODO: Revisit log_save_interval_ticks, was configData.log_save_interval_ticks */);
+// system.runInterval(() => {
+//     // if (Array.isArray(inMemoryCommandLogs) && inMemoryCommandLogs.length > 0) {
+//     //     saveLogToFile(LOG_FILE_PREFIX.COMMAND, inMemoryCommandLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.command}`).join("\n"));
+//     //     inMemoryCommandLogs = [];
+//     // } else if (!Array.isArray(inMemoryCommandLogs) && inMemoryCommandLogs) {
+//     //     logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: inMemoryCommandLogs is not an array. Type: ${typeof inMemoryCommandLogs}. Attempting to log value: ${String(inMemoryCommandLogs)}. Resetting.`);
+//     //     inMemoryCommandLogs = [];
+//     // }
+//     // if (Array.isArray(inMemoryPlayerActivityLogs) && inMemoryPlayerActivityLogs.length > 0) {
+//     //     saveLogToFile(LOG_FILE_PREFIX.ACTIVITY, inMemoryPlayerActivityLogs.map(log => `[${log.timestamp}] ${log.player}: ${log.activity}`).join("\n"));
+//     //     inMemoryPlayerActivityLogs = [];
+//     // } else if (!Array.isArray(inMemoryPlayerActivityLogs) && inMemoryPlayerActivityLogs) {
+//     //     logDebug(`[AntiCheats_PeriodicChecks] CRITICAL: inMemoryPlayerActivityLogs is not an array. Type: ${typeof inMemoryPlayerActivityLogs}. Attempting to log value: ${String(inMemoryPlayerActivityLogs)}. Resetting.`);
+//     //     inMemoryPlayerActivityLogs = [];
+//     // }
+// }, 1200 /* TODO: Revisit log_save_interval_ticks, was configData.log_save_interval_ticks */);
 
 
 // --- Vanish Reminder Interval ---
 // Removed if (ModuleStatusManager.getModuleStatus("vanish")) condition
 system.runInterval(() => {
     for (const player of world.getAllPlayers()) {
-        if (player.hasTag("vanished") && player.hasAdmin()) {
+        if (player.hasTag("vanished") && typeof player.hasAdmin === 'function' && player.hasAdmin()) {
             player.onScreenDisplay.setActionBar(i18n.getText("system.vanish_reminder"));
         }
     }
