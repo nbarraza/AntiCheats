@@ -3,7 +3,7 @@ import CONFIG from "../config.js";
 import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
 import { sendMessageToAllAdmins } from "../assets/util.js"; // Assuming 효율 is still needed, otherwise remove
 import { ModuleStatusManager } from "../classes/module.js"; // Removed unused ACModule
-import { seedGlobalBanList } from "../assets/global_ban_list.js"; // Assuming this is used or will be used
+import { globalBanList } from "../assets/global_ban_list.js"; // Assuming this is used or will be used
 import { inMemoryPlayerActivityLogs, MAX_LOG_ENTRIES, initializePlayerState, removePlayerState } from "../systems/periodic_checks.js";
 
 const gamertagRegex = /^[a-zA-Z0-9_ ]{3,16}$/; // Max length 16 for Xbox, 3-24 generally
@@ -32,7 +32,7 @@ world.afterEvents.playerJoin.subscribe((eventData) => {
     addPlayerActivityLog(player, "joined");
 
     // Global Ban Check
-    if (seedGlobalBanList.includes(player.name)) {
+    if (globalBanList.includes(player.name)) {
         player.kick(i18n.getText("system.global_ban_kick_message", {}, player));
         sendMessageToAllAdmins("system.global_ban_alert", { player: player.name });
         return; // Stop further processing for banned player
