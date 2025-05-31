@@ -89,7 +89,7 @@ world.afterEvents.playerBreakBlock.subscribe((eventData) => {
                 if (state.deepValuableOresBrokenThisTick > nukerConfig.max_deep_ore_blocks) {
                     const items = dimension.getEntities({ location: eventData.block.location, maxDistance: 2, type: "minecraft:item" });
                     for (const item of items) item.kill();
-                    eventData.block.setPermutation(blockPermutation); // Restore the block
+                    dimension.getBlock(eventData.block.location)?.setPermutation(blockPermutation); // Restore the block
 
                     if (autoModOn && configData.nuker_punish_automod) { // Assuming a config for automod punishment
                         player.runCommandAsync("gamemode adventure @s"); // Ensure commands are run async

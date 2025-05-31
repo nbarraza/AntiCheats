@@ -58,13 +58,17 @@ system.runInterval(() => {
         const playerVelocity = player.getVelocity();
         const isPlayerOnGround = player.isOnGround;
 
-        const state = getPlayerState(player.id);
+        let state = getPlayerState(player.id);
         if (!state) {
-            // This case should ideally not happen if join/leave events are correctly handled.
-            // If it does, it might mean a player existed before the script fully initialized their state
-            // or an issue with leave event. For safety, log and skip this player for this tick.
-            console.warn(`[AntiCheats_PeriodicChecks] No state found for player ${player.name} (${player.id}). Skipping tick.`);
-            continue; 
+            console.warn(`[AntiCheats_PeriodicChecks] No state found for player ${player.name} (${player.id}). Attempting to initialize state now.`);
+            // Ensure initializePlayerState and system are available in this scope
+            // (initializePlayerState is exported by this file, system is imported from @minecraft/server)
+            initializePlayerState(player.id, player.location, system.currentTick);
+            state = getPlayerState(player.id); // Attempt to retrieve the state again
+            if (!state) {
+                console.error(`[AntiCheats_PeriodicChecks] CRITICAL: Failed to initialize state for player ${player.name} (${player.id}) on demand. Skipping tick.`);
+                continue;
+            }
         }
         state.deepValuableOresBrokenThisTick = 0; // Add this line to reset before any other logic uses it for the current tick
 
@@ -145,7 +149,7 @@ system.runInterval(() => {
 // Removed if (ModuleStatusManager.getModuleStatus("vanish")) condition
 system.runInterval(() => {
     for (const player of world.getAllPlayers()) {
-        if (player.hasTag("vanished") && player.hasAdmin()) {
+        if (player.hasTag("vanished") && typeof player.hasAdmin === 'function' && player.hasAdmin()) {
             player.onScreenDisplay.setActionBar(i18n.getText("system.vanish_reminder"));
         }
     }
