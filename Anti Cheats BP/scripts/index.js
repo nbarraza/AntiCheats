@@ -3,6 +3,7 @@ import { world, system } from '@minecraft/server'; // Ensure system and world ar
 import CONFIG from "./config.js"; // CONFIG is the default export from config.js
 import "./command/importer.js"; // Essential for registering chat commands (e.g., "!ban").
 import "./slash_commands.js"; // Essential for registering slash commands (e.g., "/ac:ban").
+import { logDebug } from './assets/logger.js'; // Added logDebug import
 
 import "./classes/player.js"; // Player prototype extensions
 import { Initialize } from './initialize.js';
@@ -52,15 +53,15 @@ system.run(() => { // Final initialization run
                 // Ensure state is initialized for all players who might have been present before script load
                 if (!playerInternalStates.has(player.id)) {
                     try {
-                        console.warn(`[Anti Cheats Index] Initializing missing state for player ${player.name} (${player.id}) on script load.`);
+                        logDebug(`[Anti Cheats Index] Initializing missing state for player ${player.name} (${player.id}) on script load.`);
                         initializePlayerState(player.id, player.location, system.currentTick);
                     } catch (e) {
-                        console.warn(`[Anti Cheats Index] Error initializing state for player ${player.name} (${player.id}) on script load: ${e} Stack: ${e?.stack}`);
+                        logDebug(`[Anti Cheats Index] Error initializing state for player ${player.name} (${player.id}) on script load: ${e} Stack: ${e?.stack}`);
                     }
                 }
 			} catch (_playerError) { // playerError -> _playerError
 			    // Errors for individual player setup shouldn't stop others, but log them.
-                console.warn(`[Anti Cheats Index] Error during initial setup for player: ${_playerError} Stack: ${_playerError?.stack}`);
+                logDebug(`[Anti Cheats Index] Error during initial setup for player: ${_playerError} Stack: ${_playerError?.stack}`);
 			}
 		}
 		
@@ -70,7 +71,7 @@ system.run(() => { // Final initialization run
 
 	} catch (_e) { // e -> _e
 	    // Log main initialization errors. Initialize() or sub-initializers might also log specifics.
-        console.warn(`[Anti Cheats Index] Error during final initialization: ${_e} Stack: ${_e?.stack}`);
+        logDebug(`[Anti Cheats Index] Error during final initialization: ${_e} Stack: ${_e?.stack}`);
 	}
 });
 
@@ -86,6 +87,6 @@ system.run(async () => {
         }
     } catch (_e) { // e -> _e
         // Version check failure is not critical but log it.
-        console.warn(`[Anti Cheats Index] Error during version check: ${_e} Stack: ${_e?.stack}`);
+        logDebug(`[Anti Cheats Index] Error during version check: ${_e} Stack: ${_e?.stack}`);
     }
 });
