@@ -22,11 +22,11 @@ export async function submitReport(reporterPlayer, reportedPlayerNameStr, reason
             try {
                 reportsArray = JSON.parse(reportsJson);
                 if (!Array.isArray(reportsArray)) {
-                    console.warn("[ReportSystem] 'ac:playerReports' dynamic property was not a valid array. Initializing as empty.");
+                    logDebug("[ReportSystem] 'ac:playerReports' dynamic property was not a valid array. Initializing as empty.");
                     reportsArray = [];
                 }
             } catch (e) {
-                console.warn(`[ReportSystem] Failed to parse 'ac:playerReports' JSON: ${e}. Initializing as empty array.`);
+                logDebug(`[ReportSystem] Failed to parse 'ac:playerReports' JSON: ${e}. Initializing as empty array.`);
                 reportsArray = [];
             }
         }
