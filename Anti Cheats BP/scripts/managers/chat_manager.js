@@ -2,7 +2,7 @@ import { world } from "@minecraft/server";
 import CONFIG from "../config.js";
 import { ModuleStatusManager } from "../classes/module.js";
 import { i18n } from "../assets/i18n.js"; // Assuming i18n is from assets
-import { sendMessageToAllAdmins, getPlayerRank } from "../assets/util.js";
+import { sendMessageToAllAdmins } from "../assets/util.js"; // Removed getPlayerRank
 import { commandHandler } from "../command/handle.js";
 import { inMemoryCommandLogs, MAX_LOG_ENTRIES } from "../systems/periodic_checks.js"; // This will be created later
 
@@ -43,9 +43,13 @@ function handleAntiSpam(player, _message) { // message -> _message
 
 // Function to format chat messages with rank
 function formatChatMessageWithRank(player, message) {
-    const rank = getPlayerRank(player);
-    const rankPrefix = rank === "일반" ? "" : `§l§7[§r${rank}§l§7]§r `;
-    const chatMessage = `${rankPrefix}${player.name}: ${message}`;
+    const rankId = player.getRank(); // Changed from getPlayerRank(player)
+    const rankInfo = CONFIG.ranks[rankId] || CONFIG.ranks[CONFIG.defaultRank];
+    const rankPrefix = rankInfo && rankInfo.displayText ? `${rankInfo.displayText.replace("%rankName%", rankInfo.name || rankId)} ` : "";
+    const nameColor = rankInfo && rankInfo.nameColor ? rankInfo.nameColor : "§f";
+    const chatColor = rankInfo && rankInfo.chatColor ? rankInfo.chatColor : "§f";
+
+    const chatMessage = `${rankPrefix}${nameColor}${player.name}§r: ${chatColor}${message}`;
     world.sendMessage(chatMessage);
 }
 
@@ -81,7 +85,7 @@ world.beforeEvents.chatSend.subscribe((eventData) => {
     // Handle commands
     if (message.startsWith(CONFIG.chat.prefix)) {
         eventData.cancel = true;
-        commandHandler(player, message);
+        commandHandler(player, message); // Note: commandHandler might need player object, not just sender if it relies on Player.prototype methods
         return;
     }
 
